@@ -113,9 +113,6 @@ The example can be launched with the `gotee` command, it will spawn the Main OS
 twice, to demonstrate behaviour before and after TrustZone restrictions are in
 effect in using real hardware peripherals.
 
-On real hardware an Additional example is available to demonstrate use of Linux
-as Main OS.
-
 Compiling
 =========
 
