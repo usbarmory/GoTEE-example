@@ -12,6 +12,7 @@ import (
 	"sync"
 
 	"github.com/f-secure-foundry/tamago/arm"
+	"github.com/f-secure-foundry/tamago/soc/imx6/csu"
 
 	"github.com/f-secure-foundry/GoTEE/monitor"
 	"github.com/f-secure-foundry/GoTEE/syscall"
@@ -35,6 +36,9 @@ var osELF []byte
 
 func loadApplet() (ta *monitor.ExecCtx) {
 	var err error
+
+	// Cortex-A7 master needs Secure access to perform arm.set_ttbr0
+	csu.SetAccess(0, true, false)
 
 	if ta, err = monitor.Load(taELF, mem.AppletStart, mem.AppletSize, true); err != nil {
 		log.Fatalf("PL1 could not load applet, %v", err)
@@ -69,6 +73,9 @@ func loadApplet() (ta *monitor.ExecCtx) {
 
 func loadNormalWorld(lock bool) (os *monitor.ExecCtx) {
 	var err error
+
+	// Cortex-A7 master needs Secure access to perform arm.set_ttbr0
+	csu.SetAccess(0, true, false)
 
 	if os, err = monitor.Load(osELF, mem.NonSecureStart, mem.NonSecureSize, false); err != nil {
 		log.Fatalf("PL1 could not load applet, %v", err)
