@@ -7,8 +7,6 @@
 package main
 
 import (
-	//_ "unsafe"
-
 	"github.com/f-secure-foundry/GoTEE/syscall"
 )
 
@@ -16,5 +14,5 @@ const (
 	SYS_WRITE = syscall.SYS_WRITE
 )
 
-// defined in monitor.s
+// defined in api.s
 func printSecure(byte)

@@ -13,11 +13,11 @@ import (
 	"runtime"
 	_ "unsafe"
 
-	"github.com/f-secure-foundry/GoTEE/syscall"
-
 	"github.com/f-secure-foundry/tamago/soc/imx6"
 	"github.com/f-secure-foundry/tamago/soc/imx6/dcp"
 	_ "github.com/f-secure-foundry/tamago/soc/imx6/imx6ul"
+
+	"github.com/f-secure-foundry/GoTEE/syscall"
 
 	"github.com/f-secure-foundry/GoTEE-example/mem"
 )
@@ -36,15 +36,12 @@ func hwinit() {
 
 //go:linkname printk runtime.printk
 func printk(c byte) {
-	// Secure World is not restricting us UART access
-	imx6.UART2.Tx(c)
-
-	if !imx6.Native {
-		return
+	if imx6.Native {
+		// monitor call to request logs on Secure World SSH console
+		printSecure(c)
+	} else {
+		imx6.UART2.Tx(c)
 	}
-
-	// copy stdout to Secure World SSH console with a custom monitor call
-	printSecure(c)
 }
 
 func init() {

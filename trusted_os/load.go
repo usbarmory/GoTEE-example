@@ -11,16 +11,16 @@ import (
 	"log"
 	"sync"
 
+	"github.com/f-secure-foundry/tamago/arm"
+
 	"github.com/f-secure-foundry/GoTEE/monitor"
 	"github.com/f-secure-foundry/GoTEE/syscall"
-
-	"github.com/f-secure-foundry/tamago/arm"
 
 	"github.com/f-secure-foundry/GoTEE-example/mem"
 )
 
-// This example simply embeds Trusted Applet and Main OS ELF binaries within
-// the Trusted OS executable.
+// This example embeds the Trusted Applet and Main OS ELF binaries within the
+// Trusted OS executable, using Go embed package.
 //
 // The loading strategy is up to implementers, on the NXP i.MX6 the armory-boot
 // bootloader primitives can be used to create a bootable Trusted OS with

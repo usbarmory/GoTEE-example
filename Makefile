@@ -126,7 +126,6 @@ $(APP)-signed.imx: check_hab_keys $(APP).imx
 		-t ${HAB_KEYS}/SRK_1_2_3_4_table.bin \
 		-x 1 \
 		-s \
-		-e 0x1b \
 		-i $(APP).imx \
 		-o $(APP).csf && \
 	cat $(APP).imx $(APP).csf > $(APP)-signed.imx

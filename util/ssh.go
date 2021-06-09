@@ -1,5 +1,3 @@
-// https://github.com/f-secure-foundry/GoKey
-//
 // Copyright (c) F-Secure Corporation
 // https://foundry.f-secure.com
 //
@@ -22,7 +20,7 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-// Console represents an SSH console instance
+// Console represents an SSH console instance.
 type Console struct {
 	// Banner is the login welcome banner
 	Banner string

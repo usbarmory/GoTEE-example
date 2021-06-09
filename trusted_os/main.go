@@ -75,7 +75,6 @@ func gotee() {
 	//   Secure    World PL1 (system/monitor mode) - secure OS (this program)
 	//   Secure    World PL0 (user mode)           - trusted applet
 	//   NonSecure World PL1                       - main OS
-
 	wg.Add(2)
 	go run(ta, &wg)
 	go run(os, &wg)
