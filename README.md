@@ -142,6 +142,8 @@ The PoC can be executed on the [USB armory Mk II](https://github.com/f-secure-fo
 by loading the compilation output `trusted_os.imx` [SDP mode](https://github.com/f-secure-foundry/usbarmory/wiki/Boot-Modes-(Mk-II)#serial-download-protocol-sdp),
 (note that for now the PoC only provides serial console feedback).
 
+![gotee](images/gotee.png)
+
 Emulated hardware
 -----------------
 
