@@ -7,11 +7,9 @@
 package main
 
 import (
-	"bytes"
 	_ "embed"
 	"log"
 	"sync"
-	_ "unsafe"
 
 	"github.com/f-secure-foundry/GoTEE/monitor"
 	"github.com/f-secure-foundry/GoTEE/syscall"
@@ -19,8 +17,6 @@ import (
 	"github.com/f-secure-foundry/tamago/arm"
 
 	"github.com/f-secure-foundry/GoTEE-example/mem"
-
-	"golang.org/x/term"
 )
 
 // This example simply embeds Trusted Applet and Main OS ELF binaries within
@@ -37,23 +33,6 @@ var taELF []byte
 //go:embed nonsecure_os_go.elf
 var osELF []byte
 
-var secureOutput bytes.Buffer
-var nonSecureOutput bytes.Buffer
-
-const outputLimit = 1024
-
-func sysWrite(buf *bytes.Buffer, c byte, color []byte, t *term.Terminal) {
-	buf.WriteByte(c)
-
-	if c == 0x0a || buf.Len() > outputLimit {
-		t.Write(color)
-		t.Write(buf.Bytes())
-		t.Write(t.Escape.Reset)
-
-		buf.Reset()
-	}
-}
-
 func loadApplet() (ta *monitor.ExecCtx) {
 	var err error
 
@@ -67,19 +46,22 @@ func loadApplet() (ta *monitor.ExecCtx) {
 	ta.Server.Register(&RPC{})
 	ta.Debug = true
 
-	if ssh != nil {
-		// When running on real hardware, override the default handler
-		// to log applet stdout on SSH console.
-		//
-		// A buffer is used to flush only complete logs.
-
-		ta.Handler = func(ctx *monitor.ExecCtx) error {
-			if ctx.R0 == syscall.SYS_WRITE {
-				sysWrite(&secureOutput, byte(ctx.R1), ssh.Term.Escape.Green, ssh.Term)
+	// The GoTEE default handler is overridden to avoid interleaved logs,
+	// as the supervisor and applet contexts are logging simultaneously.
+	//
+	// When running on real hardware logs are cloned on the SSH terminal.
+	ta.Handler = func(ctx *monitor.ExecCtx) (err error) {
+		if ctx.R0 == syscall.SYS_WRITE {
+			if ssh != nil {
+				bufferedTermLog(&secureOutput, byte(ctx.R1), ssh.Term.Escape.Green, ssh.Term)
+			} else {
+				bufferedStdoutLog(&secureOutput, byte(ctx.R1))
 			}
-
-			return monitor.SecureHandler(ctx)
+		} else {
+			err = monitor.SecureHandler(ctx)
 		}
+
+		return
 	}
 
 	return
@@ -100,21 +82,22 @@ func loadNormalWorld(lock bool) (os *monitor.ExecCtx) {
 		log.Fatalf("PL1 could not configure TrustZone, %v", err)
 	}
 
-	if ssh != nil {
-		// When running on real hardware, override the default handler
-		// to log NonSecure World stdout on Secure World SSH console.
-		//
-		// A buffer is used to flush only complete logs.
-
-		os.Handler = func(ctx *monitor.ExecCtx) (err error) {
-			if ctx.R0 == syscall.SYS_WRITE {
-				sysWrite(&nonSecureOutput, byte(ctx.R1), ssh.Term.Escape.Red, ssh.Term)
+	// The GoTEE default handler is overridden to avoid interleaved logs,
+	// as the supervisor and nonsecure contexts are logging simultaneously.
+	//
+	// When running on real hardware logs are cloned on the SSH terminal.
+	os.Handler = func(ctx *monitor.ExecCtx) (err error) {
+		if ctx.R0 == syscall.SYS_WRITE {
+			if ssh != nil {
+				bufferedTermLog(&nonSecureOutput, byte(ctx.R1), ssh.Term.Escape.Red, ssh.Term)
 			} else {
-				err = monitor.NonSecureHandler(ctx)
+				bufferedStdoutLog(&nonSecureOutput, byte(ctx.R1))
 			}
-
-			return
+		} else {
+			err = monitor.NonSecureHandler(ctx)
 		}
+
+		return
 	}
 
 	return
