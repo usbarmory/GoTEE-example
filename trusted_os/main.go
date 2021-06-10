@@ -127,21 +127,22 @@ func main() {
 		log.Fatalf("PL1 could not initialize USB networking, %v", err)
 	}
 
+	gonet.EnableICMP()
+
 	listener, err := gonet.ListenerTCP4(sshPort)
 
 	if err != nil {
 		log.Fatalf("PL1 could not initialize SSH listener, %v", err)
 	}
 
-	gonet.EnableICMP()
-
 	ssh = &util.Console{
 		Banner:  fmt.Sprintf("PL1 %s/%s (%s) • TEE system/monitor (Secure World)", runtime.GOOS, runtime.GOARCH, runtime.Version()),
 		Help:    help,
 		Handler: cmd,
+		Listener: listener,
 	}
 
-	err = ssh.Start(listener)
+	err = ssh.Start()
 
 	if err != nil {
 		log.Fatalf("PL1 could not initialize SSH server, %v", err)

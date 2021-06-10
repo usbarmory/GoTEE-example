@@ -30,6 +30,8 @@ type Console struct {
 	Handler func(*terminal.Terminal, string) error
 	// Term is the terminal instance
 	Term *terminal.Terminal
+	// Listener is the network listener
+	Listener net.Listener
 }
 
 func (c *Console) handleChannel(newChannel ssh.NewChannel) {
@@ -134,9 +136,9 @@ func (c *Console) handleChannels(chans <-chan ssh.NewChannel) {
 	}
 }
 
-func (c *Console) listen(listener net.Listener, srv *ssh.ServerConfig) {
+func (c *Console) listen(srv *ssh.ServerConfig) {
 	for {
-		conn, err := listener.Accept()
+		conn, err := c.Listener.Accept()
 
 		if err != nil {
 			log.Printf("error accepting connection, %v", err)
@@ -158,7 +160,7 @@ func (c *Console) listen(listener net.Listener, srv *ssh.ServerConfig) {
 }
 
 // Start instantiates an SSH console on the given listener.
-func (c *Console) Start(listener net.Listener) (err error) {
+func (c *Console) Start() (err error) {
 	srv := &ssh.ServerConfig{
 		NoClientAuth: true,
 	}
@@ -179,7 +181,7 @@ func (c *Console) Start(listener net.Listener) (err error) {
 
 	srv.AddHostKey(signer)
 
-	go c.listen(listener, srv)
+	go c.listen(srv)
 
 	return
 }
