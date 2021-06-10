@@ -129,7 +129,8 @@ cd ../bin && export TAMAGO=`pwd`/go
 Build the example trusted applet and kernel executables:
 
 ```
-make nonsecure_os_go && make trusted_applet_go && make trusted_os
+git clone https://github.com/f-secure-foundry/GoTEE-example
+cd GoTEE-example && make nonsecure_os_go && make trusted_applet_go && make trusted_os
 ```
 
 Executing and debugging
