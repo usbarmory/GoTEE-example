@@ -200,6 +200,8 @@ github.com/f-secure-foundry/GoTEE v0.0.0-20210609064249-b36b385a0889 h1:/PORyRbW
 github.com/f-secure-foundry/GoTEE v0.0.0-20210609064249-b36b385a0889/go.mod h1:0Nkw38NuggOUZ9mZrEraKKs+lmjS6rJR51rrx3xw+gk=
 github.com/f-secure-foundry/GoTEE v0.0.0-20210609095627-b124f55887cc h1:L69VzfVJvgbzHCaUpmRwrKJpHX/wiG4ECzh5RnWOGe4=
 github.com/f-secure-foundry/GoTEE v0.0.0-20210609095627-b124f55887cc/go.mod h1:0Nkw38NuggOUZ9mZrEraKKs+lmjS6rJR51rrx3xw+gk=
+github.com/f-secure-foundry/GoTEE v0.0.0-20210610135833-507494c30d74 h1:tO7rLCNtZTgai9yiRPE4jA8Y9gztgDMpPtahlofab+s=
+github.com/f-secure-foundry/GoTEE v0.0.0-20210610135833-507494c30d74/go.mod h1:owvts5YmIN+EsdEc4a8PtshD6j6obQkOfFAaQPAVYEI=
 github.com/f-secure-foundry/crucible v0.0.0-20210519190101-b84eb54532b9 h1:azI6aa8SlifFH2ZCumSUdz8rqc1gNediUe0WObJov1U=
 github.com/f-secure-foundry/crucible v0.0.0-20210519190101-b84eb54532b9/go.mod h1:lKwj0vB9le2qIIiq3mKqiIcTlgrp8f3l1mD9ScgAzTc=
 github.com/f-secure-foundry/imx-usbnet v0.0.0-20210609081908-e9d15cc4a0f2 h1:3GU2GQokwJ+jFUXwvH/f3saGOfZu6zYgJpMU63l/FLs=
