@@ -42,7 +42,7 @@ func configureTrustZone(start uint32, size int, lock bool) (err error) {
 		return
 	}
 
-	// set all masters to NonSecure
+	// set all controllers to NonSecure
 	for i := csu.SA_MIN; i < csu.SA_MAX; i++ {
 		if err = csu.SetAccess(i, false, false); err != nil {
 			return
@@ -68,11 +68,12 @@ func configureTrustZone(start uint32, size int, lock bool) (err error) {
 		return
 	}
 
-	// restrict DCP
+	// restrict access to DCP
 	if err = csu.SetSecurityLevel(34, 0, csu.SEC_LEVEL_4, false); err != nil {
 		return
 	}
 
+	// set DCP as Secure
 	if err = csu.SetAccess(14, true, false); err != nil {
 		return
 	}
@@ -83,7 +84,7 @@ func configureTrustZone(start uint32, size int, lock bool) (err error) {
 			return
 		}
 
-		// set USB master as Secure
+		// set USB controller as Secure
 		if err = csu.SetAccess(4, true, false); err != nil {
 			return
 		}
