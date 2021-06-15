@@ -198,6 +198,8 @@ github.com/evanphx/json-patch v4.2.0+incompatible/go.mod h1:50XU6AFN0ol/bzJsmQLi
 github.com/evanphx/json-patch v4.9.0+incompatible/go.mod h1:50XU6AFN0ol/bzJsmQLiYLvXMP4fmwYFNcr97nuDLSk=
 github.com/f-secure-foundry/GoTEE v0.0.0-20210610135833-507494c30d74 h1:tO7rLCNtZTgai9yiRPE4jA8Y9gztgDMpPtahlofab+s=
 github.com/f-secure-foundry/GoTEE v0.0.0-20210610135833-507494c30d74/go.mod h1:owvts5YmIN+EsdEc4a8PtshD6j6obQkOfFAaQPAVYEI=
+github.com/f-secure-foundry/GoTEE v0.0.0-20210615175109-0db4bdd918c2 h1:Cj2G+AFEO/e1pQAOP6gIWlWoE15riWkLGrhUAfJrvkg=
+github.com/f-secure-foundry/GoTEE v0.0.0-20210615175109-0db4bdd918c2/go.mod h1:owvts5YmIN+EsdEc4a8PtshD6j6obQkOfFAaQPAVYEI=
 github.com/f-secure-foundry/crucible v0.0.0-20210519190101-b84eb54532b9 h1:azI6aa8SlifFH2ZCumSUdz8rqc1gNediUe0WObJov1U=
 github.com/f-secure-foundry/crucible v0.0.0-20210519190101-b84eb54532b9/go.mod h1:lKwj0vB9le2qIIiq3mKqiIcTlgrp8f3l1mD9ScgAzTc=
 github.com/f-secure-foundry/imx-usbnet v0.0.0-20210610130924-29c5704a98b4 h1:aO9KQtoDnOC05+OA8CvCo84kpM736iVTxjLvZ/WXF/4=
