@@ -9,7 +9,6 @@ package main
 import (
 	"github.com/f-secure-foundry/tamago/soc/imx6"
 	"github.com/f-secure-foundry/tamago/soc/imx6/csu"
-	"github.com/f-secure-foundry/tamago/soc/imx6/tzasc"
 )
 
 func configureTrustZone(start uint32, size int, lock bool) (err error) {
@@ -31,11 +30,6 @@ func configureTrustZone(start uint32, size int, lock bool) (err error) {
 		if err = csu.SetSecurityLevel(i, 1, csu.SEC_LEVEL_0, false); err != nil {
 			return
 		}
-	}
-
-	// TZASC NonSecure World R/W access
-	if err = tzasc.EnableRegion(1, start, size, (1<<tzasc.SP_NW_RD)|(1<<tzasc.SP_NW_WR)); err != nil {
-		return
 	}
 
 	if !lock {
