@@ -20,6 +20,7 @@ import (
 	"golang.org/x/term"
 
 	"github.com/f-secure-foundry/tamago/arm"
+	"github.com/f-secure-foundry/tamago/bits"
 	"github.com/f-secure-foundry/tamago/board/f-secure/usbarmory/mark-two"
 	"github.com/f-secure-foundry/tamago/dma"
 	"github.com/f-secure-foundry/tamago/soc/imx6"
@@ -37,6 +38,7 @@ const help = `
   mw  <hex offset> <hex value>           # memory write   (use with caution)
 
   gotee                                  # TrustZone test w/ TamaGo unikernels
+  dbg                                    # show ARM debug permissions
   csl                                    # show config security levels (CSL)
   csl <periph> <slave> <hex csl>         #  set config security level  (CSL)
   sa                                     # show security access (SA)
@@ -189,6 +191,37 @@ func saCommand(arg []string) (res string) {
 	return
 }
 
+func dbg() string {
+	var buf bytes.Buffer
+
+	dbgAuthStatus := imx6.ARM.DebugStatus()
+
+	buf.WriteString("| type                    | implemented | enabled |\n")
+	buf.WriteString("|-------------------------|-------------|---------|\n")
+
+	buf.WriteString(fmt.Sprintf("| Secure non-invasive     |           %d |       %d |\n",
+		bits.Get(&dbgAuthStatus, 7, 1),
+		bits.Get(&dbgAuthStatus, 6, 1),
+	))
+
+	buf.WriteString(fmt.Sprintf("| Secure invasive         |           %d |       %d |\n",
+		bits.Get(&dbgAuthStatus, 5, 1),
+		bits.Get(&dbgAuthStatus, 4, 1),
+	))
+
+	buf.WriteString(fmt.Sprintf("| Non-secure non-invasive |           %d |       %d |\n",
+		bits.Get(&dbgAuthStatus, 3, 1),
+		bits.Get(&dbgAuthStatus, 2, 1),
+	))
+
+	buf.WriteString(fmt.Sprintf("| Non-secure invasive     |           %d |       %d |\n",
+		bits.Get(&dbgAuthStatus, 1, 1),
+		bits.Get(&dbgAuthStatus, 0, 1),
+	))
+
+	return buf.String()
+}
+
 func cmd(term *term.Terminal, cmd string) (err error) {
 	var res string
 
@@ -208,6 +241,8 @@ func cmd(term *term.Terminal, cmd string) (err error) {
 		res = buf.String()
 	case "gotee":
 		gotee()
+	case "dbg":
+		res = dbg()
 	case "csl":
 		res = cslCommand(nil)
 	case "sa":
