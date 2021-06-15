@@ -52,6 +52,8 @@ var saCommandPattern = regexp.MustCompile(`sa (\d+) (secure|nonsecure)`)
 func memAccess(start uint32, size int, w []byte) (b []byte) {
 	// temporarily map page zero if required
 	if z := uint32(1 << 20); start < z {
+		csu.SetAccess(0, true, false)
+
 		imx6.ARM.ConfigureMMU(0, z, (arm.TTE_AP_001<<10)|arm.TTE_SECTION)
 		defer imx6.ARM.ConfigureMMU(0, z, 0)
 	}
