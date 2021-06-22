@@ -18,12 +18,14 @@ SHELL = /bin/bash
 CROSS_COMPILE = arm-none-eabi-
 APP := ""
 GOENV := GO_EXTLINK_ENABLED=0 CGO_ENABLED=0 GOOS=tamago GOARM=7 GOARCH=arm
-GOFLAGS = -ldflags "-T $(TEXT_START) -E _rt0_arm_tamago -R 0x1000 -X 'main.Build=${BUILD}' -X 'main.Revision=${REV}'"
+LDFLAGS = -T $(TEXT_START) -E _rt0_arm_tamago -R 0x1000
+RUSTFLAGS = -C linker=arm-none-eabi-ld -C link-args="--Ttext=$(TEXT_START)" --target armv7a-none-eabi
+GOFLAGS = -ldflags " ${LDFLAGS} -X 'main.Build=${BUILD}' -X 'main.Revision=${REV}'"
 QEMU ?= qemu-system-arm -machine mcimx6ul-evk -cpu cortex-a7 -m 512M \
         -nographic -monitor none -serial null -serial stdio -net none \
         -semihosting
 
-.PHONY: clean qemu qemu-gdb
+.PHONY: clean qemu qemu-gdb trusted_applet_rust
 
 #### primary targets ####
 
@@ -41,6 +43,11 @@ trusted_applet_go: APP=trusted_applet
 trusted_applet_go: DIR=$(CURDIR)/trusted_applet_go
 trusted_applet_go: TEXT_START=0x82010000
 trusted_applet_go: imx
+	cp trusted_applet.elf $(CURDIR)/trusted_os/
+
+trusted_applet_rust: TEXT_START=0x82010000
+trusted_applet_rust:
+	cd $(CURDIR)/trusted_applet_rust && rustc ${RUSTFLAGS} -o $(CURDIR)/trusted_applet.elf main.rs
 	cp trusted_applet.elf $(CURDIR)/trusted_os/
 
 nonsecure_os_go: APP=nonsecure_os_go
@@ -106,7 +113,7 @@ $(APP).bin: $(APP).elf
 
 $(APP).imx: $(APP).bin $(APP).dcd
 	@if [ "$(APP)" == "trusted_os" ]; then \
-		echo "## disabling TZASC bypass in DCD for pre-DDR use initialization ##"; \
+		echo "## disabling TZASC bypass in DCD for pre-DDR initialization ##"; \
 		chmod 644 $(APP).dcd; \
 		echo "DATA 4 0x020e4024 0x00000001  # TZASC_BYPASS" >> $(APP).dcd; \
 	fi

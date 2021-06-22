@@ -46,6 +46,9 @@ func loadApplet() (ta *monitor.ExecCtx) {
 	ta.Server.Register(&RPC{})
 	ta.Debug = true
 
+	// set stack pointer to the end of applet memory
+	ta.R13 = mem.AppletStart + mem.AppletSize
+
 	// The GoTEE default handler is overridden to avoid interleaved logs,
 	// as the supervisor and applet contexts are logging simultaneously.
 	//
