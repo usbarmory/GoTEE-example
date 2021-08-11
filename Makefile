@@ -48,7 +48,7 @@ trusted_applet_go: imx
 
 trusted_applet_rust: TEXT_START=0x82010000
 trusted_applet_rust:
-	cd $(CURDIR)/bin/trusted_applet_rust && rustc ${RUSTFLAGS} -o $(CURDIR)/bin/trusted_applet.elf main.rs
+	cd $(CURDIR)/trusted_applet_rust && rustc ${RUSTFLAGS} -o $(CURDIR)/bin/trusted_applet.elf main.rs
 	mkdir -p $(CURDIR)/trusted_os/assets
 	cp $(CURDIR)/bin/trusted_applet.elf $(CURDIR)/trusted_os/assets
 
