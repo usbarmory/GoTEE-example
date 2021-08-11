@@ -43,18 +43,21 @@ trusted_applet_go: APP=trusted_applet
 trusted_applet_go: DIR=$(CURDIR)/trusted_applet_go
 trusted_applet_go: TEXT_START=0x82010000
 trusted_applet_go: imx
-	cp trusted_applet.elf $(CURDIR)/trusted_os/
+	mkdir -p $(CURDIR)/trusted_os/assets
+	cp $(CURDIR)/bin/trusted_applet.elf $(CURDIR)/trusted_os/assets
 
 trusted_applet_rust: TEXT_START=0x82010000
 trusted_applet_rust:
-	cd $(CURDIR)/trusted_applet_rust && rustc ${RUSTFLAGS} -o $(CURDIR)/trusted_applet.elf main.rs
-	cp trusted_applet.elf $(CURDIR)/trusted_os/
+	cd $(CURDIR)/bin/trusted_applet_rust && rustc ${RUSTFLAGS} -o $(CURDIR)/bin/trusted_applet.elf main.rs
+	mkdir -p $(CURDIR)/trusted_os/assets
+	cp $(CURDIR)/bin/trusted_applet.elf $(CURDIR)/trusted_os/assets
 
 nonsecure_os_go: APP=nonsecure_os_go
 nonsecure_os_go: DIR=$(CURDIR)/nonsecure_os_go
 nonsecure_os_go: TEXT_START=0x84010000
 nonsecure_os_go: imx
-	cp nonsecure_os_go.elf $(CURDIR)/trusted_os/
+	mkdir -p $(CURDIR)/trusted_os/assets
+	cp $(CURDIR)/bin/nonsecure_os_go.elf $(CURDIR)/trusted_os/assets
 
 nonsecure_os_linux: APP=nonsecure_os_linux
 nonsecure_os_linux: DIR=$(CURDIR)/nonsecure_os_linux
@@ -83,21 +86,21 @@ check_hab_keys:
 	fi
 
 dcd:
-	cp -f $(GOMODCACHE)/$(TAMAGO_PKG)/board/f-secure/usbarmory/mark-two/imximage.cfg $(APP).dcd; \
+	cp -f $(GOMODCACHE)/$(TAMAGO_PKG)/board/f-secure/usbarmory/mark-two/imximage.cfg $(CURDIR)/bin/$(APP).dcd; \
 
 clean:
-	@rm -fr *.elf *.bin *.imx *-signed.imx *.csf *.dcd trusted_os/*.elf
+	@rm -fr $(CURDIR)/bin/* $(CURDIR)/trusted_os/assets/*
 
 qemu:
-	$(QEMU) -kernel trusted_os.elf
+	$(QEMU) -kernel $(CURDIR)/bin/trusted_os.elf
 
 qemu-gdb:
-	$(QEMU) -kernel trusted_os.elf -S -s
+	$(QEMU) -kernel $(CURDIR)/bin/trusted_os.elf -S -s
 
 #### dependencies ####
 
 $(APP).elf: check_tamago
-	cd $(DIR) && $(GOENV) $(TAMAGO) build -tags ${BUILD_TAGS} $(GOFLAGS) -o $(CURDIR)/$(APP).elf
+	cd $(DIR) && $(GOENV) $(TAMAGO) build -tags ${BUILD_TAGS} $(GOFLAGS) -o $(CURDIR)/bin/$(APP).elf
 
 $(APP).dcd: check_tamago
 $(APP).dcd: GOMODCACHE=$(shell ${TAMAGO} env GOMODCACHE)
@@ -109,17 +112,17 @@ $(APP).bin: $(APP).elf
 	    -j .itablink -j .gopclntab -j .go.buildinfo -j .noptrdata -j .data \
 	    -j .bss --set-section-flags .bss=alloc,load,contents \
 	    -j .noptrbss --set-section-flags .noptrbss=alloc,load,contents \
-	    $(APP).elf -O binary $(APP).bin
+	    $(CURDIR)/bin/$(APP).elf -O binary $(CURDIR)/bin/$(APP).bin
 
 $(APP).imx: $(APP).bin $(APP).dcd
 	@if [ "$(APP)" == "trusted_os" ]; then \
 		echo "## disabling TZASC bypass in DCD for pre-DDR initialization ##"; \
-		chmod 644 $(APP).dcd; \
-		echo "DATA 4 0x020e4024 0x00000001  # TZASC_BYPASS" >> $(APP).dcd; \
+		chmod 644 $(CURDIR)/bin/$(APP).dcd; \
+		echo "DATA 4 0x020e4024 0x00000001  # TZASC_BYPASS" >> $(CURDIR)/bin/$(APP).dcd; \
 	fi
-	mkimage -n $(APP).dcd -T imximage -e $(TEXT_START) -d $(APP).bin $(APP).imx
+	mkimage -n $(CURDIR)/bin/$(APP).dcd -T imximage -e $(TEXT_START) -d $(CURDIR)/bin/$(APP).bin $(CURDIR)/bin/$(APP).imx
 	# Copy entry point from ELF file
-	dd if=$(APP).elf of=$(APP).imx bs=1 count=4 skip=24 seek=4 conv=notrunc
+	dd if=$(CURDIR)/bin/$(APP).elf of=$(CURDIR)/bin/$(APP).imx bs=1 count=4 skip=24 seek=4 conv=notrunc
 
 #### secure boot ####
 
@@ -133,6 +136,6 @@ $(APP)-signed.imx: check_hab_keys $(APP).imx
 		-t ${HAB_KEYS}/SRK_1_2_3_4_table.bin \
 		-x 1 \
 		-s \
-		-i $(APP).imx \
-		-o $(APP).csf && \
-	cat $(APP).imx $(APP).csf > $(APP)-signed.imx
+		-i $(CURDIR)/bin/$(APP).imx \
+		-o $(CURDIR)/bin/$(APP).csf && \
+	cat $(CURDIR)/bin/$(APP).imx $(CURDIR)/bin/$(APP).csf > $(CURDIR)/bin/$(APP)-signed.imx

@@ -27,10 +27,10 @@ import (
 // authenticated disk loading of applets and kernels, see:
 //   https://pkg.go.dev/github.com/f-secure-foundry/armory-boot
 
-//go:embed trusted_applet.elf
+//go:embed assets/trusted_applet.elf
 var taELF []byte
 
-//go:embed nonsecure_os_go.elf
+//go:embed assets/nonsecure_os_go.elf
 var osELF []byte
 
 func loadApplet() (ta *monitor.ExecCtx) {
