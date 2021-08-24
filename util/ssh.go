@@ -53,8 +53,10 @@ func (c *Console) handleChannel(newChannel ssh.NewChannel) {
 	go func() {
 		defer conn.Close()
 
-		log.SetOutput(io.MultiWriter(log.Writer(), c.Term))
-		defer log.SetOutput(log.Writer())
+		logWriter := log.Writer()
+
+		log.SetOutput(io.MultiWriter(logWriter, c.Term))
+		defer log.SetOutput(logWriter)
 
 		fmt.Fprintf(c.Term, "%s\n", c.Banner)
 		fmt.Fprintf(c.Term, "%s\n", string(c.Term.Escape.Cyan)+c.Help+string(c.Term.Escape.Reset))
