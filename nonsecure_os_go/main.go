@@ -65,7 +65,7 @@ func main() {
 
 		dcp.Init()
 
-		// this fails after restrictions are in place (see os_secure.go)
+		// this fails after restrictions are in place (see trusted_os/tz.go)
 		k, err := dcp.DeriveKey(make([]byte, 8), make([]byte, 16), -1)
 
 		if err != nil {
