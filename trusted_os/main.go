@@ -23,6 +23,8 @@ import (
 
 	"github.com/f-secure-foundry/imx-usbnet"
 
+	"github.com/f-secure-foundry/GoTEE/monitor"
+
 	"github.com/f-secure-foundry/GoTEE-example/mem"
 	"github.com/f-secure-foundry/GoTEE-example/util"
 )
@@ -64,11 +66,18 @@ func init() {
 	log.Printf("PL1 %s/%s (%s) • TEE system/monitor (Secure World)", runtime.GOOS, runtime.GOARCH, runtime.Version())
 }
 
-func gotee() {
+func gotee() (err error) {
+	var ta *monitor.ExecCtx
+	var os *monitor.ExecCtx
 	var wg sync.WaitGroup
 
-	ta := loadApplet()
-	os := loadNormalWorld(false)
+	if ta, err = loadApplet(); err != nil {
+		return
+	}
+
+	if os, err = loadNormalWorld(false); err != nil {
+		return
+	}
 
 	// test concurrent execution of:
 	//   Secure    World PL1 (system/monitor mode) - secure OS (this program)
@@ -92,31 +101,40 @@ func gotee() {
 
 	usbarmory.LED("blue", false)
 
-	if imx6.Native {
-		// re-launch NonSecure World with peripheral restrictions
-		os = loadNormalWorld(true)
-
-		log.Printf("PL1 re-launching kernel with TrustZone restrictions")
-		run(os, nil)
-
-		// test restricted peripheral in Secure World
-		log.Printf("PL1 in Secure World is about to perform DCP key derivation")
-
-		k, err := dcp.DeriveKey(make([]byte, 8), make([]byte, 16), -1)
-
-		if err != nil {
-			log.Printf("PL1 in Secure World World failed to use DCP (%v)", err)
-		} else {
-			log.Printf("PL1 in Secure World World successfully used DCP (%x)", k)
-		}
+	if !imx6.Native {
+		return
 	}
+
+	// re-launch NonSecure World with peripheral restrictions
+	if os, err = loadNormalWorld(true); err != nil {
+		return
+	}
+
+	log.Printf("PL1 re-launching kernel with TrustZone restrictions")
+	run(os, nil)
+
+	// test restricted peripheral in Secure World
+	log.Printf("PL1 in Secure World is about to perform DCP key derivation")
+
+	k, err := dcp.DeriveKey(make([]byte, 8), make([]byte, 16), -1)
+
+	if err != nil {
+		log.Printf("PL1 in Secure World World failed to use DCP (%v)", err)
+	} else {
+		log.Printf("PL1 in Secure World World successfully used DCP (%x)", k)
+	}
+
+	return
 }
 
 func main() {
 	defer log.Printf("PL1 says goodbye")
 
 	if !imx6.Native {
-		gotee()
+		if err := gotee(); err != nil {
+			log.Fatal(err)
+		}
+
 		return
 	}
 

@@ -8,6 +8,7 @@ package main
 
 import (
 	_ "embed"
+	"fmt"
 	"log"
 	"sync"
 
@@ -33,11 +34,9 @@ var taELF []byte
 //go:embed assets/nonsecure_os_go.elf
 var osELF []byte
 
-func loadApplet() (ta *monitor.ExecCtx) {
-	var err error
-
+func loadApplet() (ta *monitor.ExecCtx, err error) {
 	if ta, err = monitor.Load(taELF, mem.AppletStart, mem.AppletSize, true); err != nil {
-		log.Fatalf("PL1 could not load applet, %v", err)
+		return nil, fmt.Errorf("PL1 could not load applet, %v", err)
 	} else {
 		log.Printf("PL1 loaded applet addr:%#x size:%d entry:%#x", ta.Memory.Start, len(taELF), ta.R15)
 	}
@@ -70,11 +69,9 @@ func loadApplet() (ta *monitor.ExecCtx) {
 	return
 }
 
-func loadNormalWorld(lock bool) (os *monitor.ExecCtx) {
-	var err error
-
+func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 	if os, err = monitor.Load(osELF, mem.NonSecureStart, mem.NonSecureSize, false); err != nil {
-		log.Fatalf("PL1 could not load applet, %v", err)
+		return nil, fmt.Errorf("PL1 could not load applet, %v", err)
 	} else {
 		log.Printf("PL1 loaded kernel addr:%#x size:%d entry:%#x", os.Memory.Start, len(osELF), os.R15)
 	}
@@ -82,7 +79,7 @@ func loadNormalWorld(lock bool) (os *monitor.ExecCtx) {
 	os.Debug = true
 
 	if err = configureTrustZone(mem.NonSecureStart, mem.NonSecureSize, lock); err != nil {
-		log.Fatalf("PL1 could not configure TrustZone, %v", err)
+		return nil, fmt.Errorf("PL1 could not configure TrustZone, %v", err)
 	}
 
 	// The GoTEE default handler is overridden to avoid interleaved logs,

@@ -242,7 +242,7 @@ func cmd(term *term.Terminal, cmd string) (err error) {
 		pprof.Lookup("goroutine").WriteTo(buf, 1)
 		res = buf.String()
 	case "gotee":
-		gotee()
+		err = gotee()
 	case "dbg":
 		res = dbg()
 	case "csl":
