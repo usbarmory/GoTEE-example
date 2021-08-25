@@ -6,21 +6,20 @@
 
 package mem
 
-// This example memory layout allocates 32MB for each execution context.
 const (
 	// Secure World OS
 	SecureStart = 0x80000000
-	SecureSize  = 0x01f00000
+	SecureSize  = 0x03f00000 // 63MB
 
 	// Secure World DMA (relocated to avoid conflicts with NonSecure world)
-	SecureDMAStart = 0x81f00000
-	SecureDMASize  = 0x00100000
+	SecureDMAStart = 0x83f00000
+	SecureDMASize  = 0x00100000 // 1MB
 
 	// Secure World Applet
-	AppletStart = 0x82000000
-	AppletSize  = 0x02000000
+	AppletStart = 0x84000000
+	AppletSize  = 0x02000000 // 32MB
 
 	// NonSecure World OS
-	NonSecureStart = 0x84000000
-	NonSecureSize  = 0x02000000
+	NonSecureStart = 0x86000000
+	NonSecureSize  = 0x02000000 // 32MB
 )

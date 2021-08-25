@@ -41,12 +41,12 @@ trusted_os_signed: imx_signed
 
 trusted_applet_go: APP=trusted_applet
 trusted_applet_go: DIR=$(CURDIR)/trusted_applet_go
-trusted_applet_go: TEXT_START=0x82010000
+trusted_applet_go: TEXT_START=0x84010000
 trusted_applet_go: imx
 	mkdir -p $(CURDIR)/trusted_os/assets
 	cp $(CURDIR)/bin/trusted_applet.elf $(CURDIR)/trusted_os/assets
 
-trusted_applet_rust: TEXT_START=0x82010000
+trusted_applet_rust: TEXT_START=0x84010000
 trusted_applet_rust:
 	cd $(CURDIR)/trusted_applet_rust && rustc ${RUSTFLAGS} -o $(CURDIR)/bin/trusted_applet.elf main.rs
 	mkdir -p $(CURDIR)/trusted_os/assets
@@ -54,14 +54,14 @@ trusted_applet_rust:
 
 nonsecure_os_go: APP=nonsecure_os_go
 nonsecure_os_go: DIR=$(CURDIR)/nonsecure_os_go
-nonsecure_os_go: TEXT_START=0x84010000
+nonsecure_os_go: TEXT_START=0x86010000
 nonsecure_os_go: imx
 	mkdir -p $(CURDIR)/trusted_os/assets
 	cp $(CURDIR)/bin/nonsecure_os_go.elf $(CURDIR)/trusted_os/assets
 
 nonsecure_os_linux: APP=nonsecure_os_linux
 nonsecure_os_linux: DIR=$(CURDIR)/nonsecure_os_linux
-nonsecure_os_linux: TEXT_START=0x84010000
+nonsecure_os_linux: TEXT_START=0x86010000
 nonsecure_os_linux: todo
 
 imx: $(APP).imx
