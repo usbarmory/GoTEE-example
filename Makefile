@@ -15,7 +15,6 @@ REV = $(shell git rev-parse --short HEAD 2> /dev/null)
 
 SHELL = /bin/bash
 
-CROSS_COMPILE = arm-none-eabi-
 APP := ""
 GOENV := GO_EXTLINK_ENABLED=0 CGO_ENABLED=0 GOOS=tamago GOARM=7 GOARCH=arm
 LDFLAGS = -T $(TEXT_START) -E _rt0_arm_tamago -R 0x1000
@@ -107,6 +106,7 @@ $(APP).dcd: GOMODCACHE=$(shell ${TAMAGO} env GOMODCACHE)
 $(APP).dcd: TAMAGO_PKG=$(shell grep "github.com/f-secure-foundry/tamago v" go.mod | awk '{print $$1"@"$$2}')
 $(APP).dcd: dcd
 
+$(APP).bin: CROSS_COMPILE=arm-none-eabi-
 $(APP).bin: $(APP).elf
 	$(CROSS_COMPILE)objcopy -j .text -j .rodata -j .shstrtab -j .typelink \
 	    -j .itablink -j .gopclntab -j .go.buildinfo -j .noptrdata -j .data \

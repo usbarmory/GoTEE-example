@@ -4,7 +4,7 @@ Introduction
 The [GoTEE](https://github.com/f-secure-foundry/GoTEE) framework implements concurrent instantiation of
 [TamaGo](https://github.com/f-secure-foundry/tamago) based unikernels in
 privileged and unprivileged modes, interacting with each other through monitor
-mode and custom system calls
+mode and custom system calls.
 
 With these capabilities GoTEE implements a [TamaGo](https://github.com/f-secure-foundry/tamago)
 based Trusted Execution Environments (TEE), bringing Go memory safety,
@@ -92,7 +92,7 @@ Applet.
 When launched on the [USB armory Mk II](https://github.com/f-secure-foundry/usbarmory/wiki),
 the example application is reachable via SSH through
 [Ethernet over USB](https://github.com/f-secure-foundry/usbarmory/wiki/Host-communication)
-(ECM protocol, only supported on Linux hosts):
+(ECM protocol, supported on Linux and macOS hosts):
 
 ```
 $ ssh gotee@10.0.0.1
