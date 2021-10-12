@@ -71,7 +71,7 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 
 func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 	if os, err = monitor.Load(osELF, mem.NonSecureStart, mem.NonSecureSize, false); err != nil {
-		return nil, fmt.Errorf("PL1 could not load applet, %v", err)
+		return nil, fmt.Errorf("PL1 could not load kernel, %v", err)
 	} else {
 		log.Printf("PL1 loaded kernel addr:%#x size:%d entry:%#x", os.Memory.Start, len(osELF), os.R15)
 	}
