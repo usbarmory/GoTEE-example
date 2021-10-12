@@ -11,7 +11,7 @@ import (
 	"github.com/f-secure-foundry/tamago/soc/imx6/csu"
 )
 
-func configureTrustZone(start uint32, size int, lock bool) (err error) {
+func configureTrustZone(lock bool) (err error) {
 	// grant NonSecure access to CP10 and CP11
 	imx6.ARM.NonSecureAccessControl(1<<11 | 1<<10)
 

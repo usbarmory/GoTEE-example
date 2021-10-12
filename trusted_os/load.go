@@ -78,7 +78,7 @@ func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 
 	os.Debug = true
 
-	if err = configureTrustZone(mem.NonSecureStart, mem.NonSecureSize, lock); err != nil {
+	if err = configureTrustZone(lock); err != nil {
 		return nil, fmt.Errorf("PL1 could not configure TrustZone, %v", err)
 	}
 
