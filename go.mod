@@ -3,9 +3,9 @@ module github.com/f-secure-foundry/GoTEE-example
 go 1.17
 
 require (
-	github.com/f-secure-foundry/GoTEE v0.0.0-20211019094108-af789274af45
+	github.com/f-secure-foundry/GoTEE v0.0.0-20211025130334-0d30c0f4fe21
 	github.com/f-secure-foundry/imx-usbnet v0.0.0-20211005152612-ec70eaf9b56c
-	github.com/f-secure-foundry/tamago v0.0.0-20211005142637-ad64636f7f6b
+	github.com/f-secure-foundry/tamago v0.0.0-20211020102944-f3792126c89d
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 )

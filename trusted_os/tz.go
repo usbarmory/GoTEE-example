@@ -51,6 +51,16 @@ func configureTrustZone(lock bool) (err error) {
 		}
 	}
 
+	// restrict access to LEDs (GPIO4)
+	if err = csu.SetSecurityLevel(2, 1, csu.SEC_LEVEL_4, false); err != nil {
+		return
+	}
+
+	// restrict access to LEDs (IOMUXC)
+	if err = csu.SetSecurityLevel(6, 1, csu.SEC_LEVEL_4, false); err != nil {
+		return
+	}
+
 	// restrict access to ROMCP
 	if err = csu.SetSecurityLevel(13, 0, csu.SEC_LEVEL_4, false); err != nil {
 		return
@@ -58,15 +68,6 @@ func configureTrustZone(lock bool) (err error) {
 
 	// restrict access to TZASC
 	if err = csu.SetSecurityLevel(16, 1, csu.SEC_LEVEL_4, false); err != nil {
-		return
-	}
-
-	// restrict access to LEDs (GPIO4, IOMUXC)
-	if err = csu.SetSecurityLevel(2, 1, csu.SEC_LEVEL_4, false); err != nil {
-		return
-	}
-
-	if err = csu.SetSecurityLevel(6, 1, csu.SEC_LEVEL_4, false); err != nil {
 		return
 	}
 
