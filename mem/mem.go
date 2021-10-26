@@ -20,7 +20,7 @@ func TestAccess(tag string) {
 	log.Printf("%s is about to read PL1 Secure World memory at %#x", tag, pl1TextStart)
 	val := atomic.LoadUint32(mem)
 
-	res := "success - FIXME: shouldn't happen"
+	res := "success - *insecure configuration*"
 
 	if val != 0xe59a1008 {
 		res = "fail (expected, but you should never see this)"
