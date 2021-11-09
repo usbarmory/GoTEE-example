@@ -57,7 +57,7 @@ func init() {
 		<-debugConsole
 	}
 
-	// Move DMA region prevent free NonSecure access, alternatively
+	// Move DMA region to prevent NonSecure access, alternatively
 	// iRAM/OCRAM (default DMA region) can be locked down.
 	//
 	// This is necessary as iRAM/OCRAM is outside TZASC control.
