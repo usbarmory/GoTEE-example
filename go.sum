@@ -181,7 +181,9 @@ github.com/docker/go-units v0.4.0/go.mod h1:fgPhTUdO+D/Jk86RDLlptpiXQzgHJF7gydDD
 github.com/docker/libtrust v0.0.0-20150114040149-fa567046d9b1/go.mod h1:cyGadeNEkKy96OOhEzfZl+yxihPEzKnqJwvfuSUqbZE=
 github.com/docker/spdystream v0.0.0-20160310174837-449fdfce4d96/go.mod h1:Qh8CwZgvJUkLughtfhJv5dyTYa91l1fOUCrgjqmcifM=
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:WwZ+bS3ebgob9U8Nd0kOddGdZWjyMGR8Wziv+TBNwSE=
+github.com/dsoprea/go-ext4 v0.0.0-20190528173430-c13b09fc0ff8 h1:e3CYZInWqO0a3MWfD0WW/11Ki0qo3Fc1ZAHx0+whlhY=
 github.com/dsoprea/go-ext4 v0.0.0-20190528173430-c13b09fc0ff8/go.mod h1:UBig4B62vBWtudYo4RJPwdV5Lqo+oeh7AtSCmRIkRPc=
+github.com/dsoprea/go-logging v0.0.0-20200710184922-b02d349568dd h1:l+vLbuxptsC6VQyQsfD7NnEC8BZuFpz45PgY+pH8YTg=
 github.com/dsoprea/go-logging v0.0.0-20200710184922-b02d349568dd/go.mod h1:7I+3Pe2o/YSU88W0hWlm9S22W7XI1JFNJ86U0zPKMf8=
 github.com/dustin/go-humanize v0.0.0-20171111073723-bb3d318650d4/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
 github.com/dustin/go-humanize v1.0.0/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
@@ -202,6 +204,8 @@ github.com/f-secure-foundry/GoTEE v0.0.0-20211115120827-3eae65851343 h1:tZgTpjuF
 github.com/f-secure-foundry/GoTEE v0.0.0-20211115120827-3eae65851343/go.mod h1:s05DuOG4ke4TssUjYdTOZ/qb/U2UD30AuXCQt+EP/DM=
 github.com/f-secure-foundry/armory-boot v0.0.0-20211115125908-5382bb18d70e h1:aXYQolToXrofOIpekH6aQRf6tz2OXJebnV4cwlskR2c=
 github.com/f-secure-foundry/armory-boot v0.0.0-20211115125908-5382bb18d70e/go.mod h1:2CEZZxWsu4/gFshZetGr3w2fO5M082wxJXxYEbYFO+o=
+github.com/f-secure-foundry/armory-boot v0.0.0-20211115144112-3733d5fca3af h1:e37lcaaDdRKjyeYe8hnVOu+j/6YaWV9UR5zshWwUTwQ=
+github.com/f-secure-foundry/armory-boot v0.0.0-20211115144112-3733d5fca3af/go.mod h1:2CEZZxWsu4/gFshZetGr3w2fO5M082wxJXxYEbYFO+o=
 github.com/f-secure-foundry/crucible v0.0.0-20211102131435-642824867724 h1:3df4FZpQx00ATs7iIbHR/EtLsAxLyRwUn9Xrpj49LIA=
 github.com/f-secure-foundry/crucible v0.0.0-20211102131435-642824867724/go.mod h1:lKwj0vB9le2qIIiq3mKqiIcTlgrp8f3l1mD9ScgAzTc=
 github.com/f-secure-foundry/hid v0.0.0-20210318233634-85ced88a1ffe/go.mod h1:S9bV7+chp1tCfEy464mAozYyi2eICEGJVp9sRgUHKXA=
@@ -222,6 +226,8 @@ github.com/garyburd/redigo v0.0.0-20150301180006-535138d7bcd7/go.mod h1:NR3MbYis
 github.com/ghodss/yaml v0.0.0-20150909031657-73d445a93680/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/go-errors/errors v1.0.2/go.mod h1:psDX2osz5VnTOnFWbDeWwS7yejl+uV3FEWEp4lssFEs=
+github.com/go-errors/errors v1.4.1 h1:IvVlgbzSsaUNudsw5dcXSzF3EWyXTi5XrAdngnuhRyg=
+github.com/go-errors/errors v1.4.1/go.mod h1:sIVyrIiJhuEF+Pj9Ebtd6P/rEYROXFi3BopGUQ5a5Og=
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20191125211704-12ad95a8df72/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
@@ -659,6 +665,8 @@ golang.org/x/net v0.0.0-20201110031124-69a78807bb2b/go.mod h1:sp8m0HH+o8qH0wwXwY
 golang.org/x/net v0.0.0-20201209123823-ac852fbbde11/go.mod h1:m0MpNAwzfU5UDzcl9v0D8zg8gWTRqZa9RBIspLL5mdg=
 golang.org/x/net v0.0.0-20210119194325-5f4716e94777/go.mod h1:m0MpNAwzfU5UDzcl9v0D8zg8gWTRqZa9RBIspLL5mdg=
 golang.org/x/net v0.0.0-20210226172049-e18ecbb05110/go.mod h1:m0MpNAwzfU5UDzcl9v0D8zg8gWTRqZa9RBIspLL5mdg=
+golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 h1:CIJ76btIcR3eFI5EgSo6k1qKw9KJexJuRLI9G7Hp5wE=
+golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2/go.mod h1:9nx3DQGgdP8bBQD5qxJ1jj9UTztislL4KSBs9R2vV5Y=
 golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be/go.mod h1:N/0e6XlmueqKjAGxoOufVs8QHGRruUQn6yWY3a++T0U=
 golang.org/x/oauth2 v0.0.0-20190226205417-e64efc72b421/go.mod h1:gOpvHmFTYa4IltrdGE7lF6nIHvwfUNPOp7c8zoXwtLw=
 golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45/go.mod h1:gOpvHmFTYa4IltrdGE7lF6nIHvwfUNPOp7c8zoXwtLw=

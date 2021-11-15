@@ -38,7 +38,7 @@ var osELF []byte
 
 func loadApplet() (ta *monitor.ExecCtx, err error) {
 	image := &exec.ELFImage{
-		Kernel: taELF,
+		ELF:    taELF,
 		Region: mem.AppletRegion,
 	}
 
@@ -82,7 +82,7 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 
 func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 	image := &exec.ELFImage{
-		Kernel: osELF,
+		ELF:    osELF,
 		Region: mem.NonSecureRegion,
 	}
 
