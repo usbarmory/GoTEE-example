@@ -6,6 +6,10 @@
 
 package mem
 
+import (
+	"github.com/f-secure-foundry/tamago/dma"
+)
+
 const (
 	// Secure World OS
 	SecureStart = 0x90000000
@@ -23,3 +27,24 @@ const (
 	NonSecureStart = 0x80000000
 	NonSecureSize  = 0x10000000 // 256MB
 )
+
+var AppletRegion *dma.Region
+var NonSecureRegion *dma.Region
+
+func init() {
+	AppletRegion = &dma.Region{
+		Start: AppletStart,
+		Size: AppletSize,
+	}
+
+	AppletRegion.Init()
+	AppletRegion.Reserve(AppletSize, 0)
+
+	NonSecureRegion = &dma.Region{
+		Start: NonSecureStart,
+		Size: NonSecureSize,
+	}
+
+	NonSecureRegion.Init()
+	NonSecureRegion.Reserve(NonSecureSize, 0)
+}

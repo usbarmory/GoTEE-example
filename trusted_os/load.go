@@ -18,6 +18,8 @@ import (
 	"github.com/f-secure-foundry/GoTEE/syscall"
 
 	"github.com/f-secure-foundry/GoTEE-example/mem"
+
+	"github.com/f-secure-foundry/armory-boot/exec"
 )
 
 // This example embeds the Trusted Applet and Main OS ELF binaries within the
@@ -35,7 +37,16 @@ var taELF []byte
 var osELF []byte
 
 func loadApplet() (ta *monitor.ExecCtx, err error) {
-	if ta, err = monitor.Load(taELF, mem.AppletStart, mem.AppletSize, true); err != nil {
+	image := &exec.ELFImage{
+		Kernel: taELF,
+		Region: mem.AppletRegion,
+	}
+
+	if err = image.Load(); err != nil {
+		return
+	}
+
+	if ta, err = monitor.Load(image.Entry(), image.Region, true); err != nil {
 		return nil, fmt.Errorf("PL1 could not load applet, %v", err)
 	} else {
 		log.Printf("PL1 loaded applet addr:%#x size:%d entry:%#x", ta.Memory.Start, len(taELF), ta.R15)
@@ -70,7 +81,16 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 }
 
 func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
-	if os, err = monitor.Load(osELF, mem.NonSecureStart, mem.NonSecureSize, false); err != nil {
+	image := &exec.ELFImage{
+		Kernel: osELF,
+		Region: mem.NonSecureRegion,
+	}
+
+	if err = image.Load(); err != nil {
+		return
+	}
+
+	if os, err = monitor.Load(image.Entry(), image.Region, false); err != nil {
 		return nil, fmt.Errorf("PL1 could not load kernel, %v", err)
 	} else {
 		log.Printf("PL1 loaded kernel addr:%#x size:%d entry:%#x", os.Memory.Start, len(osELF), os.R15)
