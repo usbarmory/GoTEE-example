@@ -153,9 +153,9 @@ func main() {
 	}
 
 	ssh = &util.Console{
-		Banner:  fmt.Sprintf("PL1 %s/%s (%s) • TEE system/monitor (Secure World)", runtime.GOOS, runtime.GOARCH, runtime.Version()),
-		Help:    help,
-		Handler: cmd,
+		Banner:   fmt.Sprintf("PL1 %s/%s (%s) • TEE system/monitor (Secure World)", runtime.GOOS, runtime.GOARCH, runtime.Version()),
+		Help:     help,
+		Handler:  cmd,
 		Listener: listener,
 	}
 

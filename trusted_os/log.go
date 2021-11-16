@@ -19,7 +19,15 @@ var nonSecureOutput bytes.Buffer
 const outputLimit = 1024
 const flushChr = 0x0a // \n
 
-func bufferedStdoutLog(buf *bytes.Buffer, c byte) {
+func bufferedStdoutLog(c byte, ns bool) {
+	var buf *bytes.Buffer
+
+	if ns {
+		buf = &nonSecureOutput
+	} else {
+		buf = &secureOutput
+	}
+
 	buf.WriteByte(c)
 
 	if c == flushChr || buf.Len() > outputLimit {
@@ -28,7 +36,18 @@ func bufferedStdoutLog(buf *bytes.Buffer, c byte) {
 	}
 }
 
-func bufferedTermLog(buf *bytes.Buffer, c byte, color []byte, t *term.Terminal) {
+func bufferedTermLog(c byte, ns bool, t *term.Terminal) {
+	var buf *bytes.Buffer
+	var color []byte
+
+	if ns {
+		buf = &nonSecureOutput
+		color = t.Escape.Red
+	} else {
+		buf = &secureOutput
+		color = t.Escape.Green
+	}
+
 	buf.WriteByte(c)
 
 	if c == flushChr || buf.Len() > outputLimit {

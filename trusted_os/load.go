@@ -19,6 +19,8 @@ import (
 
 	"github.com/f-secure-foundry/GoTEE-example/mem"
 
+	"github.com/f-secure-foundry/armory-boot/config"
+	"github.com/f-secure-foundry/armory-boot/disk"
 	"github.com/f-secure-foundry/armory-boot/exec"
 )
 
@@ -36,10 +38,34 @@ var taELF []byte
 //go:embed assets/nonsecure_os_go.elf
 var osELF []byte
 
+// logHandler allows to override the GoTEE default handler and avoid
+// interleaved logs, as the supervisor and applet contexts are logging
+// simultaneously.
+func logHandler(ctx *monitor.ExecCtx) (err error) {
+	defaultHandler := monitor.SecureHandler
+
+	if ctx.NonSecure() {
+		defaultHandler = monitor.NonSecureHandler
+	}
+
+	if ctx.R0 == syscall.SYS_WRITE {
+		if ssh != nil {
+			bufferedTermLog(byte(ctx.R1), ctx.NonSecure(), ssh.Term)
+		} else {
+			bufferedStdoutLog(byte(ctx.R1), ctx.NonSecure())
+		}
+	} else {
+		err = defaultHandler(ctx)
+	}
+
+	return
+}
+
+// loadApplet loads a TamaGo unikernel as trusted applet.
 func loadApplet() (ta *monitor.ExecCtx, err error) {
 	image := &exec.ELFImage{
-		ELF:    taELF,
 		Region: mem.AppletRegion,
+		ELF:    taELF,
 	}
 
 	if err = image.Load(); err != nil {
@@ -59,31 +85,17 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 	// set stack pointer to the end of applet memory
 	ta.R13 = mem.AppletStart + mem.AppletSize
 
-	// The GoTEE default handler is overridden to avoid interleaved logs,
-	// as the supervisor and applet contexts are logging simultaneously.
-	//
-	// When running on real hardware logs are cloned on the SSH terminal.
-	ta.Handler = func(ctx *monitor.ExecCtx) (err error) {
-		if ctx.R0 == syscall.SYS_WRITE {
-			if ssh != nil {
-				bufferedTermLog(&secureOutput, byte(ctx.R1), ssh.Term.Escape.Green, ssh.Term)
-			} else {
-				bufferedStdoutLog(&secureOutput, byte(ctx.R1))
-			}
-		} else {
-			err = monitor.SecureHandler(ctx)
-		}
-
-		return
-	}
+	// override default handler to improve logging
+	ta.Handler = logHandler
 
 	return
 }
 
+// loadNormalWorld loads a TamaGo unikernel as normal world OS.
 func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 	image := &exec.ELFImage{
-		ELF:    osELF,
 		Region: mem.NonSecureRegion,
+		ELF:    osELF,
 	}
 
 	if err = image.Load(); err != nil {
@@ -102,22 +114,55 @@ func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 		return nil, fmt.Errorf("PL1 could not configure TrustZone, %v", err)
 	}
 
-	// The GoTEE default handler is overridden to avoid interleaved logs,
-	// as the supervisor and nonsecure contexts are logging simultaneously.
-	//
-	// When running on real hardware logs are cloned on the SSH terminal.
-	os.Handler = func(ctx *monitor.ExecCtx) (err error) {
-		if ctx.R0 == syscall.SYS_WRITE {
-			if ssh != nil {
-				bufferedTermLog(&nonSecureOutput, byte(ctx.R1), ssh.Term.Escape.Red, ssh.Term)
-			} else {
-				bufferedStdoutLog(&nonSecureOutput, byte(ctx.R1))
-			}
-		} else {
-			err = monitor.NonSecureHandler(ctx)
-		}
+	// override default handler to improve logging
+	os.Handler = logHandler
 
+	return
+}
+
+// loadDebian loads a Linux distribution as normal world OS, the kernel
+// configuration is read as an armory-boot configuration file from the given
+// device ("eMMC" or "uSD"), ext4 partition offset and path.
+func loadDebian(device string, start string, configPath string) (os *monitor.ExecCtx, err error) {
+	part, err := disk.Detect(device, start)
+
+	if err != nil {
 		return
+	}
+
+	conf, err := config.Load(part, configPath, "", "")
+
+	if err != nil {
+		return
+	}
+
+	log.Printf("\n%s", conf.JSON)
+
+	image := &exec.LinuxImage{
+		Region:               mem.NonSecureRegion,
+		Kernel:               conf.Kernel(),
+		DeviceTreeBlob:       conf.DeviceTreeBlob(),
+		InitialRamDisk:       conf.InitialRamDisk(),
+		KernelOffset:         0x00800000,
+		DeviceTreeBlobOffset: 0x07000000,
+		InitialRamDiskOffset: 0x08000000,
+		CmdLine:              conf.CmdLine,
+	}
+
+	if err = image.Load(); err != nil {
+		return
+	}
+
+	if os, err = monitor.Load(image.Entry(), image.Region, false); err != nil {
+		return nil, fmt.Errorf("PL1 could not load kernel, %v", err)
+	} else {
+		log.Printf("PL1 loaded kernel addr:%#x size:%d entry:%#x", os.Memory.Start, len(image.Kernel), os.R15)
+	}
+
+	os.Debug = true
+
+	if err = configureTrustZone(true); err != nil {
+		return nil, fmt.Errorf("PL1 could not configure TrustZone, %v", err)
 	}
 
 	return
