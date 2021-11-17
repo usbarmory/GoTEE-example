@@ -202,10 +202,14 @@ github.com/evanphx/json-patch v4.2.0+incompatible/go.mod h1:50XU6AFN0ol/bzJsmQLi
 github.com/evanphx/json-patch v4.9.0+incompatible/go.mod h1:50XU6AFN0ol/bzJsmQLiYLvXMP4fmwYFNcr97nuDLSk=
 github.com/f-secure-foundry/GoTEE v0.0.0-20211115120827-3eae65851343 h1:tZgTpjuFX/Z6oSk0MioUhk7ZTzo8QI/o3Xu93+O4qBw=
 github.com/f-secure-foundry/GoTEE v0.0.0-20211115120827-3eae65851343/go.mod h1:s05DuOG4ke4TssUjYdTOZ/qb/U2UD30AuXCQt+EP/DM=
+github.com/f-secure-foundry/GoTEE v0.0.0-20211115163818-3b54ba94f6fe h1:IU/t1QkrlDJOcwRURhrf58Pv3koDnlFMaiLz4GNhu8g=
+github.com/f-secure-foundry/GoTEE v0.0.0-20211115163818-3b54ba94f6fe/go.mod h1:s05DuOG4ke4TssUjYdTOZ/qb/U2UD30AuXCQt+EP/DM=
 github.com/f-secure-foundry/armory-boot v0.0.0-20211115125908-5382bb18d70e h1:aXYQolToXrofOIpekH6aQRf6tz2OXJebnV4cwlskR2c=
 github.com/f-secure-foundry/armory-boot v0.0.0-20211115125908-5382bb18d70e/go.mod h1:2CEZZxWsu4/gFshZetGr3w2fO5M082wxJXxYEbYFO+o=
 github.com/f-secure-foundry/armory-boot v0.0.0-20211115144112-3733d5fca3af h1:e37lcaaDdRKjyeYe8hnVOu+j/6YaWV9UR5zshWwUTwQ=
 github.com/f-secure-foundry/armory-boot v0.0.0-20211115144112-3733d5fca3af/go.mod h1:2CEZZxWsu4/gFshZetGr3w2fO5M082wxJXxYEbYFO+o=
+github.com/f-secure-foundry/armory-boot v0.0.0-20211116162813-881307d16d4f h1:HlgUSfnFkVRhiV1Pch+kOOES9mm/QN/no35+DgwZaYo=
+github.com/f-secure-foundry/armory-boot v0.0.0-20211116162813-881307d16d4f/go.mod h1:2CEZZxWsu4/gFshZetGr3w2fO5M082wxJXxYEbYFO+o=
 github.com/f-secure-foundry/crucible v0.0.0-20211102131435-642824867724 h1:3df4FZpQx00ATs7iIbHR/EtLsAxLyRwUn9Xrpj49LIA=
 github.com/f-secure-foundry/crucible v0.0.0-20211102131435-642824867724/go.mod h1:lKwj0vB9le2qIIiq3mKqiIcTlgrp8f3l1mD9ScgAzTc=
 github.com/f-secure-foundry/hid v0.0.0-20210318233634-85ced88a1ffe/go.mod h1:S9bV7+chp1tCfEy464mAozYyi2eICEGJVp9sRgUHKXA=
