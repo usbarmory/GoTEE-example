@@ -91,7 +91,7 @@ func configureTrustZone(lock bool) (err error) {
 
 	if imx6.Native {
 		// restrict USB
-		if err = csu.SetSecurityLevel(4, 0, csu.SEC_LEVEL_4, false); err != nil {
+		if err = csu.SetSecurityLevel(8, 0, csu.SEC_LEVEL_4, false); err != nil {
 			return
 		}
 
