@@ -15,10 +15,12 @@ import (
 	"time"
 	_ "unsafe"
 
+	"github.com/f-secure-foundry/tamago/arm"
 	"github.com/f-secure-foundry/tamago/board/f-secure/usbarmory/mark-two"
 	"github.com/f-secure-foundry/tamago/dma"
 	"github.com/f-secure-foundry/tamago/soc/imx6"
 	"github.com/f-secure-foundry/tamago/soc/imx6/dcp"
+	"github.com/f-secure-foundry/tamago/soc/imx6/rngb"
 	"github.com/f-secure-foundry/tamago/soc/imx6/usb"
 
 	"github.com/f-secure-foundry/imx-usbnet"
@@ -123,6 +125,25 @@ func gotee() (err error) {
 	} else {
 		log.Printf("PL1 in Secure World World successfully used DCP (%x)", k)
 	}
+
+	return
+}
+
+func linux(device string) (err error) {
+	var os *monitor.ExecCtx
+
+	if os, err = loadLinux(device); err != nil {
+		return
+	}
+
+	// Initialize interrupt controller, route all interrupts to Non-secure
+	arm.InitGIC(imx6.GIC_BASE)
+
+	// RNGB driver doesn't play well with previous initializations
+	rngb.Reset()
+
+	log.Printf("PL1 launching Linux")
+	run(os, nil)
 
 	return
 }

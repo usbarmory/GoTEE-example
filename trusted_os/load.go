@@ -91,7 +91,7 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 	return
 }
 
-// loadNormalWorld loads a TamaGo unikernel as normal world OS.
+// loadNormalWorld loads a TamaGo unikernel as Normal World OS.
 func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 	image := &exec.ELFImage{
 		Region: mem.NonSecureRegion,
@@ -120,17 +120,17 @@ func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 	return
 }
 
-// loadDebian loads a Linux distribution as normal world OS, the kernel
+// loadLinux loads a Linux kernel as Normal World OS, the kernel
 // configuration is read as an armory-boot configuration file from the given
-// device ("eMMC" or "uSD"), ext4 partition offset and path.
-func loadDebian(device string, start string, configPath string) (os *monitor.ExecCtx, err error) {
-	part, err := disk.Detect(device, start)
+// device ("eMMC" or "uSD").
+func loadLinux(device string) (os *monitor.ExecCtx, err error) {
+	part, err := disk.Detect(device, "")
 
 	if err != nil {
 		return
 	}
 
-	conf, err := config.Load(part, configPath, "", "")
+	conf, err := config.Load(part, config.DefaultConfigPath, "", "")
 
 	if err != nil {
 		return
@@ -165,10 +165,7 @@ func loadDebian(device string, start string, configPath string) (os *monitor.Exe
 		return nil, fmt.Errorf("PL1 could not configure TrustZone, %v", err)
 	}
 
-	// CPU register 0 must be 0
 	os.R0 = 0
-	// CPU register 1 not required for DTB boot
-	// CPU register 2 must be the parameter list address
 	os.R2 = image.DTB()
 
 	return

@@ -38,16 +38,20 @@ const help = `
   mw  <hex offset> <hex value>           # memory write   (use with caution)
 
   gotee                                  # TrustZone test w/ TamaGo unikernels
+  linux <uSD|eMMC>                       # Boot Non-secure USB armory Debian base image
+
   dbg                                    # show ARM debug permissions
   csl                                    # show config security levels (CSL)
   csl <periph> <slave> <hex csl>         #  set config security level  (CSL)
   sa                                     # show security access (SA)
   sa  <id> <secure|nonsecure>            #  set security access (SA)
+
 `
 
 var memoryCommandPattern = regexp.MustCompile(`(md|mw) ([[:xdigit:]]+) (\d+|[[:xdigit:]]+)`)
 var cslCommandPattern = regexp.MustCompile(`csl (\d+) (\d+) ([[:xdigit:]]+)`)
 var saCommandPattern = regexp.MustCompile(`sa (\d+) (secure|nonsecure)`)
+var linuxCommandPattern = regexp.MustCompile(`linux (uSD|eMMC)`)
 
 func memAccess(start uint32, size int, w []byte) (b []byte) {
 	// temporarily map page zero if required
@@ -193,6 +197,14 @@ func saCommand(arg []string) (res string) {
 	return
 }
 
+func linuxCommand(arg []string) (res string) {
+	if err := linux(arg[0]); err != nil {
+		return fmt.Sprintf("%v", err)
+	}
+
+	return
+}
+
 func dbg() string {
 	var buf bytes.Buffer
 
@@ -256,6 +268,8 @@ func cmd(term *term.Terminal, cmd string) (err error) {
 			res = cslCommand(m[1:])
 		} else if m := saCommandPattern.FindStringSubmatch(cmd); len(m) == 3 {
 			res = saCommand(m[1:])
+		} else if m := linuxCommandPattern.FindStringSubmatch(cmd); len(m) == 2 {
+			res = linuxCommand(m[1:])
 		} else {
 			res = "unknown command, type `help`"
 		}
