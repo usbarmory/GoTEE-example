@@ -165,6 +165,12 @@ func loadDebian(device string, start string, configPath string) (os *monitor.Exe
 		return nil, fmt.Errorf("PL1 could not configure TrustZone, %v", err)
 	}
 
+	// CPU register 0 must be 0
+	os.R0 = 0
+	// CPU register 1 not required for DTB boot
+	// CPU register 2 must be the parameter list address
+	os.R2 = image.DTB()
+
 	return
 }
 
