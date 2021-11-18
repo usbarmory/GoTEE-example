@@ -14,7 +14,7 @@ import (
 	"github.com/f-secure-foundry/GoTEE-example/mem"
 )
 
-func configureTrustZone(lock bool) (err error) {
+func configureTrustZone(lock bool, usb bool, led bool) (err error) {
 	// grant NonSecure access to CP10 and CP11
 	imx6.ARM.NonSecureAccessControl(1<<11 | 1<<10)
 
@@ -59,16 +59,6 @@ func configureTrustZone(lock bool) (err error) {
 		}
 	}
 
-	// restrict access to LEDs (GPIO4)
-	if err = csu.SetSecurityLevel(2, 1, csu.SEC_LEVEL_4, false); err != nil {
-		return
-	}
-
-	// restrict access to LEDs (IOMUXC)
-	if err = csu.SetSecurityLevel(6, 1, csu.SEC_LEVEL_4, false); err != nil {
-		return
-	}
-
 	// restrict access to ROMCP
 	if err = csu.SetSecurityLevel(13, 0, csu.SEC_LEVEL_4, false); err != nil {
 		return
@@ -89,7 +79,19 @@ func configureTrustZone(lock bool) (err error) {
 		return
 	}
 
-	if imx6.Native {
+	if led {
+		// restrict access to LEDs (GPIO4)
+		if err = csu.SetSecurityLevel(2, 1, csu.SEC_LEVEL_4, false); err != nil {
+			return
+		}
+
+		// restrict access to LEDs (IOMUXC)
+		if err = csu.SetSecurityLevel(6, 1, csu.SEC_LEVEL_4, false); err != nil {
+			return
+		}
+	}
+
+	if usb && imx6.Native {
 		// restrict USB
 		if err = csu.SetSecurityLevel(8, 0, csu.SEC_LEVEL_4, false); err != nil {
 			return
