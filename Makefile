@@ -30,22 +30,22 @@ QEMU ?= qemu-system-arm -machine mcimx6ul-evk -cpu cortex-a7 -m 512M \
 
 trusted_os: APP=trusted_os
 trusted_os: DIR=$(CURDIR)/trusted_os
-trusted_os: TEXT_START=0x90010000
+trusted_os: TEXT_START=0x98010000
 trusted_os: imx
 
 trusted_os_signed: APP=trusted_os
 trusted_os_signed: DIR=$(CURDIR)/trusted_os
-trusted_os_signed: TEXT_START=0x90010000
+trusted_os_signed: TEXT_START=0x98010000
 trusted_os_signed: imx_signed
 
 trusted_applet_go: APP=trusted_applet
 trusted_applet_go: DIR=$(CURDIR)/trusted_applet_go
-trusted_applet_go: TEXT_START=0x94010000
+trusted_applet_go: TEXT_START=0x9c010000
 trusted_applet_go: elf
 	mkdir -p $(CURDIR)/trusted_os/assets
 	cp $(CURDIR)/bin/trusted_applet.elf $(CURDIR)/trusted_os/assets
 
-trusted_applet_rust: TEXT_START=0x94010000
+trusted_applet_rust: TEXT_START=0x9c010000
 trusted_applet_rust:
 	cd $(CURDIR)/trusted_applet_rust && rustc ${RUSTFLAGS} -o $(CURDIR)/bin/trusted_applet.elf main.rs
 	mkdir -p $(CURDIR)/trusted_os/assets

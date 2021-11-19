@@ -12,15 +12,15 @@ import (
 
 const (
 	// Secure World OS
-	SecureStart = 0x90000000
+	SecureStart = 0x98000000
 	SecureSize  = 0x03f00000 // 63MB
 
 	// Secure World DMA (relocated to avoid conflicts with NonSecure world)
-	SecureDMAStart = 0x93f00000
+	SecureDMAStart = 0x9bf00000
 	SecureDMASize  = 0x00100000 // 1MB
 
 	// Secure World Applet
-	AppletStart = 0x94000000
+	AppletStart = 0x9c000000
 	AppletSize  = 0x02000000 // 32MB
 
 	// NonSecure World OS
