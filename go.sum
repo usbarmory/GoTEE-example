@@ -200,8 +200,8 @@ github.com/envoyproxy/go-control-plane v0.9.9-0.20210512163311-63b5d3c536b0/go.m
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
 github.com/evanphx/json-patch v4.2.0+incompatible/go.mod h1:50XU6AFN0ol/bzJsmQLiYLvXMP4fmwYFNcr97nuDLSk=
 github.com/evanphx/json-patch v4.9.0+incompatible/go.mod h1:50XU6AFN0ol/bzJsmQLiYLvXMP4fmwYFNcr97nuDLSk=
-github.com/f-secure-foundry/GoTEE v0.0.0-20211118154823-004850010e63 h1:r0GQAerhPKkMxVZgpGaAi+xk1CsyNY1QWlbV1gO2GsY=
-github.com/f-secure-foundry/GoTEE v0.0.0-20211118154823-004850010e63/go.mod h1:otvl0Xl1TGsOfT85VoONXAuk+W679/Pgyc1mEBrRrh0=
+github.com/f-secure-foundry/GoTEE v0.0.0-20211119150112-df7dd4f769f1 h1:BiKO+gNZla6sY/BYLAhl24LyMRIdMGcZ24HpUCHEVhU=
+github.com/f-secure-foundry/GoTEE v0.0.0-20211119150112-df7dd4f769f1/go.mod h1:otvl0Xl1TGsOfT85VoONXAuk+W679/Pgyc1mEBrRrh0=
 github.com/f-secure-foundry/armory-boot v0.0.0-20211116162813-881307d16d4f h1:HlgUSfnFkVRhiV1Pch+kOOES9mm/QN/no35+DgwZaYo=
 github.com/f-secure-foundry/armory-boot v0.0.0-20211116162813-881307d16d4f/go.mod h1:2CEZZxWsu4/gFshZetGr3w2fO5M082wxJXxYEbYFO+o=
 github.com/f-secure-foundry/crucible v0.0.0-20211102131435-642824867724/go.mod h1:lKwj0vB9le2qIIiq3mKqiIcTlgrp8f3l1mD9ScgAzTc=

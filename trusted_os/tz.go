@@ -10,6 +10,8 @@ import (
 	"github.com/f-secure-foundry/tamago/soc/imx6"
 	"github.com/f-secure-foundry/tamago/soc/imx6/csu"
 	"github.com/f-secure-foundry/tamago/soc/imx6/tzasc"
+
+	"github.com/f-secure-foundry/GoTEE-example/mem"
 )
 
 func configureTrustZone(lock bool) (err error) {
@@ -33,13 +35,19 @@ func configureTrustZone(lock bool) (err error) {
 		}
 	}
 
-	if !lock {
-		// open up default TZASC region to NonSecure access
-		err = tzasc.EnableRegion(0, 0, 0, (1<<tzasc.SP_NW_RD)|(1<<tzasc.SP_NW_WR))
+	// set default TZASC region (entire memory space) to NonSecure access
+	if err = tzasc.EnableRegion(0, 0, 0, (1<<tzasc.SP_NW_RD)|(1<<tzasc.SP_NW_WR)); err != nil {
 		return
-	} else {
-		// restrict default TZASC region to Secure access
-		if err = tzasc.EnableRegion(0, 0, 0, (1<<tzasc.SP_SW_RD)|(1<<tzasc.SP_SW_WR)); err != nil {
+	}
+
+	if lock {
+		// restrict Secure World memory
+		if err = tzasc.EnableRegion(1, mem.SecureStart, mem.SecureSize + mem.SecureDMASize, (1<<tzasc.SP_SW_RD)|(1<<tzasc.SP_SW_WR)); err != nil {
+			return
+		}
+
+		// restrict Secure World applet region
+		if err = tzasc.EnableRegion(2, mem.AppletStart, mem.AppletSize, (1<<tzasc.SP_SW_RD)|(1<<tzasc.SP_SW_WR)); err != nil {
 			return
 		}
 	}
