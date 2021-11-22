@@ -3,10 +3,11 @@ module github.com/f-secure-foundry/GoTEE-example
 go 1.17
 
 require (
+	github.com/canonical/go-sp800.90a-drbg v0.0.0-20210314144037-6eeb1040d6c3
 	github.com/f-secure-foundry/GoTEE v0.0.0-20211119150112-df7dd4f769f1
 	github.com/f-secure-foundry/armory-boot v0.0.0-20211119104356-864ea18016e2
 	github.com/f-secure-foundry/imx-usbnet v0.0.0-20211005152612-ec70eaf9b56c
-	github.com/f-secure-foundry/tamago v0.0.0-20211119072434-65def2f4f266
+	github.com/f-secure-foundry/tamago v0.0.0-20211122142911-a893489097fc
 	golang.org/x/crypto v0.0.0-20211108221036-ceb1ce70b4fa
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 )
@@ -21,5 +22,6 @@ require (
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1 // indirect
 	golang.org/x/time v0.0.0-20210608053304-ed9ce3a009e4 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gvisor.dev/gvisor v0.0.0-20210609031239-2d7fb745b248 // indirect
 )
