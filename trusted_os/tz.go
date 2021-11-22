@@ -50,6 +50,8 @@ func configureTrustZone(lock bool, usb bool, led bool) (err error) {
 		if err = tzasc.EnableRegion(2, mem.AppletStart, mem.AppletSize, (1<<tzasc.SP_SW_RD)|(1<<tzasc.SP_SW_WR)); err != nil {
 			return
 		}
+	} else {
+		return
 	}
 
 	// set all controllers to NonSecure
