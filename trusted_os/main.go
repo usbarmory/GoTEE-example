@@ -20,7 +20,6 @@ import (
 	"github.com/f-secure-foundry/tamago/dma"
 	"github.com/f-secure-foundry/tamago/soc/imx6"
 	"github.com/f-secure-foundry/tamago/soc/imx6/dcp"
-	"github.com/f-secure-foundry/tamago/soc/imx6/rngb"
 	"github.com/f-secure-foundry/tamago/soc/imx6/usb"
 
 	"github.com/f-secure-foundry/imx-usbnet"
