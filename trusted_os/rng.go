@@ -17,7 +17,7 @@ import (
 
 // yieldRNGB re-configures the TamaGo runtime entropy source to a pure software
 // one (NIST SP 800-90A DRBG) to allow scenarios where it is desirable to give
-// exclusive RNGB access to the Normal World OS.
+// free RNGB access to the Normal World OS.
 func yieldRNGB() {
 	seed := make([]byte, 256)
 	rngb.GetRandomData(seed)
