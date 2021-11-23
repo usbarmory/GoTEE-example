@@ -212,8 +212,8 @@ github.com/f-secure-foundry/tamago v0.0.0-20210518071534-ddf03422d158/go.mod h1:
 github.com/f-secure-foundry/tamago v0.0.0-20210607142218-878b4c69ff4e/go.mod h1:Zs5U/3bxiFFQzq23F7KkmS8Gz1jTGH141hbcdFHCk8E=
 github.com/f-secure-foundry/tamago v0.0.0-20211105083740-8f4eb8811c15/go.mod h1:PeqYMgpP/R3MESqPnF2rvmD6Mu8G4JSSf9srGeQkz2M=
 github.com/f-secure-foundry/tamago v0.0.0-20211118153535-a2a4ab03bfaf/go.mod h1:PeqYMgpP/R3MESqPnF2rvmD6Mu8G4JSSf9srGeQkz2M=
-github.com/f-secure-foundry/tamago v0.0.0-20211119072434-65def2f4f266 h1:5CeUavAiU7b6nqvQ2gyiakPy7SkiUFPOfiaw9hIv3Fo=
-github.com/f-secure-foundry/tamago v0.0.0-20211119072434-65def2f4f266/go.mod h1:PeqYMgpP/R3MESqPnF2rvmD6Mu8G4JSSf9srGeQkz2M=
+github.com/f-secure-foundry/tamago v0.0.0-20211123102302-28cdf9744c3e h1:uIHX9+dL1g3G05cXlvU3DYLLkoLEWtSkJVYmC8Sjmg4=
+github.com/f-secure-foundry/tamago v0.0.0-20211123102302-28cdf9744c3e/go.mod h1:PeqYMgpP/R3MESqPnF2rvmD6Mu8G4JSSf9srGeQkz2M=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
 github.com/form3tech-oss/jwt-go v3.2.2+incompatible/go.mod h1:pbq4aXjuKjdthFRnoDwaVPLA+WlJuPGy+QneDUgJi2k=
 github.com/frankban/quicktest v1.11.3/go.mod h1:wRf/ReqHper53s+kmmSZizM8NamnL3IM0I9ntUbOk+k=

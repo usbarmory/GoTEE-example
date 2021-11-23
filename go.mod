@@ -6,7 +6,7 @@ require (
 	github.com/f-secure-foundry/GoTEE v0.0.0-20211119150112-df7dd4f769f1
 	github.com/f-secure-foundry/armory-boot v0.0.0-20211119104356-864ea18016e2
 	github.com/f-secure-foundry/imx-usbnet v0.0.0-20211005152612-ec70eaf9b56c
-	github.com/f-secure-foundry/tamago v0.0.0-20211119072434-65def2f4f266
+	github.com/f-secure-foundry/tamago v0.0.0-20211123102302-28cdf9744c3e
 	golang.org/x/crypto v0.0.0-20211108221036-ceb1ce70b4fa
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 )
