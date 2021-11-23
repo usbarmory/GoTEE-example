@@ -45,6 +45,10 @@ var osELF []byte
 func logHandler(ctx *monitor.ExecCtx) (err error) {
 	defaultHandler := monitor.SecureHandler
 
+	if ctx.NonSecure() {
+		defaultHandler = monitor.NonSecureHandler
+	}
+
 	switch {
 	case ctx.R0 == syscall.SYS_WRITE:
 		if ssh != nil {
