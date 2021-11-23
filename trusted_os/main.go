@@ -139,9 +139,6 @@ func linux(device string) (err error) {
 	// Initialize interrupt controller, route all interrupts to Non-secure
 	arm.InitGIC(imx6.GIC_BASE)
 
-	// RNGB driver doesn't play well with previous initializations
-	rngb.Reset()
-
 	log.Printf("PL1 launching Linux")
 	run(os, nil)
 
