@@ -12,7 +12,9 @@ import (
 
 const (
 	SYS_WRITE = syscall.SYS_WRITE
+	SYS_EXIT  = syscall.SYS_EXIT
 )
 
 // defined in api.s
 func printSecure(byte)
+func exit()

@@ -8,6 +8,7 @@ package main
 
 import (
 	_ "embed"
+	"errors"
 	"fmt"
 	"log"
 	"sync"
@@ -44,17 +45,20 @@ var osELF []byte
 func logHandler(ctx *monitor.ExecCtx) (err error) {
 	defaultHandler := monitor.SecureHandler
 
-	if ctx.NonSecure() {
-		defaultHandler = monitor.NonSecureHandler
-	}
-
-	if ctx.R0 == syscall.SYS_WRITE {
+	switch {
+	case ctx.R0 == syscall.SYS_WRITE:
 		if ssh != nil {
 			bufferedTermLog(byte(ctx.R1), ctx.NonSecure(), ssh.Term)
 		} else {
 			bufferedStdoutLog(byte(ctx.R1), ctx.NonSecure())
 		}
-	} else {
+	case ctx.NonSecure() && ctx.R0 == syscall.SYS_EXIT:
+		if ctx.Debug {
+			ctx.Print()
+		}
+
+		return errors.New("exit")
+	default:
 		err = defaultHandler(ctx)
 	}
 

@@ -17,8 +17,6 @@ import (
 	"github.com/f-secure-foundry/tamago/soc/imx6/dcp"
 	_ "github.com/f-secure-foundry/tamago/soc/imx6/imx6ul"
 
-	"github.com/f-secure-foundry/GoTEE/syscall"
-
 	"github.com/f-secure-foundry/GoTEE-example/mem"
 )
 
@@ -81,7 +79,7 @@ func main() {
 
 	// yield back to secure monitor
 	log.Printf("PL1 in Normal World is about to yield back")
-	syscall.Monitor()
+	exit()
 
 	// this should be unreachable
 	log.Printf("PL1 in Normal World says goodbye")

@@ -3,7 +3,7 @@ module github.com/f-secure-foundry/GoTEE-example
 go 1.17
 
 require (
-	github.com/f-secure-foundry/GoTEE v0.0.0-20211119150112-df7dd4f769f1
+	github.com/f-secure-foundry/GoTEE v0.0.0-20211123144247-7adb17331a10
 	github.com/f-secure-foundry/armory-boot v0.0.0-20211119104356-864ea18016e2
 	github.com/f-secure-foundry/imx-usbnet v0.0.0-20211005152612-ec70eaf9b56c
 	github.com/f-secure-foundry/tamago v0.0.0-20211123102302-28cdf9744c3e

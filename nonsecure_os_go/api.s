@@ -14,3 +14,11 @@ TEXT ·printSecure(SB),$0-1
 	WORD	$0xe1600070 // smc 0
 
 	RET
+
+// func exit()
+TEXT ·exit(SB),$0
+	MOVW	$const_SYS_EXIT, R0
+
+	WORD	$0xe1600070 // smc 0
+
+	RET
