@@ -3,7 +3,7 @@ module github.com/f-secure-foundry/GoTEE-example
 go 1.17
 
 require (
-	github.com/f-secure-foundry/GoTEE v0.0.0-20211123150849-d15b2fb1fb19
+	github.com/f-secure-foundry/GoTEE v0.0.0-20211123160228-679f8891ae4b
 	github.com/f-secure-foundry/armory-boot v0.0.0-20211119104356-864ea18016e2
 	github.com/f-secure-foundry/imx-usbnet v0.0.0-20211005152612-ec70eaf9b56c
 	github.com/f-secure-foundry/tamago v0.0.0-20211123102302-28cdf9744c3e
@@ -14,11 +14,9 @@ require (
 require (
 	github.com/dsoprea/go-ext4 v0.0.0-20190528173430-c13b09fc0ff8 // indirect
 	github.com/dsoprea/go-logging v0.0.0-20200710184922-b02d349568dd // indirect
-	github.com/f-secure-foundry/crucible v0.0.0-20211102131435-642824867724 // indirect
 	github.com/go-errors/errors v1.4.1 // indirect
 	github.com/google/btree v1.0.1 // indirect
 	github.com/u-root/u-root v7.0.0+incompatible // indirect
-	go.mozilla.org/pkcs7 v0.0.0-20200128120323-432b2356ecb1 // indirect
 	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1 // indirect
