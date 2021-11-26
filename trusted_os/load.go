@@ -175,6 +175,7 @@ func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 
 	os.R0 = 0
 	os.R2 = image.DTB()
+	os.SPSR = arm.SVC_MODE
 
 	return
 }
