@@ -81,28 +81,38 @@ func configureTrustZone(lock bool, usb bool, led bool) (err error) {
 		return
 	}
 
-	if led {
-		// restrict access to LEDs (GPIO4)
-		if err = csu.SetSecurityLevel(2, 1, csu.SEC_LEVEL_4, false); err != nil {
-			return
-		}
+	securityLevel := uint8(csu.SEC_LEVEL_0)
+	secureAccess := false
 
-		// restrict access to LEDs (IOMUXC)
-		if err = csu.SetSecurityLevel(6, 1, csu.SEC_LEVEL_4, false); err != nil {
-			return
-		}
+	if usb {
+		securityLevel = csu.SEC_LEVEL_4
+		secureAccess = true
 	}
 
-	if usb && imx6.Native {
-		// restrict USB
-		if err = csu.SetSecurityLevel(8, 0, csu.SEC_LEVEL_4, false); err != nil {
-			return
-		}
+	// USB
+	if err = csu.SetSecurityLevel(8, 0, securityLevel, false); err != nil {
+		return
+	}
 
-		// set USB controller as Secure
-		if err = csu.SetAccess(4, true, false); err != nil {
-			return
-		}
+	// set USB controller as Secure
+	if err = csu.SetAccess(4, secureAccess, false); err != nil {
+		return
+	}
+
+	if led {
+		securityLevel = csu.SEC_LEVEL_4
+	} else {
+		securityLevel = csu.SEC_LEVEL_0
+	}
+
+	// LEDs (GPIO4)
+	if err = csu.SetSecurityLevel(2, 1, securityLevel, false); err != nil {
+		return
+	}
+
+	// LEDs (IOMUXC)
+	if err = csu.SetSecurityLevel(6, 1, securityLevel, false); err != nil {
+		return
 	}
 
 	return
