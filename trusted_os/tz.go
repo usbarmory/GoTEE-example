@@ -14,7 +14,7 @@ import (
 	"github.com/f-secure-foundry/GoTEE-example/mem"
 )
 
-func configureTrustZone(lock bool, usb bool, led bool) (err error) {
+func configureTrustZone(lock bool) (err error) {
 	// grant NonSecure access to CP10 and CP11
 	imx6.ARM.NonSecureAccessControl(1<<11 | 1<<10)
 
@@ -42,7 +42,7 @@ func configureTrustZone(lock bool, usb bool, led bool) (err error) {
 
 	if lock {
 		// restrict Secure World memory
-		if err = tzasc.EnableRegion(1, mem.SecureStart, mem.SecureSize + mem.SecureDMASize, (1<<tzasc.SP_SW_RD)|(1<<tzasc.SP_SW_WR)); err != nil {
+		if err = tzasc.EnableRegion(1, mem.SecureStart, mem.SecureSize+mem.SecureDMASize, (1<<tzasc.SP_SW_RD)|(1<<tzasc.SP_SW_WR)); err != nil {
 			return
 		}
 
@@ -59,6 +59,26 @@ func configureTrustZone(lock bool, usb bool, led bool) (err error) {
 		if err = csu.SetAccess(i, false, false); err != nil {
 			return
 		}
+	}
+
+	// restrict access to GPIO4 (used by LEDs)
+	if err = csu.SetSecurityLevel(2, 1, csu.SEC_LEVEL_4, false); err != nil {
+		return
+	}
+
+	// restrict access to IOMUXC (used by LEDs)
+	if err = csu.SetSecurityLevel(6, 1, csu.SEC_LEVEL_4, false); err != nil {
+		return
+	}
+
+	// restrict access to USB
+	if err = csu.SetSecurityLevel(8, 0, csu.SEC_LEVEL_4, false); err != nil {
+		return
+	}
+
+	// set USB controller as Secure
+	if err = csu.SetAccess(4, true, false); err != nil {
+		return
 	}
 
 	// restrict access to ROMCP
@@ -81,37 +101,32 @@ func configureTrustZone(lock bool, usb bool, led bool) (err error) {
 		return
 	}
 
-	securityLevel := uint8(csu.SEC_LEVEL_0)
-	secureAccess := false
+	return
+}
 
-	if usb {
-		securityLevel = csu.SEC_LEVEL_4
-		secureAccess = true
-	}
-
-	// USB
-	if err = csu.SetSecurityLevel(8, 0, securityLevel, false); err != nil {
+func grantPeripheralAccess() (err error) {
+	// allow access to GPIO4 (used by LEDs)
+	if err = csu.SetSecurityLevel(2, 1, csu.SEC_LEVEL_0, false); err != nil {
 		return
 	}
 
-	// set USB controller as Secure
-	if err = csu.SetAccess(4, secureAccess, false); err != nil {
+	// allow access to IOMUXC (used by LEDs)
+	if err = csu.SetSecurityLevel(6, 1, csu.SEC_LEVEL_0, false); err != nil {
 		return
 	}
 
-	if led {
-		securityLevel = csu.SEC_LEVEL_4
-	} else {
-		securityLevel = csu.SEC_LEVEL_0
-	}
-
-	// LEDs (GPIO4)
-	if err = csu.SetSecurityLevel(2, 1, securityLevel, false); err != nil {
+	// allow access to USB
+	if err = csu.SetSecurityLevel(8, 0, csu.SEC_LEVEL_0, false); err != nil {
 		return
 	}
 
-	// LEDs (IOMUXC)
-	if err = csu.SetSecurityLevel(6, 1, securityLevel, false); err != nil {
+	// set USB controller as NonSecure
+	if err = csu.SetAccess(4, false, false); err != nil {
+		return
+	}
+
+	// set USDHC controller as NonSecure
+	if err = csu.SetAccess(10, false, false); err != nil {
 		return
 	}
 

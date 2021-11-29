@@ -14,6 +14,7 @@ import (
 	"sync"
 
 	"github.com/f-secure-foundry/tamago/arm"
+	"github.com/f-secure-foundry/tamago/soc/imx6/csu"
 
 	"github.com/f-secure-foundry/GoTEE/monitor"
 	"github.com/f-secure-foundry/GoTEE/syscall"
@@ -118,7 +119,7 @@ func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 
 	os.Debug = true
 
-	if err = configureTrustZone(lock, true, true); err != nil {
+	if err = configureTrustZone(lock); err != nil {
 		return nil, fmt.Errorf("PL1 could not configure TrustZone, %v", err)
 	}
 
@@ -132,6 +133,12 @@ func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 // configuration is read as an armory-boot configuration file from the given
 // device ("eMMC" or "uSD").
 func loadLinux(device string) (os *monitor.ExecCtx, err error) {
+	// Set the USDHC controller as Secure master to access Trusted OS DMA
+	// region.
+	if err = csu.SetAccess(10, true, false); err != nil {
+		return
+	}
+
 	part, err := disk.Detect(device, "")
 
 	if err != nil {
@@ -169,8 +176,12 @@ func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 
 	os.Debug = true
 
-	if err = configureTrustZone(true, false, false); err != nil {
+	if err = configureTrustZone(true); err != nil {
 		return nil, fmt.Errorf("PL1 could not configure TrustZone, %v", err)
+	}
+
+	if err = grantPeripheralAccess(); err != nil {
+		return nil, fmt.Errorf("PL1 could not configure TrustZone peripheral access, %v", err)
 	}
 
 	os.R0 = 0
