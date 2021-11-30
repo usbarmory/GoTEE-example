@@ -59,10 +59,10 @@ func init() {
 	}
 
 	// Move DMA region to prevent NonSecure access, alternatively
-	// iRAM/OCRAM (default DMA region) can be locked down.
-	//
-	// This is necessary as iRAM/OCRAM is outside TZASC control.
+	// iRAM/OCRAM (default DMA region) can be locked down on its own (as it
+	// is outside TZASC control).
 	dma.Init(mem.SecureDMAStart, mem.SecureDMASize)
+	dcp.DeriveKeyMemory = dma.Default()
 
 	log.Printf("PL1 %s/%s (%s) • TEE system/monitor (Secure World)", runtime.GOOS, runtime.GOARCH, runtime.Version())
 }

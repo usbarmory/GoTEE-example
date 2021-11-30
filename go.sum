@@ -204,6 +204,7 @@ github.com/f-secure-foundry/GoTEE v0.0.0-20211126174853-551a5c190f4c h1:PazjFtUB
 github.com/f-secure-foundry/GoTEE v0.0.0-20211126174853-551a5c190f4c/go.mod h1:otvl0Xl1TGsOfT85VoONXAuk+W679/Pgyc1mEBrRrh0=
 github.com/f-secure-foundry/armory-boot v0.0.0-20211119104356-864ea18016e2 h1:SJPIZDt/xevBzz53RYFRD7qEKWtmxmnGTlr9M9Ukcfs=
 github.com/f-secure-foundry/armory-boot v0.0.0-20211119104356-864ea18016e2/go.mod h1:2CEZZxWsu4/gFshZetGr3w2fO5M082wxJXxYEbYFO+o=
+github.com/f-secure-foundry/crucible v0.0.0-20211102131435-642824867724 h1:3df4FZpQx00ATs7iIbHR/EtLsAxLyRwUn9Xrpj49LIA=
 github.com/f-secure-foundry/crucible v0.0.0-20211102131435-642824867724/go.mod h1:lKwj0vB9le2qIIiq3mKqiIcTlgrp8f3l1mD9ScgAzTc=
 github.com/f-secure-foundry/hid v0.0.0-20210318233634-85ced88a1ffe/go.mod h1:S9bV7+chp1tCfEy464mAozYyi2eICEGJVp9sRgUHKXA=
 github.com/f-secure-foundry/imx-usbnet v0.0.0-20211005152612-ec70eaf9b56c h1:GMCKEl+UOdX0N6H0i5IHEiDKgFW0xvmVsBDJXvg6sts=
@@ -212,8 +213,8 @@ github.com/f-secure-foundry/tamago v0.0.0-20210518071534-ddf03422d158/go.mod h1:
 github.com/f-secure-foundry/tamago v0.0.0-20210607142218-878b4c69ff4e/go.mod h1:Zs5U/3bxiFFQzq23F7KkmS8Gz1jTGH141hbcdFHCk8E=
 github.com/f-secure-foundry/tamago v0.0.0-20211105083740-8f4eb8811c15/go.mod h1:PeqYMgpP/R3MESqPnF2rvmD6Mu8G4JSSf9srGeQkz2M=
 github.com/f-secure-foundry/tamago v0.0.0-20211118153535-a2a4ab03bfaf/go.mod h1:PeqYMgpP/R3MESqPnF2rvmD6Mu8G4JSSf9srGeQkz2M=
-github.com/f-secure-foundry/tamago v0.0.0-20211123102302-28cdf9744c3e h1:uIHX9+dL1g3G05cXlvU3DYLLkoLEWtSkJVYmC8Sjmg4=
-github.com/f-secure-foundry/tamago v0.0.0-20211123102302-28cdf9744c3e/go.mod h1:PeqYMgpP/R3MESqPnF2rvmD6Mu8G4JSSf9srGeQkz2M=
+github.com/f-secure-foundry/tamago v0.0.0-20211130100336-2a6556683f31 h1:o7Q83g61y7/NQ80qDFLuXpGCddxwfkRn0OfYauKs3Uw=
+github.com/f-secure-foundry/tamago v0.0.0-20211130100336-2a6556683f31/go.mod h1:PeqYMgpP/R3MESqPnF2rvmD6Mu8G4JSSf9srGeQkz2M=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
 github.com/form3tech-oss/jwt-go v3.2.2+incompatible/go.mod h1:pbq4aXjuKjdthFRnoDwaVPLA+WlJuPGy+QneDUgJi2k=
 github.com/frankban/quicktest v1.11.3/go.mod h1:wRf/ReqHper53s+kmmSZizM8NamnL3IM0I9ntUbOk+k=
@@ -556,6 +557,7 @@ go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.5/go.mod h1:G5EMThwa9y8QZGBClrRx5EY+Yw9kAhnjy3bSjsnlVTQ=
 go.etcd.io/etcd v0.5.0-alpha.5.0.20200910180754-dd1b699fc489/go.mod h1:yVHk9ub3CSBatqGNg7GRmsnfLWtoW60w4eDYfh7vHDg=
+go.mozilla.org/pkcs7 v0.0.0-20200128120323-432b2356ecb1 h1:A/5uWzF44DlIgdm/PQFwfMkW0JX+cIcQi/SwLAmZP5M=
 go.mozilla.org/pkcs7 v0.0.0-20200128120323-432b2356ecb1/go.mod h1:SNgMg+EgDFwmvSmLRTNKC5fegJjB7v23qTQ0XLGUNHk=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
 go.opencensus.io v0.22.0/go.mod h1:+kGneAE2xo2IficOXnaByMWTGM9T73dGwxeWcUqIpI8=
