@@ -135,7 +135,7 @@ func linux(device string) (err error) {
 		return
 	}
 
-	// Initialize interrupt controller, route all interrupts to Non-secure
+	// Initialize interrupt controller, route all interrupts to NonSecure
 	arm.InitGIC(imx6.GIC_BASE)
 
 	log.Printf("PL1 launching Linux")

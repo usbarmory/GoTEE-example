@@ -40,6 +40,10 @@ var taELF []byte
 //go:embed assets/nonsecure_os_go.elf
 var osELF []byte
 
+// bootConfLinux is the path to the armory-boot configuration file for loading a
+// Linux kernel as Normal World OS
+const bootConfLinux = "/boot/armory-boot-nonsecure.conf"
+
 // logHandler allows to override the GoTEE default handler and avoid
 // interleaved logs, as the supervisor and applet contexts are logging
 // simultaneously.
@@ -145,7 +149,7 @@ func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 		return
 	}
 
-	conf, err := config.Load(part, config.DefaultConfigPath, "", "")
+	conf, err := config.Load(part, bootConfLinux, "", "")
 
 	if err != nil {
 		return
