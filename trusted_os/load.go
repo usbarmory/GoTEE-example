@@ -137,9 +137,15 @@ func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 // configuration is read as an armory-boot configuration file from the given
 // device ("eMMC" or "uSD").
 func loadLinux(device string) (os *monitor.ExecCtx, err error) {
-	// Set the USDHC controller as Secure master to access Trusted OS DMA
-	// region.
+	// Set the USDHC1 (microSD) controller as Secure master to access
+	// Trusted OS DMA region.
 	if err = csu.SetAccess(10, true, false); err != nil {
+		return
+	}
+
+	// Set the USDHC2 (eMMC) controller as Secure master to access
+	// Trusted OS DMA region.
+	if err = csu.SetAccess(11, true, false); err != nil {
 		return
 	}
 

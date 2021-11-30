@@ -125,8 +125,13 @@ func grantPeripheralAccess() (err error) {
 		return
 	}
 
-	// set USDHC controller as NonSecure
+	// set USDHC1 (microSD) controller as NonSecure
 	if err = csu.SetAccess(10, false, false); err != nil {
+		return
+	}
+
+	// set USDHC2 (eMMC) controller as NonSecure
+	if err = csu.SetAccess(11, false, false); err != nil {
 		return
 	}
 
