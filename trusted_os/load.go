@@ -83,9 +83,9 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 
 	if ta, err = monitor.Load(image.Entry(), image.Region, true); err != nil {
 		return nil, fmt.Errorf("PL1 could not load applet, %v", err)
-	} else {
-		log.Printf("PL1 loaded applet addr:%#x size:%d entry:%#x", ta.Memory.Start, len(taELF), ta.R15)
 	}
+
+	log.Printf("PL1 loaded applet addr:%#x size:%d entry:%#x", ta.Memory.Start, len(taELF), ta.R15)
 
 	// register example RPC receiver
 	ta.Server.Register(&RPC{})
@@ -113,9 +113,9 @@ func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 
 	if os, err = monitor.Load(image.Entry(), image.Region, false); err != nil {
 		return nil, fmt.Errorf("PL1 could not load kernel, %v", err)
-	} else {
-		log.Printf("PL1 loaded kernel addr:%#x size:%d entry:%#x", os.Memory.Start, len(osELF), os.R15)
 	}
+
+	log.Printf("PL1 loaded kernel addr:%#x size:%d entry:%#x", os.Memory.Start, len(osELF), os.R15)
 
 	os.Debug = true
 
@@ -170,9 +170,9 @@ func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 
 	if os, err = monitor.Load(image.Entry(), image.Region, false); err != nil {
 		return nil, fmt.Errorf("PL1 could not load kernel, %v", err)
-	} else {
-		log.Printf("PL1 loaded kernel addr:%#x size:%d entry:%#x", os.Memory.Start, len(image.Kernel), os.R15)
 	}
+
+	log.Printf("PL1 loaded kernel addr:%#x size:%d entry:%#x", os.Memory.Start, len(image.Kernel), os.R15)
 
 	os.Debug = true
 
