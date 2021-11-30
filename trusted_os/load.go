@@ -31,7 +31,7 @@ import (
 //
 // The loading strategy is up to implementers, on the NXP i.MX6 the armory-boot
 // bootloader primitives can be used to create a bootable Trusted OS with
-// authenticated disk loading of applets and kernels, see:
+// authenticated disk loading of applets and kernels, see loadLinux() and:
 //   https://pkg.go.dev/github.com/f-secure-foundry/armory-boot
 
 //go:embed assets/trusted_applet.elf
@@ -41,7 +41,7 @@ var taELF []byte
 var osELF []byte
 
 // bootConfLinux is the path to the armory-boot configuration file for loading a
-// Linux kernel as Normal World OS
+// Linux kernel as Normal World OS.
 const bootConfLinux = "/boot/armory-boot-nonsecure.conf"
 
 // logHandler allows to override the GoTEE default handler and avoid
@@ -93,13 +93,13 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 
 	// register example RPC receiver
 	ta.Server.Register(&RPC{})
-	ta.Debug = true
 
 	// set stack pointer to the end of applet memory
 	ta.R13 = mem.AppletStart + mem.AppletSize
 
 	// override default handler to improve logging
 	ta.Handler = logHandler
+	ta.Debug = true
 
 	return
 }
@@ -121,21 +121,20 @@ func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 
 	log.Printf("PL1 loaded kernel addr:%#x size:%d entry:%#x", os.Memory.Start, len(osELF), os.R15)
 
-	os.Debug = true
-
 	if err = configureTrustZone(lock); err != nil {
 		return nil, fmt.Errorf("PL1 could not configure TrustZone, %v", err)
 	}
 
 	// override default handler to improve logging
 	os.Handler = logHandler
+	os.Debug = true
 
 	return
 }
 
-// loadLinux loads a Linux kernel as Normal World OS, the kernel
-// configuration is read as an armory-boot configuration file from the given
-// device ("eMMC" or "uSD").
+// loadLinux loads a Linux kernel as Normal World OS, the kernel configuration
+// is read from an armory-boot configuration file on the given device ("eMMC"
+// or "uSD").
 func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 	var id int
 
@@ -144,6 +143,8 @@ func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 		id = 10
 	case "eMMC":
 		id = 11
+	default:
+		return nil, errors.New("invalid device")
 	}
 
 	// Set the device USDHC controller as Secure master to grant access
@@ -187,8 +188,6 @@ func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 
 	log.Printf("PL1 loaded kernel addr:%#x size:%d entry:%#x", os.Memory.Start, len(image.Kernel), os.R15)
 
-	os.Debug = true
-
 	if err = configureTrustZone(true); err != nil {
 		return nil, fmt.Errorf("PL1 could not configure TrustZone, %v", err)
 	}
@@ -200,6 +199,7 @@ func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 	os.R0 = 0
 	os.R2 = image.DTB()
 	os.SPSR = arm.SVC_MODE
+	os.Debug = true
 
 	return
 }
