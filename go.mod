@@ -1,12 +1,12 @@
-module github.com/f-secure-foundry/GoTEE-example
+module github.com/usbarmory/GoTEE-example
 
 go 1.17
 
 require (
-	github.com/f-secure-foundry/GoTEE v0.0.0-20211126174853-551a5c190f4c
-	github.com/f-secure-foundry/armory-boot v0.0.0-20211119104356-864ea18016e2
-	github.com/f-secure-foundry/imx-usbnet v0.0.0-20211005152612-ec70eaf9b56c
-	github.com/f-secure-foundry/tamago v0.0.0-20211130100336-2a6556683f31
+	github.com/usbarmory/GoTEE v0.0.0-20211126174853-551a5c190f4c
+	github.com/usbarmory/armory-boot v0.0.0-20211119104356-864ea18016e2
+	github.com/usbarmory/imx-usbnet v0.0.0-20211005152612-ec70eaf9b56c
+	github.com/usbarmory/tamago v0.0.0-20211130100336-2a6556683f31
 	golang.org/x/crypto v0.0.0-20211108221036-ceb1ce70b4fa
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 )
@@ -14,7 +14,7 @@ require (
 require (
 	github.com/dsoprea/go-ext4 v0.0.0-20190528173430-c13b09fc0ff8 // indirect
 	github.com/dsoprea/go-logging v0.0.0-20200710184922-b02d349568dd // indirect
-	github.com/f-secure-foundry/crucible v0.0.0-20211102131435-642824867724 // indirect
+	github.com/usbarmory/crucible v0.0.0-20211102131435-642824867724 // indirect
 	github.com/go-errors/errors v1.4.1 // indirect
 	github.com/google/btree v1.0.1 // indirect
 	github.com/u-root/u-root v7.0.0+incompatible // indirect
