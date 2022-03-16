@@ -7,11 +7,11 @@
 package main
 
 import (
-	"github.com/f-secure-foundry/tamago/soc/imx6"
-	"github.com/f-secure-foundry/tamago/soc/imx6/csu"
-	"github.com/f-secure-foundry/tamago/soc/imx6/tzasc"
+	"github.com/usbarmory/tamago/soc/imx6"
+	"github.com/usbarmory/tamago/soc/imx6/csu"
+	"github.com/usbarmory/tamago/soc/imx6/tzasc"
 
-	"github.com/f-secure-foundry/GoTEE-example/mem"
+	"github.com/usbarmory/GoTEE-example/mem"
 )
 
 func configureTrustZone(lock bool) (err error) {

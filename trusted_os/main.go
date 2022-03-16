@@ -15,19 +15,19 @@ import (
 	"time"
 	_ "unsafe"
 
-	"github.com/f-secure-foundry/tamago/arm"
-	"github.com/f-secure-foundry/tamago/board/f-secure/usbarmory/mark-two"
-	"github.com/f-secure-foundry/tamago/dma"
-	"github.com/f-secure-foundry/tamago/soc/imx6"
-	"github.com/f-secure-foundry/tamago/soc/imx6/dcp"
-	"github.com/f-secure-foundry/tamago/soc/imx6/usb"
+	"github.com/usbarmory/tamago/arm"
+	"github.com/usbarmory/tamago/board/f-secure/usbarmory/mark-two"
+	"github.com/usbarmory/tamago/dma"
+	"github.com/usbarmory/tamago/soc/imx6"
+	"github.com/usbarmory/tamago/soc/imx6/dcp"
+	"github.com/usbarmory/tamago/soc/imx6/usb"
 
-	"github.com/f-secure-foundry/imx-usbnet"
+	"github.com/usbarmory/imx-usbnet"
 
-	"github.com/f-secure-foundry/GoTEE/monitor"
+	"github.com/usbarmory/GoTEE/monitor"
 
-	"github.com/f-secure-foundry/GoTEE-example/mem"
-	"github.com/f-secure-foundry/GoTEE-example/util"
+	"github.com/usbarmory/GoTEE-example/mem"
+	"github.com/usbarmory/GoTEE-example/util"
 )
 
 const (

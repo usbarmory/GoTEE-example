@@ -13,11 +13,11 @@ import (
 	"time"
 	_ "unsafe"
 
-	"github.com/f-secure-foundry/GoTEE/applet"
-	"github.com/f-secure-foundry/GoTEE/syscall"
+	"github.com/usbarmory/GoTEE/applet"
+	"github.com/usbarmory/GoTEE/syscall"
 
-	"github.com/f-secure-foundry/GoTEE-example/mem"
-	"github.com/f-secure-foundry/GoTEE-example/util"
+	"github.com/usbarmory/GoTEE-example/mem"
+	"github.com/usbarmory/GoTEE-example/util"
 )
 
 //go:linkname ramStart runtime.ramStart

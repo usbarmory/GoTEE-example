@@ -7,7 +7,7 @@
 package mem
 
 import (
-	"github.com/f-secure-foundry/tamago/dma"
+	"github.com/usbarmory/tamago/dma"
 )
 
 const (

@@ -13,11 +13,11 @@ import (
 	"runtime"
 	_ "unsafe"
 
-	"github.com/f-secure-foundry/tamago/soc/imx6"
-	"github.com/f-secure-foundry/tamago/soc/imx6/dcp"
-	_ "github.com/f-secure-foundry/tamago/soc/imx6/imx6ul"
+	"github.com/usbarmory/tamago/soc/imx6"
+	"github.com/usbarmory/tamago/soc/imx6/dcp"
+	_ "github.com/usbarmory/tamago/soc/imx6/imx6ul"
 
-	"github.com/f-secure-foundry/GoTEE-example/mem"
+	"github.com/usbarmory/GoTEE-example/mem"
 )
 
 //go:linkname ramStart runtime.ramStart

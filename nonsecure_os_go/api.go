@@ -7,7 +7,7 @@
 package main
 
 import (
-	"github.com/f-secure-foundry/GoTEE/syscall"
+	"github.com/usbarmory/GoTEE/syscall"
 )
 
 const (

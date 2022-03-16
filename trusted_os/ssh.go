@@ -19,12 +19,12 @@ import (
 
 	"golang.org/x/term"
 
-	"github.com/f-secure-foundry/tamago/arm"
-	"github.com/f-secure-foundry/tamago/bits"
-	"github.com/f-secure-foundry/tamago/board/f-secure/usbarmory/mark-two"
-	"github.com/f-secure-foundry/tamago/dma"
-	"github.com/f-secure-foundry/tamago/soc/imx6"
-	"github.com/f-secure-foundry/tamago/soc/imx6/csu"
+	"github.com/usbarmory/tamago/arm"
+	"github.com/usbarmory/tamago/bits"
+	"github.com/usbarmory/tamago/board/f-secure/usbarmory/mark-two"
+	"github.com/usbarmory/tamago/dma"
+	"github.com/usbarmory/tamago/soc/imx6"
+	"github.com/usbarmory/tamago/soc/imx6/csu"
 )
 
 const MD_LIMIT = 102400

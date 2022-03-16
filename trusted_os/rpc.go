@@ -9,9 +9,9 @@ package main
 import (
 	"errors"
 
-	"github.com/f-secure-foundry/tamago/board/f-secure/usbarmory/mark-two"
+	"github.com/usbarmory/tamago/board/f-secure/usbarmory/mark-two"
 
-	"github.com/f-secure-foundry/GoTEE-example/util"
+	"github.com/usbarmory/GoTEE-example/util"
 )
 
 // RPC represents an example receiver for user mode <--> system RPC over system
