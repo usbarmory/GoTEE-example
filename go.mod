@@ -21,5 +21,5 @@ require (
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20211019181941-9d821ace8654 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
-	gvisor.dev/gvisor v0.0.0-20210609031239-2d7fb745b248 // indirect
+	gvisor.dev/gvisor v0.0.0-20210805222911-e8e12c2ea577 // indirect
 )
