@@ -85,7 +85,7 @@ check_hab_keys:
 	fi
 
 dcd:
-	cp -f $(GOMODCACHE)/$(TAMAGO_PKG)/board/f-secure/usbarmory/mark-two/imximage.cfg $(CURDIR)/bin/$(APP).dcd; \
+	cp -f $(GOMODCACHE)/$(TAMAGO_PKG)/board/usbarmory/mk2/imximage.cfg $(CURDIR)/bin/$(APP).dcd; \
 
 clean:
 	@rm -fr $(CURDIR)/bin/* $(CURDIR)/trusted_os/assets/*

@@ -21,7 +21,7 @@ import (
 
 	"github.com/usbarmory/tamago/arm"
 	"github.com/usbarmory/tamago/bits"
-	"github.com/usbarmory/tamago/board/f-secure/usbarmory/mark-two"
+	usbarmory "github.com/usbarmory/tamago/board/usbarmory/mk2"
 	"github.com/usbarmory/tamago/dma"
 	"github.com/usbarmory/tamago/soc/imx6"
 	"github.com/usbarmory/tamago/soc/imx6/csu"

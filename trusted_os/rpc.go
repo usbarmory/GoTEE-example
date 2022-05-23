@@ -9,7 +9,7 @@ package main
 import (
 	"errors"
 
-	"github.com/usbarmory/tamago/board/f-secure/usbarmory/mark-two"
+	usbarmory "github.com/usbarmory/tamago/board/usbarmory/mk2"
 
 	"github.com/usbarmory/GoTEE-example/util"
 )
