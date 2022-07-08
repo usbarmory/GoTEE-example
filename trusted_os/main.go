@@ -20,7 +20,6 @@ import (
 	"github.com/usbarmory/tamago/dma"
 	"github.com/usbarmory/tamago/soc/imx6"
 	"github.com/usbarmory/tamago/soc/imx6/dcp"
-	"github.com/usbarmory/tamago/soc/imx6/usb"
 
 	"github.com/usbarmory/imx-usbnet"
 
@@ -182,10 +181,10 @@ func main() {
 		log.Fatalf("PL1 could not initialize SSH server, %v", err)
 	}
 
-	usb.USB1.Init()
-	usb.USB1.DeviceMode()
-	usb.USB1.Reset()
+	usbarmory.USB1.Init()
+	usbarmory.USB1.DeviceMode()
+	usbarmory.USB1.Reset()
 
 	// never returns
-	usb.USB1.Start(gonet.Device())
+	usbarmory.USB1.Start(gonet.Device())
 }

@@ -15,7 +15,7 @@ import (
 
 	"github.com/usbarmory/tamago/soc/imx6"
 	"github.com/usbarmory/tamago/soc/imx6/dcp"
-	_ "github.com/usbarmory/tamago/soc/imx6/imx6ul"
+	"github.com/usbarmory/tamago/soc/imx6/imx6ul"
 
 	"github.com/usbarmory/GoTEE-example/mem"
 )
@@ -29,7 +29,7 @@ var ramSize uint32 = mem.NonSecureSize
 //go:linkname hwinit runtime.hwinit
 func hwinit() {
 	imx6.Init()
-	imx6.UART2.Init()
+	imx6ul.UART2.Init()
 }
 
 //go:linkname printk runtime.printk
@@ -38,7 +38,7 @@ func printk(c byte) {
 		// monitor call to request logs on Secure World SSH console
 		printSecure(c)
 	} else {
-		imx6.UART2.Tx(c)
+		imx6ul.UART2.Tx(c)
 	}
 }
 

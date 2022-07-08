@@ -11,8 +11,8 @@
 
 #![no_std]
 #![no_main]
-#![feature(asm)]
 
+use core::arch::asm;
 use core::fmt::{self, Write};
 use core::panic::PanicInfo;
 use core::time::Duration;
