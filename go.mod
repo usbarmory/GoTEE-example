@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/usbarmory/GoTEE v0.0.0-20220714120153-32a5e6230ca8
 	github.com/usbarmory/armory-boot v0.0.0-20220714105009-e09dbf750637
-	github.com/usbarmory/imx-usbnet v0.0.0-20220328084004-5f4066985548
+	github.com/usbarmory/imx-usbnet v0.0.0-20220714125312-ea265fd64bd1
 	github.com/usbarmory/tamago v0.0.0-20220714104148-d5b7c14a0fbb
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
 	golang.org/x/term v0.0.0-20220526004731-065cf7ba2467
@@ -24,5 +24,5 @@ require (
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
 	golang.org/x/sys v0.0.0-20211019181941-9d821ace8654 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
-	gvisor.dev/gvisor v0.0.0-20210805222911-e8e12c2ea577 // indirect
+	gvisor.dev/gvisor v0.0.0-20220714043431-1868ba74ac26 // indirect
 )
