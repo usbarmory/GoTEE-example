@@ -25,6 +25,7 @@ import (
 	"github.com/usbarmory/tamago/dma"
 	"github.com/usbarmory/tamago/soc/imx6"
 	"github.com/usbarmory/tamago/soc/imx6/csu"
+	"github.com/usbarmory/tamago/soc/imx6/imx6ul"
 )
 
 const MD_LIMIT = 102400
@@ -56,7 +57,7 @@ var linuxCommandPattern = regexp.MustCompile(`linux (uSD|eMMC)`)
 func memAccess(start uint32, size int, w []byte) (b []byte) {
 	// temporarily map page zero if required
 	if z := uint32(1 << 20); start < z {
-		csu.SetAccess(0, true, false)
+		imx6ul.CSU.SetAccess(0, true, false)
 
 		imx6.ARM.ConfigureMMU(0, z, (arm.TTE_AP_001<<10)|arm.TTE_SECTION)
 		defer imx6.ARM.ConfigureMMU(0, z, 0)
@@ -126,10 +127,10 @@ func cslCommand(arg []string) (res string) {
 		var buf bytes.Buffer
 
 		for i := csu.CSL_MIN; i < csu.CSL_MAX; i++ {
-			csl, _, _ := csu.GetSecurityLevel(i, 0)
+			csl, _, _ := imx6ul.CSU.GetSecurityLevel(i, 0)
 			buf.WriteString(fmt.Sprintf("CSL%.2d 0:%#.2x", i, csl))
 
-			csl, _, _ = csu.GetSecurityLevel(i, 1)
+			csl, _, _ = imx6ul.CSU.GetSecurityLevel(i, 1)
 			buf.WriteString(fmt.Sprintf(" 1:%#.2x\n", csl))
 		}
 
@@ -154,7 +155,7 @@ func cslCommand(arg []string) (res string) {
 		return fmt.Sprintf("invalid csl: %v", err)
 	}
 
-	err = csu.SetSecurityLevel(int(periph), int(slave), uint8(csl), false)
+	err = imx6ul.CSU.SetSecurityLevel(int(periph), int(slave), uint8(csl), false)
 
 	if err != nil {
 		return fmt.Sprintf("%v", err)
@@ -168,7 +169,7 @@ func saCommand(arg []string) (res string) {
 		var buf bytes.Buffer
 
 		for i := csu.SA_MIN; i < csu.SA_MAX; i++ {
-			if sa, _, _ := csu.GetAccess(i); sa {
+			if sa, _, _ := imx6ul.CSU.GetAccess(i); sa {
 				buf.WriteString(fmt.Sprintf("SA%.2d: secure\n", i))
 			} else {
 				buf.WriteString(fmt.Sprintf("SA%.2d: nonsecure\n", i))
@@ -185,9 +186,9 @@ func saCommand(arg []string) (res string) {
 	}
 
 	if arg[1] == "secure" {
-		err = csu.SetAccess(int(id), true, false)
+		err = imx6ul.CSU.SetAccess(int(id), true, false)
 	} else {
-		err = csu.SetAccess(int(id), false, false)
+		err = imx6ul.CSU.SetAccess(int(id), false, false)
 	}
 
 	if err != nil {

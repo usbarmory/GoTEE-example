@@ -14,7 +14,7 @@ import (
 	"sync"
 
 	"github.com/usbarmory/tamago/arm"
-	"github.com/usbarmory/tamago/soc/imx6/csu"
+	"github.com/usbarmory/tamago/soc/imx6/imx6ul"
 
 	"github.com/usbarmory/GoTEE/monitor"
 	"github.com/usbarmory/GoTEE/syscall"
@@ -149,7 +149,7 @@ func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 
 	// Set the device USDHC controller as Secure master to grant access
 	// Trusted OS DMA region.
-	if err = csu.SetAccess(id, true, false); err != nil {
+	if err = imx6ul.CSU.SetAccess(id, true, false); err != nil {
 		return
 	}
 

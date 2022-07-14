@@ -14,7 +14,6 @@ import (
 	_ "unsafe"
 
 	"github.com/usbarmory/tamago/soc/imx6"
-	"github.com/usbarmory/tamago/soc/imx6/dcp"
 	"github.com/usbarmory/tamago/soc/imx6/imx6ul"
 
 	"github.com/usbarmory/GoTEE-example/mem"
@@ -61,10 +60,10 @@ func main() {
 	if imx6.Native {
 		log.Printf("PL1 in Normal World is about to perform DCP key derivation")
 
-		dcp.Init()
+		imx6ul.DCP.Init()
 
 		// this fails after restrictions are in place (see trusted_os/tz.go)
-		k, err := dcp.DeriveKey(make([]byte, 8), make([]byte, 16), -1)
+		k, err := imx6ul.DCP.DeriveKey(make([]byte, 8), make([]byte, 16), -1)
 
 		if err != nil {
 			log.Printf("PL1 in Normal World World failed to use DCP (%v)", err)

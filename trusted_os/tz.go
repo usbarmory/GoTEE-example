@@ -9,6 +9,7 @@ package main
 import (
 	"github.com/usbarmory/tamago/soc/imx6"
 	"github.com/usbarmory/tamago/soc/imx6/csu"
+	"github.com/usbarmory/tamago/soc/imx6/imx6ul"
 	"github.com/usbarmory/tamago/soc/imx6/tzasc"
 
 	"github.com/usbarmory/GoTEE-example/mem"
@@ -22,32 +23,30 @@ func configureTrustZone(lock bool) (err error) {
 		return
 	}
 
-	csu.Init()
-
 	// grant NonSecure access to all peripherals
 	for i := csu.CSL_MIN; i < csu.CSL_MAX; i++ {
-		if err = csu.SetSecurityLevel(i, 0, csu.SEC_LEVEL_0, false); err != nil {
+		if err = imx6ul.CSU.SetSecurityLevel(i, 0, csu.SEC_LEVEL_0, false); err != nil {
 			return
 		}
 
-		if err = csu.SetSecurityLevel(i, 1, csu.SEC_LEVEL_0, false); err != nil {
+		if err = imx6ul.CSU.SetSecurityLevel(i, 1, csu.SEC_LEVEL_0, false); err != nil {
 			return
 		}
 	}
 
 	// set default TZASC region (entire memory space) to NonSecure access
-	if err = tzasc.EnableRegion(0, 0, 0, (1<<tzasc.SP_NW_RD)|(1<<tzasc.SP_NW_WR)); err != nil {
+	if err = imx6ul.TZASC.EnableRegion(0, 0, 0, (1<<tzasc.SP_NW_RD)|(1<<tzasc.SP_NW_WR)); err != nil {
 		return
 	}
 
 	if lock {
 		// restrict Secure World memory
-		if err = tzasc.EnableRegion(1, mem.SecureStart, mem.SecureSize+mem.SecureDMASize, (1<<tzasc.SP_SW_RD)|(1<<tzasc.SP_SW_WR)); err != nil {
+		if err = imx6ul.TZASC.EnableRegion(1, mem.SecureStart, mem.SecureSize+mem.SecureDMASize, (1<<tzasc.SP_SW_RD)|(1<<tzasc.SP_SW_WR)); err != nil {
 			return
 		}
 
 		// restrict Secure World applet region
-		if err = tzasc.EnableRegion(2, mem.AppletStart, mem.AppletSize, (1<<tzasc.SP_SW_RD)|(1<<tzasc.SP_SW_WR)); err != nil {
+		if err = imx6ul.TZASC.EnableRegion(2, mem.AppletStart, mem.AppletSize, (1<<tzasc.SP_SW_RD)|(1<<tzasc.SP_SW_WR)); err != nil {
 			return
 		}
 	} else {
@@ -56,48 +55,48 @@ func configureTrustZone(lock bool) (err error) {
 
 	// set all controllers to NonSecure
 	for i := csu.SA_MIN; i < csu.SA_MAX; i++ {
-		if err = csu.SetAccess(i, false, false); err != nil {
+		if err = imx6ul.CSU.SetAccess(i, false, false); err != nil {
 			return
 		}
 	}
 
 	// restrict access to GPIO4 (used by LEDs)
-	if err = csu.SetSecurityLevel(2, 1, csu.SEC_LEVEL_4, false); err != nil {
+	if err = imx6ul.CSU.SetSecurityLevel(2, 1, csu.SEC_LEVEL_4, false); err != nil {
 		return
 	}
 
 	// restrict access to IOMUXC (used by LEDs)
-	if err = csu.SetSecurityLevel(6, 1, csu.SEC_LEVEL_4, false); err != nil {
+	if err = imx6ul.CSU.SetSecurityLevel(6, 1, csu.SEC_LEVEL_4, false); err != nil {
 		return
 	}
 
 	// restrict access to USB
-	if err = csu.SetSecurityLevel(8, 0, csu.SEC_LEVEL_4, false); err != nil {
+	if err = imx6ul.CSU.SetSecurityLevel(8, 0, csu.SEC_LEVEL_4, false); err != nil {
 		return
 	}
 
 	// set USB controller as Secure
-	if err = csu.SetAccess(4, true, false); err != nil {
+	if err = imx6ul.CSU.SetAccess(4, true, false); err != nil {
 		return
 	}
 
 	// restrict access to ROMCP
-	if err = csu.SetSecurityLevel(13, 0, csu.SEC_LEVEL_4, false); err != nil {
+	if err = imx6ul.CSU.SetSecurityLevel(13, 0, csu.SEC_LEVEL_4, false); err != nil {
 		return
 	}
 
 	// restrict access to TZASC
-	if err = csu.SetSecurityLevel(16, 1, csu.SEC_LEVEL_4, false); err != nil {
+	if err = imx6ul.CSU.SetSecurityLevel(16, 1, csu.SEC_LEVEL_4, false); err != nil {
 		return
 	}
 
 	// restrict access to DCP
-	if err = csu.SetSecurityLevel(34, 0, csu.SEC_LEVEL_4, false); err != nil {
+	if err = imx6ul.CSU.SetSecurityLevel(34, 0, csu.SEC_LEVEL_4, false); err != nil {
 		return
 	}
 
 	// set DCP as Secure
-	if err = csu.SetAccess(14, true, false); err != nil {
+	if err = imx6ul.CSU.SetAccess(14, true, false); err != nil {
 		return
 	}
 
@@ -106,32 +105,32 @@ func configureTrustZone(lock bool) (err error) {
 
 func grantPeripheralAccess() (err error) {
 	// allow access to GPIO4 (used by LEDs)
-	if err = csu.SetSecurityLevel(2, 1, csu.SEC_LEVEL_0, false); err != nil {
+	if err = imx6ul.CSU.SetSecurityLevel(2, 1, csu.SEC_LEVEL_0, false); err != nil {
 		return
 	}
 
 	// allow access to IOMUXC (used by LEDs)
-	if err = csu.SetSecurityLevel(6, 1, csu.SEC_LEVEL_0, false); err != nil {
+	if err = imx6ul.CSU.SetSecurityLevel(6, 1, csu.SEC_LEVEL_0, false); err != nil {
 		return
 	}
 
 	// allow access to USB
-	if err = csu.SetSecurityLevel(8, 0, csu.SEC_LEVEL_0, false); err != nil {
+	if err = imx6ul.CSU.SetSecurityLevel(8, 0, csu.SEC_LEVEL_0, false); err != nil {
 		return
 	}
 
 	// set USB controller as NonSecure
-	if err = csu.SetAccess(4, false, false); err != nil {
+	if err = imx6ul.CSU.SetAccess(4, false, false); err != nil {
 		return
 	}
 
 	// set USDHC1 (microSD) controller as NonSecure
-	if err = csu.SetAccess(10, false, false); err != nil {
+	if err = imx6ul.CSU.SetAccess(10, false, false); err != nil {
 		return
 	}
 
 	// set USDHC2 (eMMC) controller as NonSecure
-	if err = csu.SetAccess(11, false, false); err != nil {
+	if err = imx6ul.CSU.SetAccess(11, false, false); err != nil {
 		return
 	}
 

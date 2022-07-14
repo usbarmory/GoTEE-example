@@ -3,10 +3,10 @@ module github.com/usbarmory/GoTEE-example
 go 1.18
 
 require (
-	github.com/usbarmory/GoTEE v0.0.0-20220708121739-0849cd66c11a
-	github.com/usbarmory/armory-boot v0.0.0-20220707063035-f7cce7b3ca2d
+	github.com/usbarmory/GoTEE v0.0.0-20220714120153-32a5e6230ca8
+	github.com/usbarmory/armory-boot v0.0.0-20220714105009-e09dbf750637
 	github.com/usbarmory/imx-usbnet v0.0.0-20220328084004-5f4066985548
-	github.com/usbarmory/tamago v0.0.0-20220708121131-65b80c82a7b7
+	github.com/usbarmory/tamago v0.0.0-20220714104148-d5b7c14a0fbb
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
 	golang.org/x/term v0.0.0-20220526004731-065cf7ba2467
 )
@@ -18,6 +18,8 @@ require (
 	github.com/google/btree v1.0.1 // indirect
 	github.com/pierrec/lz4/v4 v4.1.11 // indirect
 	github.com/u-root/u-root v0.8.0 // indirect
+	github.com/usbarmory/crucible v0.0.0-20220714094631-d519dfbef8db // indirect
+	go.mozilla.org/pkcs7 v0.0.0-20210826202110-33d05740a352 // indirect
 	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
 	golang.org/x/sys v0.0.0-20211019181941-9d821ace8654 // indirect

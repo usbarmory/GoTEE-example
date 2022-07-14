@@ -19,7 +19,7 @@ import (
 	usbarmory "github.com/usbarmory/tamago/board/usbarmory/mk2"
 	"github.com/usbarmory/tamago/dma"
 	"github.com/usbarmory/tamago/soc/imx6"
-	"github.com/usbarmory/tamago/soc/imx6/dcp"
+	"github.com/usbarmory/tamago/soc/imx6/imx6ul"
 
 	"github.com/usbarmory/imx-usbnet"
 
@@ -53,6 +53,8 @@ func init() {
 			panic(fmt.Sprintf("WARNING: error setting ARM frequency: %v", err))
 		}
 
+		imx6ul.DCP.Init()
+
 		debugConsole, _ := usbarmory.DetectDebugAccessory(250 * time.Millisecond)
 		<-debugConsole
 	}
@@ -61,7 +63,7 @@ func init() {
 	// iRAM/OCRAM (default DMA region) can be locked down on its own (as it
 	// is outside TZASC control).
 	dma.Init(mem.SecureDMAStart, mem.SecureDMASize)
-	dcp.DeriveKeyMemory = dma.Default()
+	imx6ul.DCP.DeriveKeyMemory = dma.Default()
 
 	log.Printf("PL1 %s/%s (%s) • TEE system/monitor (Secure World)", runtime.GOOS, runtime.GOARCH, runtime.Version())
 }
@@ -116,7 +118,7 @@ func gotee() (err error) {
 	// test restricted peripheral in Secure World
 	log.Printf("PL1 in Secure World is about to perform DCP key derivation")
 
-	k, err := dcp.DeriveKey(make([]byte, 8), make([]byte, 16), -1)
+	k, err := imx6ul.DCP.DeriveKey(make([]byte, 8), make([]byte, 16), -1)
 
 	if err != nil {
 		log.Printf("PL1 in Secure World World failed to use DCP (%v)", err)
