@@ -7,19 +7,18 @@
 package main
 
 import (
-	"github.com/usbarmory/tamago/soc/imx6"
-	"github.com/usbarmory/tamago/soc/imx6/csu"
-	"github.com/usbarmory/tamago/soc/imx6/imx6ul"
-	"github.com/usbarmory/tamago/soc/imx6/tzasc"
+	"github.com/usbarmory/tamago/arm/tzc380"
+	"github.com/usbarmory/tamago/soc/nxp/csu"
+	"github.com/usbarmory/tamago/soc/nxp/imx6ul"
 
 	"github.com/usbarmory/GoTEE-example/mem"
 )
 
 func configureTrustZone(lock bool) (err error) {
 	// grant NonSecure access to CP10 and CP11
-	imx6.ARM.NonSecureAccessControl(1<<11 | 1<<10)
+	imx6ul.ARM.NonSecureAccessControl(1<<11 | 1<<10)
 
-	if !imx6.Native {
+	if !imx6ul.Native {
 		return
 	}
 
@@ -35,18 +34,18 @@ func configureTrustZone(lock bool) (err error) {
 	}
 
 	// set default TZASC region (entire memory space) to NonSecure access
-	if err = imx6ul.TZASC.EnableRegion(0, 0, 0, (1<<tzasc.SP_NW_RD)|(1<<tzasc.SP_NW_WR)); err != nil {
+	if err = imx6ul.TZASC.EnableRegion(0, 0, 0, (1<<tzc380.SP_NW_RD)|(1<<tzc380.SP_NW_WR)); err != nil {
 		return
 	}
 
 	if lock {
 		// restrict Secure World memory
-		if err = imx6ul.TZASC.EnableRegion(1, mem.SecureStart, mem.SecureSize+mem.SecureDMASize, (1<<tzasc.SP_SW_RD)|(1<<tzasc.SP_SW_WR)); err != nil {
+		if err = imx6ul.TZASC.EnableRegion(1, mem.SecureStart, mem.SecureSize+mem.SecureDMASize, (1<<tzc380.SP_SW_RD)|(1<<tzc380.SP_SW_WR)); err != nil {
 			return
 		}
 
 		// restrict Secure World applet region
-		if err = imx6ul.TZASC.EnableRegion(2, mem.AppletStart, mem.AppletSize, (1<<tzasc.SP_SW_RD)|(1<<tzasc.SP_SW_WR)); err != nil {
+		if err = imx6ul.TZASC.EnableRegion(2, mem.AppletStart, mem.AppletSize, (1<<tzc380.SP_SW_RD)|(1<<tzc380.SP_SW_WR)); err != nil {
 			return
 		}
 	} else {

@@ -15,6 +15,6 @@ const (
 	SYS_EXIT  = syscall.SYS_EXIT
 )
 
-// defined in api.s
+// defined in api_*.s
 func printSecure(byte)
 func exit()

@@ -18,8 +18,7 @@ import (
 	"github.com/usbarmory/tamago/arm"
 	usbarmory "github.com/usbarmory/tamago/board/usbarmory/mk2"
 	"github.com/usbarmory/tamago/dma"
-	"github.com/usbarmory/tamago/soc/imx6"
-	"github.com/usbarmory/tamago/soc/imx6/imx6ul"
+	"github.com/usbarmory/tamago/soc/nxp/imx6ul"
 
 	"github.com/usbarmory/imx-usbnet"
 
@@ -48,10 +47,8 @@ func init() {
 	log.SetFlags(log.Ltime)
 	log.SetOutput(os.Stdout)
 
-	if imx6.Native {
-		if err := imx6.SetARMFreq(900); err != nil {
-			panic(fmt.Sprintf("WARNING: error setting ARM frequency: %v", err))
-		}
+	if imx6ul.Native {
+		imx6ul.SetARMFreq(900)
 
 		imx6ul.DCP.Init()
 
@@ -89,7 +86,7 @@ func gotee() (err error) {
 	go run(ta, &wg)
 	go run(os, &wg)
 
-	if !imx6.Native {
+	if !imx6ul.Native {
 		go func() {
 			for i := 0; i < 60; i++ {
 				time.Sleep(1 * time.Second)
@@ -103,7 +100,7 @@ func gotee() (err error) {
 
 	usbarmory.LED("blue", false)
 
-	if !imx6.Native {
+	if !imx6ul.Native {
 		return
 	}
 
@@ -137,7 +134,7 @@ func linux(device string) (err error) {
 	}
 
 	// Initialize interrupt controller, route all interrupts to NonSecure
-	arm.InitGIC(imx6.GIC_BASE)
+	arm.InitGIC(imx6ul.GIC_BASE)
 
 	log.Printf("PL1 launching Linux")
 	run(os, nil)
@@ -148,7 +145,7 @@ func linux(device string) (err error) {
 func main() {
 	defer log.Printf("PL1 says goodbye")
 
-	if !imx6.Native {
+	if !imx6ul.Native {
 		if err := gotee(); err != nil {
 			log.Fatal(err)
 		}

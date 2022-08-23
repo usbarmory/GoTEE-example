@@ -4,7 +4,7 @@
 // Use of this source code is governed by the license
 // that can be found in the LICENSE file.
 
-package main
+package util
 
 import (
 	"bytes"
@@ -19,7 +19,7 @@ var nonSecureOutput bytes.Buffer
 const outputLimit = 1024
 const flushChr = 0x0a // \n
 
-func bufferedStdoutLog(c byte, ns bool) {
+func BufferedStdoutLog(c byte, ns bool) {
 	var buf *bytes.Buffer
 
 	if ns {
@@ -36,7 +36,7 @@ func bufferedStdoutLog(c byte, ns bool) {
 	}
 }
 
-func bufferedTermLog(c byte, ns bool, t *term.Terminal) {
+func BufferedTermLog(c byte, ns bool, t *term.Terminal) {
 	var buf *bytes.Buffer
 	var color []byte
 

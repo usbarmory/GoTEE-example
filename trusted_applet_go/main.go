@@ -37,25 +37,25 @@ func init() {
 func testRNG(n int) {
 	buf := make([]byte, n)
 	syscall.GetRandom(buf, uint(n))
-	log.Printf("PL0 obtained %d random bytes from PL1: %x", n, buf)
+	log.Printf("applet obtained %d random bytes from PL1: %x", n, buf)
 }
 
 func testRPC() {
 	res := ""
 	req := "hello"
 
-	log.Printf("PL0 requests echo via RPC: %s", req)
+	log.Printf("applet requests echo via RPC: %s", req)
 	err := syscall.Call("RPC.Echo", req, &res)
 
 	if err != nil {
-		log.Printf("PL0 received RPC error: %v", err)
+		log.Printf("applet received RPC error: %v", err)
 	} else {
-		log.Printf("PL0 received echo via RPC: %s", res)
+		log.Printf("applet received echo via RPC: %s", res)
 	}
 }
 
 func main() {
-	log.Printf("PL0 %s/%s (%s) • TEE user applet (Secure World)", runtime.GOOS, runtime.GOARCH, runtime.Version())
+	log.Printf("%s/%s (%s) • TEE user applet", runtime.GOOS, runtime.GOARCH, runtime.Version())
 
 	// test syscall interface
 	testRNG(16)
@@ -63,7 +63,7 @@ func main() {
 	// test RPC interface
 	testRPC()
 
-	log.Printf("PL0 will sleep for 5 seconds")
+	log.Printf("applet will sleep for 5 seconds")
 
 	ledStatus := util.LEDStatus{
 		Name: "blue",
@@ -76,16 +76,16 @@ func main() {
 		ledStatus.On = !ledStatus.On
 
 		time.Sleep(1 * time.Second)
-		log.Printf("PL0 says %d missisipi", i+1)
+		log.Printf("applet says %d missisipi", i+1)
 	}
 
 	// test memory protection
-	mem.TestAccess("PL0")
+	mem.TestAccess("applet")
 
 	// this should be unreachable
 
 	// test exception handling
-	mem.TestDataAbort("PL0")
+	mem.TestDataAbort("applet")
 
 	// terminate applet
 	applet.Exit()

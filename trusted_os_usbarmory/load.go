@@ -14,12 +14,13 @@ import (
 	"sync"
 
 	"github.com/usbarmory/tamago/arm"
-	"github.com/usbarmory/tamago/soc/imx6/imx6ul"
+	"github.com/usbarmory/tamago/soc/nxp/imx6ul"
 
 	"github.com/usbarmory/GoTEE/monitor"
 	"github.com/usbarmory/GoTEE/syscall"
 
 	"github.com/usbarmory/GoTEE-example/mem"
+	"github.com/usbarmory/GoTEE-example/util"
 
 	"github.com/usbarmory/armory-boot/config"
 	"github.com/usbarmory/armory-boot/disk"
@@ -57,9 +58,9 @@ func logHandler(ctx *monitor.ExecCtx) (err error) {
 	switch {
 	case ctx.R0 == syscall.SYS_WRITE:
 		if ssh != nil {
-			bufferedTermLog(byte(ctx.R1), ctx.NonSecure(), ssh.Term)
+			util.BufferedTermLog(byte(ctx.R1), ctx.NonSecure(), ssh.Term)
 		} else {
-			bufferedStdoutLog(byte(ctx.R1), ctx.NonSecure())
+			util.BufferedStdoutLog(byte(ctx.R1), ctx.NonSecure())
 		}
 	case ctx.NonSecure() && ctx.R0 == syscall.SYS_EXIT:
 		if ctx.Debug {

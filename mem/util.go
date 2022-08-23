@@ -14,10 +14,10 @@ import (
 
 // TestAccess attempts to read one 32-bit word from Secure World memory.
 func TestAccess(tag string) {
-	pl1TextStart := SecureStart + uint32(0x10000)
-	mem := (*uint32)(unsafe.Pointer(uintptr(pl1TextStart)))
+	addr := SecureStart + uint32(0x10000)
+	mem := (*uint32)(unsafe.Pointer(uintptr(addr)))
 
-	log.Printf("%s is about to read PL1 Secure World memory at %#x", tag, pl1TextStart)
+	log.Printf("%s is about to read secure memory at %#x", tag, addr)
 	val := atomic.LoadUint32(mem)
 
 	res := "success - *insecure configuration*"
@@ -26,7 +26,7 @@ func TestAccess(tag string) {
 		res = "fail (expected, but you should never see this)"
 	}
 
-	log.Printf("%s read PL1 Secure World memory %#x: %#x (%s)", tag, pl1TextStart, val, res)
+	log.Printf("%s read secure memory %#x: %#x (%s)", tag, addr, val, res)
 }
 
 // TestDataAbort abort attempts a write to unallocated memory.

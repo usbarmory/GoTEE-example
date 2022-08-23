@@ -7,14 +7,12 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"runtime"
 	_ "unsafe"
 
-	"github.com/usbarmory/tamago/soc/imx6"
-	"github.com/usbarmory/tamago/soc/imx6/imx6ul"
+	"github.com/usbarmory/tamago/soc/nxp/imx6ul"
 
 	"github.com/usbarmory/GoTEE-example/mem"
 )
@@ -27,13 +25,13 @@ var ramSize uint32 = mem.NonSecureSize
 
 //go:linkname hwinit runtime.hwinit
 func hwinit() {
-	imx6.Init()
+	imx6ul.Init()
 	imx6ul.UART2.Init()
 }
 
 //go:linkname printk runtime.printk
 func printk(c byte) {
-	if imx6.Native {
+	if imx6ul.Native {
 		// monitor call to request logs on Secure World SSH console
 		printSecure(c)
 	} else {
@@ -45,19 +43,13 @@ func init() {
 	log.SetFlags(log.Ltime)
 	log.SetOutput(os.Stdout)
 
-	if !imx6.Native {
-		return
-	}
-
-	if err := imx6.SetARMFreq(900); err != nil {
-		panic(fmt.Sprintf("WARNING: error setting ARM frequency: %v", err))
-	}
+	imx6ul.SetARMFreq(900)
 }
 
 func main() {
-	log.Printf("PL1 %s/%s (%s) • system/supervisor (Normal World)", runtime.GOOS, runtime.GOARCH, runtime.Version())
+	log.Printf("%s/%s (%s) • system/supervisor (Normal World)", runtime.GOOS, runtime.GOARCH, runtime.Version())
 
-	if imx6.Native {
+	if imx6ul.Native {
 		log.Printf("PL1 in Normal World is about to perform DCP key derivation")
 
 		imx6ul.DCP.Init()

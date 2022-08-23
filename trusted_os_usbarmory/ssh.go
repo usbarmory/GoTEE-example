@@ -23,9 +23,8 @@ import (
 	"github.com/usbarmory/tamago/bits"
 	usbarmory "github.com/usbarmory/tamago/board/usbarmory/mk2"
 	"github.com/usbarmory/tamago/dma"
-	"github.com/usbarmory/tamago/soc/imx6"
-	"github.com/usbarmory/tamago/soc/imx6/csu"
-	"github.com/usbarmory/tamago/soc/imx6/imx6ul"
+	"github.com/usbarmory/tamago/soc/nxp/csu"
+	"github.com/usbarmory/tamago/soc/nxp/imx6ul"
 )
 
 const MD_LIMIT = 102400
@@ -59,15 +58,11 @@ func memAccess(start uint32, size int, w []byte) (b []byte) {
 	if z := uint32(1 << 20); start < z {
 		imx6ul.CSU.SetAccess(0, true, false)
 
-		imx6.ARM.ConfigureMMU(0, z, (arm.TTE_AP_001<<10)|arm.TTE_SECTION)
-		defer imx6.ARM.ConfigureMMU(0, z, 0)
+		imx6ul.ARM.ConfigureMMU(0, z, (arm.TTE_AP_001<<10)|arm.TTE_SECTION)
+		defer imx6ul.ARM.ConfigureMMU(0, z, 0)
 	}
 
-	mem := &dma.Region{
-		Start: uint32(start),
-		Size:  size,
-	}
-	mem.Init()
+	mem, _ := dma.NewRegion(start, size, true)
 
 	start, buf := mem.Reserve(size, 0)
 	defer mem.Release(start)
@@ -209,7 +204,7 @@ func linuxCommand(arg []string) (res string) {
 func dbg() string {
 	var buf bytes.Buffer
 
-	dbgAuthStatus := imx6.ARM.DebugStatus()
+	dbgAuthStatus := imx6ul.ARM.DebugStatus()
 
 	buf.WriteString("| type                    | implemented | enabled |\n")
 	buf.WriteString("|-------------------------|-------------|---------|\n")
