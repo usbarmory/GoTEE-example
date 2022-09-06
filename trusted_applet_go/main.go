@@ -11,7 +11,6 @@ import (
 	"os"
 	"runtime"
 	"time"
-	_ "unsafe"
 
 	"github.com/usbarmory/GoTEE/applet"
 	"github.com/usbarmory/GoTEE/syscall"
@@ -19,15 +18,6 @@ import (
 	"github.com/usbarmory/GoTEE-example/mem"
 	"github.com/usbarmory/GoTEE-example/util"
 )
-
-//go:linkname ramStart runtime.ramStart
-var ramStart uint32 = mem.AppletStart
-
-//go:linkname ramSize runtime.ramSize
-var ramSize uint32 = mem.AppletSize
-
-//go:linkname ramStackOffset runtime.ramStackOffset
-var ramStackOffset uint32 = 0x100
 
 func init() {
 	log.SetFlags(log.Ltime)
@@ -37,7 +27,7 @@ func init() {
 func testRNG(n int) {
 	buf := make([]byte, n)
 	syscall.GetRandom(buf, uint(n))
-	log.Printf("applet obtained %d random bytes from PL1: %x", n, buf)
+	log.Printf("applet obtained %d random bytes from monitor: %x", n, buf)
 }
 
 func testRPC() {
@@ -70,7 +60,7 @@ func main() {
 		On:   true,
 	}
 
-	// test concurrent execution of PL0 applet and PL1 supervisor
+	// test concurrent execution of applet and supervisor/monitor
 	for i := 0; i < 5; i++ {
 		syscall.Call("RPC.LED", ledStatus, nil)
 		ledStatus.On = !ledStatus.On

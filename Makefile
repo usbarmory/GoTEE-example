@@ -19,11 +19,31 @@ APP := ""
 TARGET ?= "usbarmory"
 TEXT_START := 0x80010000 # ramStart (defined in mem.go under relevant tamago/soc package) + 0x10000
 
+ifeq ($(TARGET),sifive_u)
+
+ifeq ($(MAKECMDGOALS),trusted_applet_go)
+ENTRY_POINT := _rt0_riscv64_tamago_start
+else ifeq ($(MAKECMDGOALS),nonsecure_os_go)
+ENTRY_POINT := _rt0_riscv64_tamago_start
+else
+ENTRY_POINT := _rt0_riscv64_tamago
+endif
+
+GOENV := GO_EXTLINK_ENABLED=0 CGO_ENABLED=0 GOOS=tamago GOARCH=riscv64
+QEMU ?= qemu-system-riscv64 -machine sifive_u -m 512M \
+        -nographic -monitor none -serial stdio -net none \
+        -semihosting \
+        -dtb $(CURDIR)/qemu.dtb \
+        -bios $(CURDIR)/trusted_os_$(TARGET)/bios/bios.bin
+else
+
 GOENV := GO_EXTLINK_ENABLED=0 CGO_ENABLED=0 GOOS=tamago GOARM=7 GOARCH=arm
 ENTRY_POINT := _rt0_arm_tamago
 QEMU ?= qemu-system-arm -machine mcimx6ul-evk -cpu cortex-a7 -m 512M \
         -nographic -monitor none -serial null -serial stdio -net none \
         -semihosting
+
+endif
 
 GOFLAGS = -tags ${TARGET},${BUILD_TAGS} -trimpath -ldflags "-T ${TEXT_START} -E ${ENTRY_POINT} -R 0x1000 -X 'main.Build=${BUILD}' -X 'main.Revision=${REV}'"
 RUSTFLAGS = -C linker=arm-none-eabi-ld -C link-args="--Ttext=$(TEXT_START)" --target armv7a-none-eabi
@@ -37,7 +57,7 @@ elf: $(APP).elf
 trusted_os: APP=trusted_os_$(TARGET)
 trusted_os: DIR=$(CURDIR)/trusted_os_$(TARGET)
 trusted_os: TEXT_START=0x98010000
-trusted_os: imx
+trusted_os: elf
 
 trusted_os_signed: APP=trusted_os_$(TARGET)
 trusted_os_signed: DIR=$(CURDIR)/trusted_os_$(TARGET)
@@ -105,6 +125,15 @@ $(APP).dcd: GOMODCACHE=$(shell ${TAMAGO} env GOMODCACHE)
 $(APP).dcd: TAMAGO_PKG=$(shell grep "github.com/usbarmory/tamago v" go.mod | awk '{print $$1"@"$$2}')
 $(APP).dcd: dcd
 
+#### RISC-V targets ####
+
+qemu.dtb: GOMODCACHE=$(shell ${TAMAGO} env GOMODCACHE)
+qemu.dtb: TAMAGO_PKG=$(shell grep "github.com/usbarmory/tamago v" go.mod | awk '{print $$1"@"$$2}')
+qemu.dtb:
+	echo $(GOMODCACHE)
+	echo $(TAMAGO_PKG)
+	dtc -I dts -O dtb $(GOMODCACHE)/$(TAMAGO_PKG)/board/qemu/sifive_u/qemu-riscv64-sifive_u.dts -o $(CURDIR)/qemu.dtb 2> /dev/null
+
 #### utilities ####
 
 check_tamago:
@@ -117,7 +146,7 @@ dcd:
 	cp -f $(GOMODCACHE)/$(TAMAGO_PKG)/board/usbarmory/mk2/imximage.cfg $(CURDIR)/bin/$(APP).dcd; \
 
 clean:
-	@rm -fr $(CURDIR)/bin/* $(CURDIR)/trusted_os_*/assets/*
+	@rm -fr $(CURDIR)/bin/* $(CURDIR)/trusted_os_*/assets/* $(CURDIR)/qemu.dtb
 
 qemu:
 	$(QEMU) -kernel $(CURDIR)/bin/trusted_os_$(TARGET).elf
@@ -127,8 +156,20 @@ qemu-gdb:
 
 #### application target ####
 
+ifeq ($(TARGET),sifive_u)
+
+$(APP).elf: check_tamago qemu.dtb
+	cd $(DIR) && $(GOENV) $(TAMAGO) build -tags ${BUILD_TAGS} $(GOFLAGS) -o $(CURDIR)/bin/$(APP).elf && \
+	RT0=$$(riscv64-linux-gnu-readelf -a $(CURDIR)/bin/$(APP).elf|grep -i 'Entry point' | cut -dx -f2) && \
+	echo ".equ RT0_RISCV64_TAMAGO, 0x$$RT0" > $(CURDIR)/trusted_os_$(TARGET)/bios/cfg.inc && \
+	cd $(CURDIR)/trusted_os_$(TARGET)/bios && ./build.sh
+
+else
+
 $(APP).elf: check_tamago
 	cd $(DIR) && $(GOENV) $(TAMAGO) build -tags ${BUILD_TAGS} $(GOFLAGS) -o $(CURDIR)/bin/$(APP).elf
+
+endif
 
 #### HAB secure boot ####
 

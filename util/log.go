@@ -19,13 +19,13 @@ var nonSecureOutput bytes.Buffer
 const outputLimit = 1024
 const flushChr = 0x0a // \n
 
-func BufferedStdoutLog(c byte, ns bool) {
+func BufferedStdoutLog(c byte, secure bool) {
 	var buf *bytes.Buffer
 
-	if ns {
-		buf = &nonSecureOutput
-	} else {
+	if secure {
 		buf = &secureOutput
+	} else {
+		buf = &nonSecureOutput
 	}
 
 	buf.WriteByte(c)
@@ -36,16 +36,16 @@ func BufferedStdoutLog(c byte, ns bool) {
 	}
 }
 
-func BufferedTermLog(c byte, ns bool, t *term.Terminal) {
+func BufferedTermLog(c byte, secure bool, t *term.Terminal) {
 	var buf *bytes.Buffer
 	var color []byte
 
-	if ns {
-		buf = &nonSecureOutput
-		color = t.Escape.Red
-	} else {
+	if secure {
 		buf = &secureOutput
 		color = t.Escape.Green
+	} else {
+		buf = &nonSecureOutput
+		color = t.Escape.Red
 	}
 
 	buf.WriteByte(c)

@@ -56,20 +56,20 @@ func logHandler(ctx *monitor.ExecCtx) (err error) {
 	}
 
 	switch {
-	case ctx.R0 == syscall.SYS_WRITE:
+	case ctx.A0() == syscall.SYS_WRITE:
 		if ssh != nil {
-			util.BufferedTermLog(byte(ctx.R1), ctx.NonSecure(), ssh.Term)
+			util.BufferedTermLog(byte(ctx.A1()), !ctx.NonSecure(), ssh.Term)
 		} else {
-			util.BufferedStdoutLog(byte(ctx.R1), ctx.NonSecure())
+			util.BufferedStdoutLog(byte(ctx.A1()), !ctx.NonSecure())
 		}
-	case ctx.NonSecure() && ctx.R0 == syscall.SYS_EXIT:
+	case ctx.NonSecure() && ctx.A0() == syscall.SYS_EXIT:
 		if ctx.Debug {
 			ctx.Print()
 		}
 
 		return errors.New("exit")
 	default:
-		err = defaultHandler(ctx)
+		return defaultHandler(ctx)
 	}
 
 	return
