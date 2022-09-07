@@ -34,7 +34,7 @@ func init() {
 
 	dma.Init(mem.SecureDMAStart, mem.SecureDMASize)
 
-	log.Printf("%s/%s (%s) • TEE Security Monitor", runtime.GOOS, runtime.GOARCH, runtime.Version())
+	log.Printf("%s/%s (%s) • TEE Security Monitor (M-mode)", runtime.GOOS, runtime.GOARCH, runtime.Version())
 }
 
 func gotee() (err error) {
@@ -46,7 +46,7 @@ func gotee() (err error) {
 		return
 	}
 
-	if os, err = loadSupervisor(false); err != nil {
+	if os, err = loadSupervisor(); err != nil {
 		return
 	}
 

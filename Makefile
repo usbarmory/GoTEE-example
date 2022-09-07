@@ -35,6 +35,11 @@ QEMU ?= qemu-system-riscv64 -machine sifive_u -m 512M \
         -semihosting \
         -dtb $(CURDIR)/qemu.dtb \
         -bios $(CURDIR)/trusted_os_$(TARGET)/bios/bios.bin
+
+ARCH = "riscv64"
+RUST_LINKER = "riscv64-linux-gnu-ld"
+RUST_TARGET = "riscv64gc-unknown-none-elf"
+
 else
 
 GOENV := GO_EXTLINK_ENABLED=0 CGO_ENABLED=0 GOOS=tamago GOARM=7 GOARCH=arm
@@ -43,10 +48,14 @@ QEMU ?= qemu-system-arm -machine mcimx6ul-evk -cpu cortex-a7 -m 512M \
         -nographic -monitor none -serial null -serial stdio -net none \
         -semihosting
 
+ARCH = "arm"
+RUST_LINKER = "arm-none-eabi-ld"
+RUST_TARGET = "armv7a-none-eabi"
+
 endif
 
 GOFLAGS = -tags ${TARGET},${BUILD_TAGS} -trimpath -ldflags "-T ${TEXT_START} -E ${ENTRY_POINT} -R 0x1000 -X 'main.Build=${BUILD}' -X 'main.Revision=${REV}'"
-RUSTFLAGS = -C linker=arm-none-eabi-ld -C link-args="--Ttext=$(TEXT_START)" --target armv7a-none-eabi
+RUSTFLAGS = -C linker=${RUST_LINKER} -C link-args="--Ttext=$(TEXT_START)" --target ${RUST_TARGET}
 
 .PHONY: clean qemu qemu-gdb trusted_applet_rust
 
@@ -73,7 +82,7 @@ trusted_applet_go: elf
 
 trusted_applet_rust: TEXT_START=0x9c010000
 trusted_applet_rust:
-	cd $(CURDIR)/trusted_applet_rust && rustc ${RUSTFLAGS} -o $(CURDIR)/bin/trusted_applet.elf main.rs
+	cd $(CURDIR)/trusted_applet_rust && rustc ${RUSTFLAGS} -o $(CURDIR)/bin/trusted_applet.elf main_${ARCH}.rs
 	mkdir -p $(CURDIR)/trusted_os_$(TARGET)/assets
 	cp $(CURDIR)/bin/trusted_applet.elf $(CURDIR)/trusted_os_$(TARGET)/assets
 
@@ -83,11 +92,6 @@ nonsecure_os_go: TEXT_START=0x80010000
 nonsecure_os_go: elf
 	mkdir -p $(CURDIR)/trusted_os_$(TARGET)/assets
 	cp $(CURDIR)/bin/nonsecure_os_go.elf $(CURDIR)/trusted_os_$(TARGET)/assets
-
-nonsecure_os_linux: APP=nonsecure_os_linux
-nonsecure_os_linux: DIR=$(CURDIR)/nonsecure_os_linux
-nonsecure_os_linux: TEXT_START=0x80010000
-nonsecure_os_linux: todo
 
 #### ARM targets ####
 

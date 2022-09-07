@@ -25,13 +25,12 @@ var ramSize uint64 = mem.NonSecureSize
 
 //go:linkname hwinit runtime.hwinit
 func hwinit() {
-	// TODO: fu540.SetSupervisorExceptionHandler()
-	fu540.UART1.Init()
+	fu540.RV64.InitSupervisor()
 }
 
 //go:linkname printk runtime.printk
 func printk(c byte) {
-	fu540.UART1.Tx(c)
+	printSecure(c)
 }
 
 func init() {

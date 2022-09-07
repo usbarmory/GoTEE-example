@@ -71,18 +71,16 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 		return nil, fmt.Errorf("SM could not load applet, %v", err)
 	}
 
-	log.Printf("SM loaded applet addr:%#x size:%d entry:%#x", ta.Memory.Start, len(taELF), ta.PC)
+	log.Printf("SM loaded applet addr:%#x entry:%#x size:%d", ta.Memory.Start, ta.PC, len(taELF))
 
-	// TODO: move this at context switch
-	if err = configureAppletPMP(true); err != nil {
-		return nil, fmt.Errorf("SM could not configure applet PMP, %v", err)
-	}
+	// set memory protection function
+	ta.PMP = configurePMP
 
 	// register example RPC receiver
 	ta.Server.Register(&RPC{})
 
-	// set stack pointer to the end of applet memory
-	ta.X2 = mem.AppletStart + mem.AppletSize
+	// set stack pointer to the end of available memory
+	ta.X2 = uint64(ta.Memory.End())
 
 	// override default handler to improve logging
 	ta.Handler = logHandler
@@ -92,7 +90,7 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 }
 
 // loadSupervisor loads a TamaGo unikernel as main OS.
-func loadSupervisor(lock bool) (os *monitor.ExecCtx, err error) {
+func loadSupervisor() (os *monitor.ExecCtx, err error) {
 	image := &exec.ELFImage{
 		Region: mem.NonSecureRegion,
 		ELF:    osELF,
@@ -106,11 +104,13 @@ func loadSupervisor(lock bool) (os *monitor.ExecCtx, err error) {
 		return nil, fmt.Errorf("SM could not load kernel, %v", err)
 	}
 
-	log.Printf("SM loaded kernel addr:%#x size:%d entry:%#x", os.Memory.Start, len(osELF), os.PC)
+	log.Printf("SM loaded kernel addr:%#x entry:%#x size:%d", os.Memory.Start, os.PC, len(osELF))
 
-	//if err = configureSupervisorPMP(lock); err != nil {
-	//	return nil, fmt.Errorf("SM could not configure supervisor PMP, %v", err)
-	//}
+	// set memory protection function
+	os.PMP = configurePMP
+
+	// set stack pointer to the end of available memory
+	os.X2 = uint64(os.Memory.End())
 
 	// override default handler to improve logging
 	os.Handler = logHandler
@@ -120,7 +120,7 @@ func loadSupervisor(lock bool) (os *monitor.ExecCtx, err error) {
 }
 
 func run(ctx *monitor.ExecCtx, wg *sync.WaitGroup) {
-	log.Printf("SM starting sp:%#.8x pc:%#.8x", ctx.X2, ctx.PC)
+	log.Printf("SM starting secure:%v sp:%#.8x pc:%#.8x", ctx.Secure(), ctx.X2, ctx.PC)
 
 	err := ctx.Run()
 
