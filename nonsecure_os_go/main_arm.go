@@ -26,17 +26,11 @@ var ramSize uint32 = mem.NonSecureSize
 //go:linkname hwinit runtime.hwinit
 func hwinit() {
 	imx6ul.Init()
-	imx6ul.UART2.Init()
 }
 
 //go:linkname printk runtime.printk
 func printk(c byte) {
-	if imx6ul.Native {
-		// monitor call to request logs on Secure World SSH console
-		printSecure(c)
-	} else {
-		imx6ul.UART2.Tx(c)
-	}
+	printSecure(c)
 }
 
 func init() {
@@ -47,10 +41,10 @@ func init() {
 }
 
 func main() {
-	log.Printf("%s/%s (%s) • system/supervisor (Normal World)", runtime.GOOS, runtime.GOARCH, runtime.Version())
+	log.Printf("%s/%s (%s) • system/supervisor (Non-secure)", runtime.GOOS, runtime.GOARCH, runtime.Version())
 
 	if imx6ul.Native {
-		log.Printf("PL1 in Normal World is about to perform DCP key derivation")
+		log.Printf("supervisor is about to perform DCP key derivation")
 
 		imx6ul.DCP.Init()
 
@@ -58,20 +52,20 @@ func main() {
 		k, err := imx6ul.DCP.DeriveKey(make([]byte, 8), make([]byte, 16), -1)
 
 		if err != nil {
-			log.Printf("PL1 in Normal World World failed to use DCP (%v)", err)
+			log.Printf("supervisor failed to use DCP (%v)", err)
 		} else {
-			log.Printf("PL1 in Normal World successfully used DCP (%x)", k)
+			log.Printf("supervisor successfully used DCP (%x)", k)
 		}
 
-		// Uncomment to test memory protection, this will hang Normal World and
-		// therefore everything.
-		// mem.TestAccess("PL1 in Normal World")
+		// Uncomment to test memory protection, this will hang NS
+		// context and therefore everything.
+		// mem.TestAccess("Non-secure OS")
 	}
 
 	// yield back to secure monitor
-	log.Printf("PL1 in Normal World is about to yield back")
+	log.Printf("supervisor is about to yield back")
 	exit()
 
 	// this should be unreachable
-	log.Printf("PL1 in Normal World says goodbye")
+	log.Printf("supervisor says goodbye")
 }

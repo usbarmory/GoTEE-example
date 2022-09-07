@@ -42,7 +42,7 @@ var taELF []byte
 var osELF []byte
 
 // bootConfLinux is the path to the armory-boot configuration file for loading a
-// Linux kernel as Normal World OS.
+// Linux kernel as Non-secure OS.
 const bootConfLinux = "/boot/armory-boot-nonsecure.conf"
 
 // logHandler allows to override the GoTEE default handler and avoid
@@ -87,16 +87,16 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 	}
 
 	if ta, err = monitor.Load(image.Entry(), image.Region, true); err != nil {
-		return nil, fmt.Errorf("PL1 could not load applet, %v", err)
+		return nil, fmt.Errorf("SM could not load applet, %v", err)
 	}
 
-	log.Printf("PL1 loaded applet addr:%#x size:%d entry:%#x", ta.Memory.Start, len(taELF), ta.R15)
+	log.Printf("SM loaded applet addr:%#x entry:%#x size:%d", ta.Memory.Start, ta.R15, len(taELF))
 
 	// register example RPC receiver
 	ta.Server.Register(&RPC{})
 
-	// set stack pointer to the end of applet memory
-	ta.R13 = mem.AppletStart + mem.AppletSize
+	// set stack pointer to the end of available memory
+	ta.R13 = ta.Memory.End()
 
 	// override default handler to improve logging
 	ta.Handler = logHandler
@@ -117,13 +117,13 @@ func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 	}
 
 	if os, err = monitor.Load(image.Entry(), image.Region, false); err != nil {
-		return nil, fmt.Errorf("PL1 could not load kernel, %v", err)
+		return nil, fmt.Errorf("SM could not load kernel, %v", err)
 	}
 
-	log.Printf("PL1 loaded kernel addr:%#x size:%d entry:%#x", os.Memory.Start, len(osELF), os.R15)
+	log.Printf("SM loaded kernel addr:%#x entry:%#x size:%d", os.Memory.Start, os.R15, len(osELF))
 
 	if err = configureTrustZone(lock); err != nil {
-		return nil, fmt.Errorf("PL1 could not configure TrustZone, %v", err)
+		return nil, fmt.Errorf("SM could not configure TrustZone, %v", err)
 	}
 
 	// override default handler to improve logging
@@ -184,17 +184,17 @@ func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 	}
 
 	if os, err = monitor.Load(image.Entry(), image.Region, false); err != nil {
-		return nil, fmt.Errorf("PL1 could not load kernel, %v", err)
+		return nil, fmt.Errorf("SM could not load kernel, %v", err)
 	}
 
-	log.Printf("PL1 loaded kernel addr:%#x size:%d entry:%#x", os.Memory.Start, len(image.Kernel), os.R15)
+	log.Printf("SM loaded kernel addr:%#x size:%d entry:%#x", os.Memory.Start, len(image.Kernel), os.R15)
 
 	if err = configureTrustZone(true); err != nil {
-		return nil, fmt.Errorf("PL1 could not configure TrustZone, %v", err)
+		return nil, fmt.Errorf("SM could not configure TrustZone, %v", err)
 	}
 
 	if err = grantPeripheralAccess(); err != nil {
-		return nil, fmt.Errorf("PL1 could not configure TrustZone peripheral access, %v", err)
+		return nil, fmt.Errorf("SM could not configure TrustZone peripheral access, %v", err)
 	}
 
 	os.R0 = 0
@@ -209,7 +209,7 @@ func run(ctx *monitor.ExecCtx, wg *sync.WaitGroup) {
 	mode := arm.ModeName(int(ctx.SPSR) & 0x1f)
 	ns := ctx.NonSecure()
 
-	log.Printf("PL1 starting mode:%s ns:%v sp:%#.8x pc:%#.8x", mode, ns, ctx.R13, ctx.R15)
+	log.Printf("SM starting mode:%s sp:%#.8x pc:%#.8x ns:%v", mode, ctx.R13, ctx.R15, ns)
 
 	err := ctx.Run()
 
@@ -217,5 +217,5 @@ func run(ctx *monitor.ExecCtx, wg *sync.WaitGroup) {
 		wg.Done()
 	}
 
-	log.Printf("PL1 stopped mode:%s ns:%v sp:%#.8x lr:%#.8x pc:%#.8x err:%v", mode, ns, ctx.R13, ctx.R14, ctx.R15, err)
+	log.Printf("SM stopped mode:%s sp:%#.8x lr:%#.8x pc:%#.8x ns:%v err:%v", mode, ctx.R13, ctx.R14, ctx.R15, ns, err)
 }
