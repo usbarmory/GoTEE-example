@@ -120,7 +120,7 @@ func loadSupervisor() (os *monitor.ExecCtx, err error) {
 }
 
 func run(ctx *monitor.ExecCtx, wg *sync.WaitGroup) {
-	log.Printf("SM starting secure:%v sp:%#.8x pc:%#.8x", ctx.Secure(), ctx.X2, ctx.PC)
+	log.Printf("SM starting sp:%#.8x pc:%#.8x secure:%v", ctx.X2, ctx.PC, ctx.Secure())
 
 	err := ctx.Run()
 
