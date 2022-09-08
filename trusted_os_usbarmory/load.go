@@ -90,7 +90,7 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 		return nil, fmt.Errorf("SM could not load applet, %v", err)
 	}
 
-	log.Printf("SM loaded applet addr:%#x entry:%#x size:%d", ta.Memory.Start, ta.R15, len(taELF))
+	log.Printf("SM loaded applet addr:%#x entry:%#x size:%d", ta.Memory.Start(), ta.R15, len(taELF))
 
 	// register example RPC receiver
 	ta.Server.Register(&RPC{})
@@ -120,7 +120,7 @@ func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 		return nil, fmt.Errorf("SM could not load kernel, %v", err)
 	}
 
-	log.Printf("SM loaded kernel addr:%#x entry:%#x size:%d", os.Memory.Start, os.R15, len(osELF))
+	log.Printf("SM loaded kernel addr:%#x entry:%#x size:%d", os.Memory.Start(), os.R15, len(osELF))
 
 	if err = configureTrustZone(lock); err != nil {
 		return nil, fmt.Errorf("SM could not configure TrustZone, %v", err)
@@ -187,7 +187,7 @@ func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 		return nil, fmt.Errorf("SM could not load kernel, %v", err)
 	}
 
-	log.Printf("SM loaded kernel addr:%#x size:%d entry:%#x", os.Memory.Start, len(image.Kernel), os.R15)
+	log.Printf("SM loaded kernel addr:%#x size:%d entry:%#x", os.Memory.Start(), len(image.Kernel), os.R15)
 
 	if err = configureTrustZone(true); err != nil {
 		return nil, fmt.Errorf("SM could not configure TrustZone, %v", err)
