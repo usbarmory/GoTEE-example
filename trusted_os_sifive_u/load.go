@@ -71,7 +71,7 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 		return nil, fmt.Errorf("SM could not load applet, %v", err)
 	}
 
-	log.Printf("SM loaded applet addr:%#x entry:%#x size:%d", ta.Memory.Start, ta.PC, len(taELF))
+	log.Printf("SM loaded applet addr:%#x entry:%#x size:%d", ta.Memory.Start(), ta.PC, len(taELF))
 
 	// set memory protection function
 	ta.PMP = configurePMP
@@ -104,7 +104,7 @@ func loadSupervisor() (os *monitor.ExecCtx, err error) {
 		return nil, fmt.Errorf("SM could not load kernel, %v", err)
 	}
 
-	log.Printf("SM loaded kernel addr:%#x entry:%#x size:%d", os.Memory.Start, os.PC, len(osELF))
+	log.Printf("SM loaded kernel addr:%#x entry:%#x size:%d", os.Memory.Start(), os.PC, len(osELF))
 
 	// set memory protection function
 	os.PMP = configurePMP
