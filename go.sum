@@ -11,8 +11,8 @@ github.com/pierrec/lz4/v4 v4.1.15 h1:MO0/ucJhngq7299dKLwIMtgTfbkoSPF6AoMYDd8Q4q0
 github.com/pierrec/lz4/v4 v4.1.15/go.mod h1:gZWDp/Ze/IJXGXf23ltt2EXimqmTUXEy0GFuRQyBid4=
 github.com/u-root/u-root v0.8.0 h1:jqP7uPC2+0eRszYTrmdZ6UDyO1Dbuy0rpMo+BnPZ9cY=
 github.com/u-root/u-root v0.8.0/go.mod h1:But1FHzS4Ua4ywx6kZOaRzZTucUKIDKOPOLEKOckQ68=
-github.com/usbarmory/GoTEE v0.0.0-20220907074150-2cd25d3969b9 h1:QVyCa3l7dd+tZVO0QcbTnc4wPAmhXwC2hEHZaKbzz9U=
-github.com/usbarmory/GoTEE v0.0.0-20220907074150-2cd25d3969b9/go.mod h1:sjT+VY9m2wstxs80BfHxrU/8W0jdo+BvRL2BMii1204=
+github.com/usbarmory/GoTEE v0.0.0-20220908111228-e334464a53d2 h1:I7NAfrCCL/pFbk5eDffWpIpYuE/4Z5TjMFcpQC9T25s=
+github.com/usbarmory/GoTEE v0.0.0-20220908111228-e334464a53d2/go.mod h1:sjT+VY9m2wstxs80BfHxrU/8W0jdo+BvRL2BMii1204=
 github.com/usbarmory/armory-boot v0.0.0-20220905105740-da187922209f h1:pZgxf3DeOtGzPEl/EaZi6GIPZ0DjBD19iiUYheke1CA=
 github.com/usbarmory/armory-boot v0.0.0-20220905105740-da187922209f/go.mod h1:L7h6USJoLEZPXddKTUBD2y8+6B/pEFQcu9c+6jo3Ua0=
 github.com/usbarmory/imx-usbnet v0.0.0-20220823085604-c95a75bed426 h1:Kofow8IwWuVvac322jOHPgFLeOf002IK9c9TzPlMJ0g=
