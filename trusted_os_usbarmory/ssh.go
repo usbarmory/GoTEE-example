@@ -62,10 +62,10 @@ func memAccess(start uint32, size int, w []byte) (b []byte) {
 		defer imx6ul.ARM.ConfigureMMU(0, z, 0)
 	}
 
-	mem, _ := dma.NewRegion(start, size, true)
+	mem, _ := dma.NewRegion(uint(start), size, true)
 
-	start, buf := mem.Reserve(size, 0)
-	defer mem.Release(start)
+	ptr, buf := mem.Reserve(size, 0)
+	defer mem.Release(ptr)
 
 	if len(w) > 0 {
 		copy(buf, w)

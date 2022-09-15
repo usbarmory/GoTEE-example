@@ -96,7 +96,7 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 	ta.Server.Register(&RPC{})
 
 	// set stack pointer to the end of available memory
-	ta.R13 = ta.Memory.End()
+	ta.R13 = uint32(ta.Memory.End())
 
 	// override default handler to improve logging
 	ta.Handler = logHandler
@@ -198,7 +198,7 @@ func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 	}
 
 	os.R0 = 0
-	os.R2 = image.DTB()
+	os.R2 = uint32(image.DTB())
 	os.SPSR = arm.SVC_MODE
 	os.Debug = true
 
