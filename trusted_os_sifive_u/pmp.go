@@ -21,27 +21,51 @@ const (
 )
 
 func configurePMP(ctx *monitor.ExecCtx, i int) (err error) {
-	// grant full peripheral access
+	// The main OS used in GoTEE-example, for the riscv64 architecture, is
+	// a TamaGo unikernel which requires only PRCI, CLINT and UART0 access.
+	//
+	// On the FU540 the lack of IOPMP entails that only bus peripherals can
+	// be given access through PMP, while bus controllers (e.g.  Ethernet)
+	// must be exposed only through the Security Monitor API, and never
+	// directly, for secure isolation.
+	//
+	// The access to PRCI, CLINT and UART0 can be granted without concerns
+	// as they they cannot act as bus controllers.
 
-	if err = fu540.RV64.WritePMP(i, 0x00000000, true, true, true, riscv.PMP_CFG_A_OFF, false); err != nil {
+	// grant PRCI and UART0 access
+
+	if err = fu540.RV64.WritePMP(i, fu540.PRCI_BASE, false, false, false, riscv.PMP_A_OFF, false); err != nil {
 		return
 	}
+	i += 1
 
-	if err = fu540.RV64.WritePMP(i+1, 0x80000000, true, true, true, riscv.PMP_CFG_A_TOR, false); err != nil {
+	if err = fu540.RV64.WritePMP(i, fu540.UART2_BASE, true, true, true, riscv.PMP_A_TOR, false); err != nil {
 		return
 	}
+	i += 1
+
+	// grant CLINT access
+
+	if err = fu540.RV64.WritePMP(i, fu540.CLINT_BASE, false, false, false, riscv.PMP_A_OFF, false); err != nil {
+		return
+	}
+	i += 1
+
+	if err = fu540.RV64.WritePMP(i, fu540.CLINT_BASE + 0x10000, true, true, true, riscv.PMP_A_TOR, false); err != nil {
+		return
+	}
+	i += 1
 
 	// protect Security Monitor
 
-	if err = fu540.RV64.WritePMP(i+2, smStart, true, true, true, riscv.PMP_CFG_A_OFF, false); err != nil {
+	if err = fu540.RV64.WritePMP(i, smStart, false, false, false, riscv.PMP_A_OFF, false); err != nil {
 		return
 	}
+	i += 1
 
-	if err = fu540.RV64.WritePMP(i+3, smEnd, false, false, false, riscv.PMP_CFG_A_TOR, false); err != nil {
+	if err = fu540.RV64.WritePMP(i, smEnd, false, false, false, riscv.PMP_A_TOR, false); err != nil {
 		return
 	}
-
-	// TODO: IOPMP
 
 	return
 }
