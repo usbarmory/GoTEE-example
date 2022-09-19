@@ -3,10 +3,10 @@ module github.com/usbarmory/GoTEE-example
 go 1.18
 
 require (
-	github.com/usbarmory/GoTEE v0.0.0-20220915184014-e4b3fe90ee42
+	github.com/usbarmory/GoTEE v0.0.0-20220919130138-a22837973621
 	github.com/usbarmory/armory-boot v0.0.0-20220915183642-562f4040362b
 	github.com/usbarmory/imx-usbnet v0.0.0-20220823085604-c95a75bed426
-	github.com/usbarmory/tamago v0.0.0-20220915152253-099f7888fe70
+	github.com/usbarmory/tamago v0.0.0-20220916102621-01abb56514fc
 	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
 	golang.org/x/term v0.0.0-20220722155259-a9ba230a4035
 )
