@@ -14,6 +14,7 @@ import (
 	"sync"
 
 	"github.com/usbarmory/GoTEE/monitor"
+	"github.com/usbarmory/GoTEE/sbi"
 	"github.com/usbarmory/GoTEE/syscall"
 
 	"github.com/usbarmory/GoTEE-example/mem"
@@ -30,7 +31,8 @@ var taELF []byte
 
 //go:embed assets/nonsecure_os_go.elf
 var osELF []byte
-// logHandler allows to override the GoTEE default handler and avoid
+
+// logHandler is used to override the GoTEE default handler to avoid
 // interleaved logs, as the supervisor and applet contexts are logging
 // simultaneously.
 func logHandler(ctx *monitor.ExecCtx) (err error) {
@@ -54,6 +56,18 @@ func logHandler(ctx *monitor.ExecCtx) (err error) {
 	}
 
 	return
+}
+
+// sbiHandler is used to override the GoTEE default handler to avoid
+// interleaved logs, as the supervisor and applet contexts are logging
+// simultaneously, and support SBI probing.
+func sbiHandler(ctx *monitor.ExecCtx) (err error) {
+	// SBI v0.2 or higher calls are treated separately from GoTEE calls
+	if ctx.X17 != 0 {
+		return sbi.Handler(ctx)
+	} else {
+		return logHandler(ctx)
+	}
 }
 
 // loadApplet loads a TamaGo unikernel as trusted applet.
@@ -112,8 +126,8 @@ func loadSupervisor() (os *monitor.ExecCtx, err error) {
 	// set stack pointer to the end of available memory
 	os.X2 = uint64(os.Memory.End())
 
-	// override default handler to improve logging
-	os.Handler = logHandler
+	// override default handler to support SBI and improve logging
+	os.Handler = sbiHandler
 	os.Debug = true
 
 	return
