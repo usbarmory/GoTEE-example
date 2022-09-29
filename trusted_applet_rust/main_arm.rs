@@ -63,7 +63,7 @@ fn exit() {
     unsafe {
         asm!(
             "swi 0",
-            in("r0") SYS_EXIT
+            in("r0") SYS_EXIT,
         );
     }
 }

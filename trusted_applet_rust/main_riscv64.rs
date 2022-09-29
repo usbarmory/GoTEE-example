@@ -63,7 +63,7 @@ fn exit() {
     unsafe {
         asm!(
             "ecall",
-            in("a0") SYS_EXIT
+            in("a0") SYS_EXIT,
         );
     }
 }
