@@ -34,8 +34,8 @@ const help = `
   reboot                                 # reset the SoC/board
   stack                                  # stack trace of current goroutine
   stackall                               # stack trace of all goroutines
-  md  <hex offset> <size>                # memory display (use with caution)
-  mw  <hex offset> <hex value>           # memory write   (use with caution)
+  peek <hex offset> <size>               # memory display (use with caution)
+  poke <hex offset> <hex value>          # memory write   (use with caution)
 
   gotee                                  # TrustZone example w/ TamaGo unikernels
   linux <uSD|eMMC>                       # boot NonSecure USB armory Debian base image
@@ -48,7 +48,7 @@ const help = `
 
 `
 
-var memoryCommandPattern = regexp.MustCompile(`(md|mw) ([[:xdigit:]]+) (\d+|[[:xdigit:]]+)`)
+var memoryCommandPattern = regexp.MustCompile(`(peek|poke) ([[:xdigit:]]+) (\d+|[[:xdigit:]]+)`)
 var cslCommandPattern = regexp.MustCompile(`csl (\d+) (\d+) ([[:xdigit:]]+)`)
 var saCommandPattern = regexp.MustCompile(`sa (\d+) (secure|nonsecure)`)
 var linuxCommandPattern = regexp.MustCompile(`linux (uSD|eMMC)`)
@@ -85,7 +85,7 @@ func memoryCommand(arg []string) (res string) {
 	}
 
 	switch arg[0] {
-	case "md":
+	case "peek":
 		size, err := strconv.ParseUint(arg[2], 10, 32)
 
 		if err != nil {
@@ -101,7 +101,7 @@ func memoryCommand(arg []string) (res string) {
 		}
 
 		return hex.Dump(memAccess(uint32(addr), int(size), nil))
-	case "mw":
+	case "poke":
 		val, err := strconv.ParseUint(arg[2], 16, 32)
 
 		if err != nil {
