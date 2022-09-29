@@ -66,7 +66,11 @@ elf: $(APP).elf
 trusted_os: APP=trusted_os_$(TARGET)
 trusted_os: DIR=$(CURDIR)/trusted_os_$(TARGET)
 trusted_os: TEXT_START=0x98010000
+ifeq ($(TARGET),usbarmory)
+trusted_os: imx
+else
 trusted_os: elf
+endif
 
 trusted_os_signed: APP=trusted_os_$(TARGET)
 trusted_os_signed: DIR=$(CURDIR)/trusted_os_$(TARGET)
