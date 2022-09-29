@@ -39,7 +39,7 @@ func configurePMP(ctx *monitor.ExecCtx, i int) (err error) {
 	}
 	i += 1
 
-	if err = fu540.RV64.WritePMP(i, fu540.UART2_BASE, true, true, true, riscv.PMP_A_TOR, false); err != nil {
+	if err = fu540.RV64.WritePMP(i, fu540.UART1_BASE, true, true, true, riscv.PMP_A_TOR, false); err != nil {
 		return
 	}
 	i += 1
