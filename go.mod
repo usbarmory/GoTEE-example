@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/usbarmory/GoTEE v0.0.0-20220929091057-287e06d47646
-	github.com/usbarmory/armory-boot v0.0.0-20220915183642-562f4040362b
+	github.com/usbarmory/armory-boot v0.0.0-20221108211558-732d3bf51b95
 	github.com/usbarmory/imx-usbnet v0.0.0-20220823085604-c95a75bed426
 	github.com/usbarmory/tamago v0.0.0-20220919125506-41c6a5bbdca3
 	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90

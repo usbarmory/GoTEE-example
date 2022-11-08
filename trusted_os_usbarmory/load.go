@@ -14,7 +14,9 @@ import (
 	"sync"
 
 	"github.com/usbarmory/tamago/arm"
+	usbarmory "github.com/usbarmory/tamago/board/usbarmory/mk2"
 	"github.com/usbarmory/tamago/soc/nxp/imx6ul"
+	"github.com/usbarmory/tamago/soc/nxp/usdhc"
 
 	"github.com/usbarmory/GoTEE/monitor"
 	"github.com/usbarmory/GoTEE/syscall"
@@ -138,12 +140,15 @@ func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 // or "uSD").
 func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 	var id int
+	var card *usdhc.USDHC
 
 	switch device {
 	case "uSD":
 		id = 10
+		card = usbarmory.SD
 	case "eMMC":
 		id = 11
+		card = usbarmory.MMC
 	default:
 		return nil, errors.New("invalid device")
 	}
@@ -154,7 +159,7 @@ func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 		return
 	}
 
-	part, err := disk.Detect(device, "")
+	part, err := disk.Detect(card, "")
 
 	if err != nil {
 		return

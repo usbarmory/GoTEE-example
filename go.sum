@@ -15,6 +15,8 @@ github.com/usbarmory/GoTEE v0.0.0-20220929091057-287e06d47646 h1:F6L3Mu5t90QItuT
 github.com/usbarmory/GoTEE v0.0.0-20220929091057-287e06d47646/go.mod h1:QLqbhiPRJuqa33DLaz7oTIDVDR8GSn+MamjDSi2TRjc=
 github.com/usbarmory/armory-boot v0.0.0-20220915183642-562f4040362b h1:Kp8LOHrKiyQqOKt0WoEJcUflLOwdm9HS5AIJ2I4tGSs=
 github.com/usbarmory/armory-boot v0.0.0-20220915183642-562f4040362b/go.mod h1:rFVLMRSn/cNWvkCKBj3PHKh1tTDP0a7EFggJrT27HTc=
+github.com/usbarmory/armory-boot v0.0.0-20221108211558-732d3bf51b95 h1:OaI4RqxqptaiUDX+JQk6OaOedpSdEPXhPXAApbWnVfI=
+github.com/usbarmory/armory-boot v0.0.0-20221108211558-732d3bf51b95/go.mod h1:rFVLMRSn/cNWvkCKBj3PHKh1tTDP0a7EFggJrT27HTc=
 github.com/usbarmory/crucible v0.0.0-20220823085715-c9e97b45a8b2 h1:dxJotkRF+Ns8mRgp5BQh5j2l6xwcfTWlMd7Xge3qv3Y=
 github.com/usbarmory/crucible v0.0.0-20220823085715-c9e97b45a8b2/go.mod h1:/tDFfTW0y+CtcKzAPmIREQIDpzCuOmLpN8UxHh/iMls=
 github.com/usbarmory/imx-usbnet v0.0.0-20220823085604-c95a75bed426 h1:Kofow8IwWuVvac322jOHPgFLeOf002IK9c9TzPlMJ0g=
