@@ -25,7 +25,7 @@ func (r *RPC) Echo(in string, out *string) error {
 }
 
 // LED receives a LED state request.
-func (r *RPC) LED(led util.LEDStatus, _ *string) error {
+func (r *RPC) LED(led util.LEDStatus, _ *any) error {
 	switch led.Name {
 	case "white", "White", "WHITE":
 		return errors.New("LED is secure only")
