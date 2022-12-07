@@ -153,8 +153,8 @@ func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 		return nil, errors.New("invalid device")
 	}
 
-	// Set the device USDHC controller as Secure master to grant access
-	// Trusted OS DMA region.
+	// Set the device USDHC controller as Secure master to grant access to
+	// the Trusted OS DMA region.
 	if err = imx6ul.CSU.SetAccess(id, true, false); err != nil {
 		return
 	}
