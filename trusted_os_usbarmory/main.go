@@ -47,20 +47,20 @@ func init() {
 	log.SetFlags(log.Ltime)
 	log.SetOutput(os.Stdout)
 
-	if imx6ul.Native {
-		imx6ul.SetARMFreq(900)
-
-		imx6ul.DCP.Init()
-
-		debugConsole, _ := usbarmory.DetectDebugAccessory(250 * time.Millisecond)
-		<-debugConsole
-	}
-
 	// Move DMA region to prevent NonSecure access, alternatively
 	// iRAM/OCRAM (default DMA region) can be locked down on its own (as it
 	// is outside TZASC control).
 	dma.Init(mem.SecureDMAStart, mem.SecureDMASize)
-	imx6ul.DCP.DeriveKeyMemory = dma.Default()
+
+	if imx6ul.Native {
+		imx6ul.SetARMFreq(900)
+
+		imx6ul.DCP.Init()
+		imx6ul.DCP.DeriveKeyMemory = dma.Default()
+
+		debugConsole, _ := usbarmory.DetectDebugAccessory(250 * time.Millisecond)
+		<-debugConsole
+	}
 
 	log.Printf("%s/%s (%s) • TEE security monitor (Secure World system/monitor)", runtime.GOOS, runtime.GOARCH, runtime.Version())
 }
