@@ -18,8 +18,10 @@ require (
 	github.com/google/btree v1.1.2 // indirect
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
 	github.com/u-root/u-root v0.8.0 // indirect
+	github.com/usbarmory/crucible v0.0.0-20221214152051-7cb60b38d653 // indirect
+	go.mozilla.org/pkcs7 v0.0.0-20210826202110-33d05740a352 // indirect
 	golang.org/x/net v0.0.0-20220826154423-83b083e8dc8b // indirect
-	golang.org/x/sync v0.0.0-20220907140024-f12130a52804 // indirect
+	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.0.0-20220913175220-63ea55921009 // indirect
 	golang.org/x/time v0.0.0-20220722155302-e5dcc9cfc0b9 // indirect
 	gvisor.dev/gvisor v0.0.0-20220714043431-1868ba74ac26 // indirect
