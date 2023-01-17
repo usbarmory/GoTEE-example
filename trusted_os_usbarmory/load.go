@@ -51,12 +51,6 @@ const bootConfLinux = "/boot/armory-boot-nonsecure.conf"
 // interleaved logs, as the supervisor and applet contexts are logging
 // simultaneously.
 func logHandler(ctx *monitor.ExecCtx) (err error) {
-	defaultHandler := monitor.SecureHandler
-
-	if ctx.NonSecure() {
-		defaultHandler = monitor.NonSecureHandler
-	}
-
 	switch {
 	case ctx.A0() == syscall.SYS_WRITE:
 		if ssh != nil {
@@ -71,10 +65,32 @@ func logHandler(ctx *monitor.ExecCtx) (err error) {
 
 		return errors.New("exit")
 	default:
-		return defaultHandler(ctx)
+		if !ctx.NonSecure() {
+			return monitor.SecureHandler(ctx)
+		}
 	}
 
 	return
+}
+
+// linuxHandler services the TrustZone Watchdog
+func linuxHandler(ctx *monitor.ExecCtx) (err error) {
+	if !ctx.NonSecure() {
+		panic("unexpected processor mode")
+	}
+
+	if ctx.ExceptionVector == arm.FIQ && imx6ul.ARM.GetInterrupt() == imx6ul.TZ_WDOG.IRQ {
+		log.Printf("SM servicing TrustZone Watchdog")
+		imx6ul.TZ_WDOG.Service(watchdogTimeout)
+
+		// PC must be adjusted when returning from FIQ exceptions
+		// (Table 11-3, ARM® Cortex™ -A Series Programmer’s Guide).
+		ctx.R15 -= 4
+
+		return
+	}
+
+	return monitor.NonSecureHandler(ctx)
 }
 
 // loadApplet loads a TamaGo unikernel as trusted applet.
@@ -205,6 +221,9 @@ func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 	os.R0 = 0
 	os.R2 = uint32(image.DTB())
 	os.SPSR = arm.SVC_MODE
+
+	// override default handler to service TrustZone Watchdog
+	os.Handler = linuxHandler
 	os.Debug = true
 
 	return

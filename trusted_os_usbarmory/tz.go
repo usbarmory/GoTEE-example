@@ -64,6 +64,11 @@ func configureTrustZone(lock bool) (err error) {
 		return
 	}
 
+	// restrict access to WDOG2 (TZ WDOG)
+	if err = imx6ul.CSU.SetSecurityLevel(5, 0, csu.SEC_LEVEL_4, false); err != nil {
+		return
+	}
+
 	// restrict access to IOMUXC (used by LEDs)
 	if err = imx6ul.CSU.SetSecurityLevel(6, 1, csu.SEC_LEVEL_4, false); err != nil {
 		return
@@ -134,4 +139,17 @@ func grantPeripheralAccess() (err error) {
 	}
 
 	return
+}
+
+func enableTrustZoneWatchdog() {
+	// initialize interrupt controller, route all interrupts to NonSecure
+	imx6ul.ARM.InitGIC(imx6ul.GIC_BASE, false)
+
+	// enable TrustZone Watchdog Secure interrupt
+	imx6ul.ARM.EnableInterrupts()
+	imx6ul.ARM.EnableInterrupt(imx6ul.TZ_WDOG.IRQ, true)
+	imx6ul.TZ_WDOG.EnableInterrupt()
+
+	// enable TrustZone Watchdog
+	imx6ul.TZ_WDOG.EnableTimeout(watchdogTimeout)
 }

@@ -15,7 +15,6 @@ import (
 	"time"
 	_ "unsafe"
 
-	"github.com/usbarmory/tamago/arm"
 	usbarmory "github.com/usbarmory/tamago/board/usbarmory/mk2"
 	"github.com/usbarmory/tamago/dma"
 	"github.com/usbarmory/tamago/soc/nxp/imx6ul"
@@ -34,6 +33,10 @@ const (
 	deviceMAC = "1a:55:89:a2:69:41"
 	hostMAC   = "1a:55:89:a2:69:42"
 )
+
+// TrustZone Watchdog interval (in ms) to force Non-Secure to Secure World
+// switching.
+const watchdogTimeout = 10000
 
 //go:linkname ramStart runtime.ramStart
 var ramStart uint32 = mem.SecureStart
@@ -133,8 +136,8 @@ func linux(device string) (err error) {
 		return
 	}
 
-	// Initialize interrupt controller, route all interrupts to NonSecure
-	arm.InitGIC(imx6ul.GIC_BASE)
+	log.Printf("SM enabling TrustZone Watchdog")
+	enableTrustZoneWatchdog()
 
 	log.Printf("SM launching Linux")
 	run(os, nil)
