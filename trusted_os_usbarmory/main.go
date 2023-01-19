@@ -28,10 +28,10 @@ import (
 )
 
 const (
-	sshPort   = 22
-	deviceIP  = "10.0.0.1"
-	deviceMAC = "1a:55:89:a2:69:41"
-	hostMAC   = "1a:55:89:a2:69:42"
+	sshPort = 22
+	IP      = "10.0.0.1"
+	MAC     = "1a:55:89:a2:69:41"
+	hostMAC = "1a:55:89:a2:69:42"
 )
 
 // TrustZone Watchdog interval (in ms) to force Non-Secure to Secure World
@@ -156,15 +156,15 @@ func main() {
 		return
 	}
 
-	gonet, err := usbnet.Init(deviceIP, deviceMAC, hostMAC, 1)
+	iface, err := usbnet.Init(IP, MAC, hostMAC, 1)
 
 	if err != nil {
 		log.Fatalf("SM could not initialize USB networking, %v", err)
 	}
 
-	gonet.EnableICMP()
+	iface.EnableICMP()
 
-	listener, err := gonet.ListenerTCP4(sshPort)
+	listener, err := iface.ListenerTCP4(sshPort)
 
 	if err != nil {
 		log.Fatalf("SM could not initialize SSH listener, %v", err)
@@ -188,5 +188,5 @@ func main() {
 	usbarmory.USB1.Reset()
 
 	// never returns
-	usbarmory.USB1.Start(gonet.Device())
+	usbarmory.USB1.Start(iface.NIC.Device)
 }
