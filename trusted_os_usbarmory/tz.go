@@ -14,7 +14,7 @@ import (
 	"github.com/usbarmory/GoTEE-example/mem"
 )
 
-func configureTrustZone(lock bool) (err error) {
+func configureTrustZone(lock bool, wdog bool) (err error) {
 	// grant NonSecure access to CP10 and CP11
 	imx6ul.ARM.NonSecureAccessControl(1<<11 | 1<<10)
 
@@ -64,9 +64,11 @@ func configureTrustZone(lock bool) (err error) {
 		return
 	}
 
-	// restrict access to WDOG2 (TZ WDOG)
-	if err = imx6ul.CSU.SetSecurityLevel(5, 0, csu.SEC_LEVEL_4, false); err != nil {
-		return
+	if wdog {
+		// restrict access to WDOG2 (TZ WDOG)
+		if err = imx6ul.CSU.SetSecurityLevel(5, 0, csu.SEC_LEVEL_4, false); err != nil {
+			return
+		}
 	}
 
 	// restrict access to IOMUXC (used by LEDs)

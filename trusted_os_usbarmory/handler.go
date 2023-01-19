@@ -9,6 +9,7 @@ package main
 import (
 	_ "embed"
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/usbarmory/tamago/arm"
@@ -20,25 +21,33 @@ import (
 	"github.com/usbarmory/GoTEE-example/util"
 )
 
-// logHandler allows to override the GoTEE default handler and avoid
-// interleaved logs, as the supervisor and applet contexts are logging
-// simultaneously.
-func logHandler(ctx *monitor.ExecCtx) (err error) {
-	switch {
-	case ctx.A0() == syscall.SYS_WRITE:
+func goHandler(ctx *monitor.ExecCtx) (err error) {
+	if ctx.ExceptionVector == arm.DATA_ABORT && ctx.NonSecure()  {
+		log.Printf("SM trapped Non-secure data abort pc:%#.8x", ctx.R15 - 8)
+		return
+	}
+
+	if ctx.ExceptionVector != arm.SUPERVISOR {
+		return fmt.Errorf("exception %x", ctx.ExceptionVector)
+	}
+
+	switch ctx.A0() {
+	case syscall.SYS_WRITE:
+		// Override write syscall to avoid interleaved logs and to log
+		// simultaneously to remote terminal and serial console.
 		if ssh != nil {
 			util.BufferedTermLog(byte(ctx.A1()), !ctx.NonSecure(), ssh.Term)
 		} else {
 			util.BufferedStdoutLog(byte(ctx.A1()), !ctx.NonSecure())
 		}
-	case ctx.NonSecure() && ctx.A0() == syscall.SYS_EXIT:
-		if ctx.Debug {
-			ctx.Print()
-		}
-
+	case syscall.SYS_EXIT:
+		// support exit syscall on both security states
 		return errors.New("exit")
 	default:
-		if !ctx.NonSecure() {
+		if ctx.NonSecure() {
+			ctx.Print()
+			return errors.New("unexpected monitor call")
+		} else {
 			return monitor.SecureHandler(ctx)
 		}
 	}
@@ -46,21 +55,19 @@ func logHandler(ctx *monitor.ExecCtx) (err error) {
 	return
 }
 
-// linuxHandler services the TrustZone Watchdog
 func linuxHandler(ctx *monitor.ExecCtx) (err error) {
 	if !ctx.NonSecure() {
-		panic("unexpected processor mode")
+		return errors.New("unexpected processor mode")
 	}
 
 	if ctx.ExceptionVector == arm.FIQ && imx6ul.ARM.GetInterrupt() == imx6ul.TZ_WDOG.IRQ {
 		log.Printf("SM servicing TrustZone Watchdog")
 		imx6ul.TZ_WDOG.Service(watchdogTimeout)
-
-		// PC must be adjusted when returning from FIQ exceptions
-		// (Table 11-3, ARM® Cortex™ -A Series Programmer’s Guide).
-		ctx.R15 -= 4
-
 		return
+	}
+
+	if ctx.ExceptionVector != arm.SUPERVISOR {
+		return fmt.Errorf("exception %x", ctx.ExceptionVector)
 	}
 
 	return monitor.NonSecureHandler(ctx)

@@ -69,7 +69,7 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 	ta.R13 = uint32(ta.Memory.End())
 
 	// override default handler to improve logging
-	ta.Handler = logHandler
+	ta.Handler = goHandler
 	ta.Debug = true
 
 	return
@@ -92,12 +92,12 @@ func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 
 	log.Printf("SM loaded kernel addr:%#x entry:%#x size:%d", os.Memory.Start(), os.R15, len(osELF))
 
-	if err = configureTrustZone(lock); err != nil {
+	if err = configureTrustZone(lock, false); err != nil {
 		return nil, fmt.Errorf("SM could not configure TrustZone, %v", err)
 	}
 
-	// override default handler to improve logging
-	os.Handler = logHandler
+	// override default handler to handle exceptions and improve logging
+	os.Handler = goHandler
 	os.Debug = true
 
 	return
@@ -162,7 +162,7 @@ func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 
 	log.Printf("SM loaded kernel addr:%#x size:%d entry:%#x", os.Memory.Start(), len(image.Kernel), os.R15)
 
-	if err = configureTrustZone(true); err != nil {
+	if err = configureTrustZone(true, true); err != nil {
 		return nil, fmt.Errorf("SM could not configure TrustZone, %v", err)
 	}
 
