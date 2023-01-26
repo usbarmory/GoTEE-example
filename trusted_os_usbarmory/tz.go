@@ -148,7 +148,6 @@ func enableTrustZoneWatchdog() {
 	imx6ul.ARM.InitGIC(imx6ul.GIC_BASE, false, true)
 
 	// enable TrustZone Watchdog Secure interrupt
-	imx6ul.ARM.EnableInterrupts()
 	imx6ul.ARM.EnableInterrupt(imx6ul.TZ_WDOG.IRQ, true)
 	imx6ul.TZ_WDOG.EnableInterrupt()
 
