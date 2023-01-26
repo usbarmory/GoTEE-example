@@ -14,6 +14,7 @@ import (
 	"sync"
 
 	"github.com/usbarmory/tamago/arm"
+	"github.com/usbarmory/tamago/bits"
 	usbarmory "github.com/usbarmory/tamago/board/usbarmory/mk2"
 	"github.com/usbarmory/tamago/soc/nxp/imx6ul"
 	"github.com/usbarmory/tamago/soc/nxp/usdhc"
@@ -173,6 +174,9 @@ func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 	os.R0 = 0
 	os.R2 = uint32(image.DTB())
 	os.SPSR = arm.SVC_MODE
+
+	// enable FIQ to receive TrustZone Watchdog IRQ
+	bits.Clear(&os.SPSR, 6)
 
 	// override default handler to service TrustZone Watchdog
 	os.Handler = linuxHandler

@@ -60,9 +60,18 @@ func linuxHandler(ctx *monitor.ExecCtx) (err error) {
 		return errors.New("unexpected processor mode")
 	}
 
-	if ctx.ExceptionVector == arm.FIQ && imx6ul.ARM.GetInterrupt() == imx6ul.TZ_WDOG.IRQ {
-		log.Printf("SM servicing TrustZone Watchdog")
-		imx6ul.TZ_WDOG.Service(watchdogTimeout)
+	if ctx.ExceptionVector == arm.FIQ {
+		irq, end := imx6ul.ARM.GetInterrupt()
+
+		if irq == imx6ul.TZ_WDOG.IRQ {
+			log.Printf("SM servicing TrustZone Watchdog")
+			imx6ul.TZ_WDOG.Service(watchdogTimeout)
+		}
+
+		if end != nil {
+			end <- true
+		}
+
 		return
 	}
 
