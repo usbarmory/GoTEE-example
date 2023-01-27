@@ -145,10 +145,10 @@ func grantPeripheralAccess() (err error) {
 
 func enableTrustZoneWatchdog() {
 	// initialize interrupt controller, route all interrupts to NonSecure
-	imx6ul.ARM.InitGIC(imx6ul.GIC_BASE, false, true)
+	imx6ul.GIC.Init(false, true)
 
 	// enable TrustZone Watchdog Secure interrupt
-	imx6ul.ARM.EnableInterrupt(imx6ul.TZ_WDOG.IRQ, true)
+	imx6ul.GIC.EnableInterrupt(imx6ul.TZ_WDOG.IRQ, true)
 	imx6ul.TZ_WDOG.EnableInterrupt()
 
 	// enable TrustZone Watchdog
