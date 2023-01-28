@@ -3,7 +3,7 @@ module github.com/usbarmory/GoTEE-example
 go 1.19
 
 require (
-	github.com/usbarmory/GoTEE v0.0.0-20230127101228-519e560d69aa
+	github.com/usbarmory/GoTEE v0.0.0-20230127182125-f10711ce2e1b
 	github.com/usbarmory/armory-boot v0.0.0-20230127111211-c78215862f3a
 	github.com/usbarmory/imx-usbnet v0.0.0-20230119085031-3e0bbf3997fc
 	github.com/usbarmory/tamago v0.0.0-20230127110902-64d99dad7d7f
