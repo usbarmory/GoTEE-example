@@ -4,12 +4,10 @@
 // Use of this source code is governed by the license
 // that can be found in the LICENSE file.
 
-package main
+package gotee
 
 import (
 	"errors"
-
-	usbarmory "github.com/usbarmory/tamago/board/usbarmory/mk2"
 
 	"github.com/usbarmory/GoTEE-example/util"
 )
@@ -30,7 +28,7 @@ func (r *RPC) LED(led util.LEDStatus, _ *bool) error {
 	case "white", "White", "WHITE":
 		return errors.New("LED is secure only")
 	case "blue", "Blue", "BLUE":
-		return usbarmory.LED(led.Name, led.On)
+		// unimplemented as the target is virtual for now
 	default:
 		return errors.New("invalid LED")
 	}

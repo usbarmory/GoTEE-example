@@ -4,77 +4,30 @@
 // Use of this source code is governed by the license
 // that can be found in the LICENSE file.
 
-package main
+package gotee
 
 import (
-	_ "embed"
-	"errors"
 	"fmt"
 	"log"
 	"sync"
 
 	"github.com/usbarmory/GoTEE/monitor"
-	"github.com/usbarmory/GoTEE/sbi"
-	"github.com/usbarmory/GoTEE/syscall"
 
 	"github.com/usbarmory/GoTEE-example/mem"
-	"github.com/usbarmory/GoTEE-example/util"
 
 	"github.com/usbarmory/armory-boot/exec"
 )
 
-// This example embeds the Trusted Applet and Main OS ELF binaries within the
-// Trusted OS executable, using Go embed package.
-
-//go:embed assets/trusted_applet.elf
-var taELF []byte
-
-//go:embed assets/nonsecure_os_go.elf
-var osELF []byte
-
-// logHandler is used to override the GoTEE default handler to avoid
-// interleaved logs, as the supervisor and applet contexts are logging
-// simultaneously.
-func logHandler(ctx *monitor.ExecCtx) (err error) {
-	defaultHandler := monitor.SecureHandler
-
-	if !ctx.Secure() {
-		defaultHandler = monitor.NonSecureHandler
-	}
-
-	switch {
-	case ctx.A0() == syscall.SYS_WRITE:
-		util.BufferedStdoutLog(byte(ctx.A1()), ctx.Secure())
-	case !ctx.Secure() && ctx.A0() == syscall.SYS_EXIT:
-		if ctx.Debug {
-			ctx.Print()
-		}
-
-		return errors.New("exit")
-	default:
-		return defaultHandler(ctx)
-	}
-
-	return
-}
-
-// sbiHandler is used to override the GoTEE default handler to avoid
-// interleaved logs, as the supervisor and applet contexts are logging
-// simultaneously, and support SBI probing.
-func sbiHandler(ctx *monitor.ExecCtx) (err error) {
-	// SBI v0.2 or higher calls are treated separately from GoTEE calls
-	if ctx.X17 != 0 {
-		return sbi.Handler(ctx)
-	} else {
-		return logHandler(ctx)
-	}
-}
+var (
+	TA []byte
+	OS []byte
+)
 
 // loadApplet loads a TamaGo unikernel as trusted applet.
 func loadApplet() (ta *monitor.ExecCtx, err error) {
 	image := &exec.ELFImage{
 		Region: mem.AppletRegion,
-		ELF:    taELF,
+		ELF:    TA,
 	}
 
 	if err = image.Load(); err != nil {
@@ -85,7 +38,7 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 		return nil, fmt.Errorf("SM could not load applet, %v", err)
 	}
 
-	log.Printf("SM loaded applet addr:%#x entry:%#x size:%d", ta.Memory.Start(), ta.PC, len(taELF))
+	log.Printf("SM loaded applet addr:%#x entry:%#x size:%d", ta.Memory.Start(), ta.PC, len(TA))
 
 	// set memory protection function
 	ta.PMP = configurePMP
@@ -97,7 +50,7 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 	ta.X2 = uint64(ta.Memory.End())
 
 	// override default handler to improve logging
-	ta.Handler = logHandler
+	ta.Handler = goHandler
 	ta.Debug = true
 
 	return
@@ -107,7 +60,7 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 func loadSupervisor() (os *monitor.ExecCtx, err error) {
 	image := &exec.ELFImage{
 		Region: mem.NonSecureRegion,
-		ELF:    osELF,
+		ELF:    OS,
 	}
 
 	if err = image.Load(); err != nil {
@@ -118,7 +71,7 @@ func loadSupervisor() (os *monitor.ExecCtx, err error) {
 		return nil, fmt.Errorf("SM could not load kernel, %v", err)
 	}
 
-	log.Printf("SM loaded kernel addr:%#x entry:%#x size:%d", os.Memory.Start(), os.PC, len(osELF))
+	log.Printf("SM loaded kernel addr:%#x entry:%#x size:%d", os.Memory.Start(), os.PC, len(OS))
 
 	// set memory protection function
 	os.PMP = configurePMP

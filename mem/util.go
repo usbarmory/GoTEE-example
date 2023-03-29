@@ -27,7 +27,7 @@ func TestAccess(tag string) {
 
 	res := "success - *insecure configuration*"
 
-	if (val != textStartARM && val != textStartRV64) {
+	if val != textStartARM && val != textStartRV64 {
 		res = "fail (expected, but you should never see this)"
 	}
 

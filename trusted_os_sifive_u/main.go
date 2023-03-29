@@ -7,20 +7,31 @@
 package main
 
 import (
+	_ "embed"
+	"fmt"
 	"log"
 	"os"
 	"runtime"
-	"sync"
-	"time"
 	_ "unsafe"
 
-	_ "github.com/usbarmory/tamago/board/qemu/sifive_u"
+	"github.com/usbarmory/tamago/board/qemu/sifive_u"
 	"github.com/usbarmory/tamago/dma"
 
-	"github.com/usbarmory/GoTEE/monitor"
-
+	"github.com/usbarmory/GoTEE-example/internal/semihosting"
 	"github.com/usbarmory/GoTEE-example/mem"
+	"github.com/usbarmory/GoTEE-example/trusted_os_sifive_u/cmd"
+	"github.com/usbarmory/GoTEE-example/trusted_os_sifive_u/internal"
+	"github.com/usbarmory/GoTEE-example/util"
 )
+
+// This example embeds the Trusted Applet and Main OS ELF binaries within the
+// Trusted OS executable, using Go embed package.
+
+//go:embed assets/trusted_applet.elf
+var taELF []byte
+
+//go:embed assets/nonsecure_os_go.elf
+var osELF []byte
 
 //go:linkname ramStart runtime.ramStart
 var ramStart uint64 = mem.SecureStart
@@ -34,47 +45,16 @@ func init() {
 
 	dma.Init(mem.SecureDMAStart, mem.SecureDMASize)
 
-	log.Printf("%s/%s (%s) • TEE Security Monitor (M-mode)", runtime.GOOS, runtime.GOARCH, runtime.Version())
-}
+	cmd.Banner = fmt.Sprintf("%s/%s (%s) • TEE Security Monitor (M-mode)", runtime.GOOS, runtime.GOARCH, runtime.Version())
 
-func gotee() (err error) {
-	var ta *monitor.ExecCtx
-	var os *monitor.ExecCtx
-	var wg sync.WaitGroup
-
-	if ta, err = loadApplet(); err != nil {
-		return
-	}
-
-	if os, err = loadSupervisor(); err != nil {
-		return
-	}
-
-	// test concurrent execution of:
-	//   Security Monitor (machine mode)     - secure OS (this program)
-	//   Applet (supervisor/user mode)       - trusted applet
-	//   Untrusted OS (supervisor/user mode) - main OS
-	wg.Add(2)
-	go run(ta, &wg)
-	go run(os, &wg)
-
-	go func() {
-		for i := 0; i < 60; i++ {
-			time.Sleep(1 * time.Second)
-			log.Printf("SM says %d missisipi", i+1)
-		}
-	}()
-
-	log.Printf("SM waiting for applet and kernel")
-	wg.Wait()
-
-	return
+	gotee.TA = taELF
+	gotee.OS = osELF
 }
 
 func main() {
-	defer log.Printf("SM says goodbye")
+	gotee.Console = util.NewScreenConsole()
+	cmd.SerialConsole(sifive_u.UART0)
 
-	if err := gotee(); err != nil {
-		log.Fatal(err)
-	}
+	log.Printf("SM says goodbye")
+	semihosting.Exit()
 }

@@ -4,10 +4,9 @@
 // Use of this source code is governed by the license
 // that can be found in the LICENSE file.
 
-package main
+package gotee
 
 import (
-	_ "embed"
 	"errors"
 	"fmt"
 	"log"
@@ -21,9 +20,11 @@ import (
 	"github.com/usbarmory/GoTEE-example/util"
 )
 
+var Console *util.Console
+
 func goHandler(ctx *monitor.ExecCtx) (err error) {
-	if ctx.ExceptionVector == arm.DATA_ABORT && ctx.NonSecure()  {
-		log.Printf("SM trapped Non-secure data abort pc:%#.8x", ctx.R15 - 8)
+	if ctx.ExceptionVector == arm.DATA_ABORT && ctx.NonSecure() {
+		log.Printf("SM trapped Non-secure data abort pc:%#.8x", ctx.R15-8)
 		return
 	}
 
@@ -35,8 +36,8 @@ func goHandler(ctx *monitor.ExecCtx) (err error) {
 	case syscall.SYS_WRITE:
 		// Override write syscall to avoid interleaved logs and to log
 		// simultaneously to remote terminal and serial console.
-		if ssh != nil {
-			util.BufferedTermLog(byte(ctx.A1()), !ctx.NonSecure(), ssh.Term)
+		if Console != nil {
+			util.BufferedTermLog(byte(ctx.A1()), !ctx.NonSecure(), Console.Term)
 		} else {
 			util.BufferedStdoutLog(byte(ctx.A1()), !ctx.NonSecure())
 		}
@@ -61,7 +62,7 @@ func linuxHandler(ctx *monitor.ExecCtx) (err error) {
 	}
 
 	if ctx.ExceptionVector == arm.FIQ {
-		irq, end := imx6ul.GIC.GetInterrupt()
+		irq, end := imx6ul.GIC.GetInterrupt(true)
 
 		if irq == imx6ul.TZ_WDOG.IRQ {
 			log.Printf("SM servicing TrustZone Watchdog")

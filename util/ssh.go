@@ -15,21 +15,18 @@ import (
 	"io"
 	"log"
 	"net"
+	"os"
 
 	"golang.org/x/crypto/ssh"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 )
 
 // Console represents an SSH console instance.
 type Console struct {
-	// Banner is the login welcome banner
-	Banner string
-	// Help is the `help` command output
-	Help string
 	// Handler is the terminal command handler
-	Handler func(*terminal.Terminal, string) error
+	Handler func(*term.Terminal)
 	// Term is the terminal instance
-	Term *terminal.Terminal
+	Term *term.Terminal
 	// Listener is the network listener
 	Listener net.Listener
 }
@@ -47,7 +44,7 @@ func (c *Console) handleChannel(newChannel ssh.NewChannel) {
 		return
 	}
 
-	c.Term = terminal.NewTerminal(conn, "")
+	c.Term = term.NewTerminal(conn, "")
 	c.Term.SetPrompt(string(c.Term.Escape.Red) + "> " + string(c.Term.Escape.Reset))
 
 	go func() {
@@ -58,31 +55,7 @@ func (c *Console) handleChannel(newChannel ssh.NewChannel) {
 		log.SetOutput(io.MultiWriter(logWriter, c.Term))
 		defer log.SetOutput(logWriter)
 
-		fmt.Fprintf(c.Term, "%s\n", c.Banner)
-		fmt.Fprintf(c.Term, "%s\n", string(c.Term.Escape.Cyan)+c.Help+string(c.Term.Escape.Reset))
-
-		for {
-			cmd, err := c.Term.ReadLine()
-
-			if err == io.EOF {
-				break
-			}
-
-			if err != nil {
-				log.Printf("readline error: %v", err)
-				continue
-			}
-
-			err = c.Handler(c.Term, cmd)
-
-			if err == io.EOF {
-				break
-			}
-
-			if err != nil {
-				log.Printf("error: %v", err)
-			}
-		}
+		c.Handler(c.Term)
 
 		log.Printf("closing ssh connection")
 	}()
@@ -186,4 +159,16 @@ func (c *Console) Start() (err error) {
 	go c.listen(srv)
 
 	return
+}
+
+// New() instantiates a console on stdin/stdout.
+func NewScreenConsole() *Console {
+	screen := struct {
+		io.Reader
+		io.Writer
+	}{os.Stdin, os.Stdout}
+
+	return &Console{
+		Term: term.NewTerminal(screen, ""),
+	}
 }

@@ -4,10 +4,9 @@
 // Use of this source code is governed by the license
 // that can be found in the LICENSE file.
 
-package main
+package gotee
 
 import (
-	_ "embed"
 	"errors"
 	"fmt"
 	"log"
@@ -28,29 +27,20 @@ import (
 	"github.com/usbarmory/armory-boot/exec"
 )
 
-// This example embeds the Trusted Applet and Main OS ELF binaries within the
-// Trusted OS executable, using Go embed package.
-//
-// The loading strategy is up to implementers, on the NXP i.MX6 the armory-boot
-// bootloader primitives can be used to create a bootable Trusted OS with
-// authenticated disk loading of applets and kernels, see loadLinux() and:
-//   https://pkg.go.dev/github.com/usbarmory/armory-boot
-
-//go:embed assets/trusted_applet.elf
-var taELF []byte
-
-//go:embed assets/nonsecure_os_go.elf
-var osELF []byte
-
 // bootConfLinux is the path to the armory-boot configuration file for loading a
 // Linux kernel as Non-secure OS.
 const bootConfLinux = "/boot/armory-boot-nonsecure.conf"
+
+var (
+	TA []byte
+	OS []byte
+)
 
 // loadApplet loads a TamaGo unikernel as trusted applet.
 func loadApplet() (ta *monitor.ExecCtx, err error) {
 	image := &exec.ELFImage{
 		Region: mem.AppletRegion,
-		ELF:    taELF,
+		ELF:    TA,
 	}
 
 	if err = image.Load(); err != nil {
@@ -61,7 +51,7 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 		return nil, fmt.Errorf("SM could not load applet, %v", err)
 	}
 
-	log.Printf("SM loaded applet addr:%#x entry:%#x size:%d", ta.Memory.Start(), ta.R15, len(taELF))
+	log.Printf("SM loaded applet addr:%#x entry:%#x size:%d", ta.Memory.Start(), ta.R15, len(TA))
 
 	// register example RPC receiver
 	ta.Server.Register(&RPC{})
@@ -80,7 +70,7 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 	image := &exec.ELFImage{
 		Region: mem.NonSecureRegion,
-		ELF:    osELF,
+		ELF:    OS,
 	}
 
 	if err = image.Load(); err != nil {
@@ -91,7 +81,7 @@ func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 		return nil, fmt.Errorf("SM could not load kernel, %v", err)
 	}
 
-	log.Printf("SM loaded kernel addr:%#x entry:%#x size:%d", os.Memory.Start(), os.R15, len(osELF))
+	log.Printf("SM loaded kernel addr:%#x entry:%#x size:%d", os.Memory.Start(), os.R15, len(OS))
 
 	if err = configureTrustZone(lock, false); err != nil {
 		return nil, fmt.Errorf("SM could not configure TrustZone, %v", err)

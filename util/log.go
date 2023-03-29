@@ -51,8 +51,6 @@ func BufferedTermLog(c byte, secure bool, t *term.Terminal) {
 	buf.WriteByte(c)
 
 	if c == flushChr || buf.Len() > outputLimit {
-		os.Stdout.Write(buf.Bytes())
-
 		t.Write(color)
 		t.Write(buf.Bytes())
 		t.Write(t.Escape.Reset)

@@ -4,7 +4,7 @@
 // Use of this source code is governed by the license
 // that can be found in the LICENSE file.
 
-package main
+package gotee
 
 import (
 	"github.com/usbarmory/tamago/riscv"
@@ -51,7 +51,7 @@ func configurePMP(ctx *monitor.ExecCtx, i int) (err error) {
 	}
 	i += 1
 
-	if err = fu540.RV64.WritePMP(i, fu540.CLINT_BASE + 0x10000, true, true, true, riscv.PMP_A_TOR, false); err != nil {
+	if err = fu540.RV64.WritePMP(i, fu540.CLINT_BASE+0x10000, true, true, true, riscv.PMP_A_TOR, false); err != nil {
 		return
 	}
 	i += 1

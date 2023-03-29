@@ -76,6 +76,7 @@ impl Write for Stdout {
                     "ecall",
                     in("a0") SYS_WRITE,
                     in("a1") c,
+                    in("a7") 0,
                 );
             }
         }
@@ -90,6 +91,7 @@ fn nanotime() -> u64 {
         asm!(
             "ecall",
             in("a0") SYS_NANOTIME,
+            in("a7") 0,
         );
 
         asm!(
@@ -108,6 +110,7 @@ fn getrandom(data: &mut [u8]) {
             in("a0") SYS_GETRANDOM,
             in("a1") data.as_ptr(),
             in("a2") data.len(),
+            in("a7") 0,
         );
     }
 }
