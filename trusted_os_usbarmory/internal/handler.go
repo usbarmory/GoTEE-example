@@ -43,7 +43,7 @@ func goHandler(ctx *monitor.ExecCtx) (err error) {
 		}
 	case syscall.SYS_EXIT:
 		// support exit syscall on both security states
-		return errors.New("exit")
+		ctx.Stop()
 	default:
 		if ctx.NonSecure() {
 			ctx.Print()
