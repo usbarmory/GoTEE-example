@@ -19,7 +19,10 @@ import (
 
 // TrustZone Watchdog interval (in ms) to force Non-Secure to Secure World
 // switching.
-const watchdogTimeout = 10000
+const (
+	watchdogTimeout         = 10000
+	watchdogWarningInterval = 2000
+)
 
 func GoTEE() (err error) {
 	var wg sync.WaitGroup

@@ -149,7 +149,7 @@ func enableTrustZoneWatchdog() {
 
 	// enable TrustZone Watchdog Secure interrupt
 	imx6ul.GIC.EnableInterrupt(imx6ul.TZ_WDOG.IRQ, true)
-	imx6ul.TZ_WDOG.EnableInterrupt()
+	imx6ul.TZ_WDOG.EnableInterrupt(watchdogWarningInterval)
 
 	// enable TrustZone Watchdog
 	imx6ul.TZ_WDOG.EnableTimeout(watchdogTimeout)

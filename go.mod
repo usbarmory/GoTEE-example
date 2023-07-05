@@ -6,7 +6,7 @@ require (
 	github.com/usbarmory/GoTEE v0.0.0-20230329122742-59a5b928ce0f
 	github.com/usbarmory/armory-boot v0.0.0-20230127111211-c78215862f3a
 	github.com/usbarmory/imx-usbnet v0.0.0-20230119085031-3e0bbf3997fc
-	github.com/usbarmory/tamago v0.0.0-20230324094443-b572096a0d9f
+	github.com/usbarmory/tamago v0.0.0-20230705124030-ae1a7939b2f2
 	golang.org/x/crypto v0.5.0
 	golang.org/x/term v0.4.0
 )
