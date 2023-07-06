@@ -7,8 +7,6 @@
 package gotee
 
 import (
-	"errors"
-
 	"github.com/usbarmory/GoTEE/monitor"
 	"github.com/usbarmory/GoTEE/sbi"
 	"github.com/usbarmory/GoTEE/syscall"
@@ -39,7 +37,7 @@ func goHandler(ctx *monitor.ExecCtx) (err error) {
 			ctx.Print()
 		}
 
-		return errors.New("exit")
+		ctx.Stop()
 	default:
 		return defaultHandler(ctx)
 	}

@@ -60,6 +60,8 @@ func init() {
 	log.SetFlags(log.Ltime)
 	log.SetOutput(os.Stdout)
 
+	mem.Init()
+
 	// Move DMA region to prevent NonSecure access, alternatively
 	// iRAM/OCRAM (default DMA region) can be locked down on its own (as it
 	// is outside TZASC control).

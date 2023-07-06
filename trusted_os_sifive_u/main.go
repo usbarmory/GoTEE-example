@@ -43,6 +43,7 @@ func init() {
 	log.SetFlags(log.Ltime)
 	log.SetOutput(os.Stdout)
 
+	mem.Init()
 	dma.Init(mem.SecureDMAStart, mem.SecureDMASize)
 
 	cmd.Banner = fmt.Sprintf("%s/%s (%s) • TEE Security Monitor (M-mode)", runtime.GOOS, runtime.GOARCH, runtime.Version())

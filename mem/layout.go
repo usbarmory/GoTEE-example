@@ -31,7 +31,7 @@ const (
 var AppletRegion *dma.Region
 var NonSecureRegion *dma.Region
 
-func init() {
+func Init() {
 	AppletRegion, _ = dma.NewRegion(AppletStart, AppletSize, false)
 	AppletRegion.Reserve(AppletSize, 0)
 
