@@ -21,6 +21,7 @@ import (
 	"github.com/usbarmory/GoTEE/monitor"
 
 	"github.com/usbarmory/GoTEE-example/mem"
+	"github.com/usbarmory/GoTEE-example/util"
 
 	"github.com/usbarmory/armory-boot/config"
 	"github.com/usbarmory/armory-boot/disk"
@@ -190,8 +191,8 @@ func run(ctx *monitor.ExecCtx, wg *sync.WaitGroup) {
 	log.Printf("SM stopped mode:%s sp:%#.8x lr:%#.8x pc:%#.8x ns:%v err:%v", mode, ctx.R13, ctx.R14, ctx.R15, ns, err)
 
 	if err != nil {
-		pcLine, _ := PCToLine(TA, ctx.R15)
-		lrLine, _ := PCToLine(TA, ctx.R14)
+		pcLine, _ := util.PCToLine(TA, uint64(ctx.R15))
+		lrLine, _ := util.PCToLine(TA, uint64(ctx.R14))
 
 		log.Printf("\t%s", pcLine)
 		log.Printf("\t%s", lrLine)

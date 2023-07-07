@@ -12,16 +12,39 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package gotee
+package util
 
 import (
 	"bytes"
 	"debug/elf"
 	"debug/gosym"
+	"errors"
 	"fmt"
 )
 
-func symTable(buf []byte) (symTable *gosym.Table, err error) {
+func LookupSym(buf []byte, name string) (*elf.Symbol, error) {
+	exe, err := elf.NewFile(bytes.NewReader(buf))
+
+	if err != nil {
+		return nil, err
+	}
+
+	syms, err := exe.Symbols()
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, sym := range syms {
+		if sym.Name == name {
+			return &sym, nil
+		}
+	}
+
+	return nil, errors.New("symbol not found")
+}
+
+func goSymTable(buf []byte) (symTable *gosym.Table, err error) {
 	exe, err := elf.NewFile(bytes.NewReader(buf))
 
 	if err != nil {
@@ -51,8 +74,8 @@ func symTable(buf []byte) (symTable *gosym.Table, err error) {
 	return gosym.NewTable(symTableData, lineTable)
 }
 
-func PCToLine(buf[]byte, pc uint64) (s string, err error) {
-	symTable, err := symTable(buf)
+func PCToLine(buf []byte, pc uint64) (s string, err error) {
+	symTable, err := goSymTable(buf)
 
 	if err != nil {
 		return
