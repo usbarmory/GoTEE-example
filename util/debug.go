@@ -23,13 +23,13 @@ import (
 )
 
 func LookupSym(buf []byte, name string) (*elf.Symbol, error) {
-	exe, err := elf.NewFile(bytes.NewReader(buf))
+	f, err := elf.NewFile(bytes.NewReader(buf))
 
 	if err != nil {
 		return nil, err
 	}
 
-	syms, err := exe.Symbols()
+	syms, err := f.Symbols()
 
 	if err != nil {
 		return nil, err
@@ -45,15 +45,15 @@ func LookupSym(buf []byte, name string) (*elf.Symbol, error) {
 }
 
 func goSymTable(buf []byte) (symTable *gosym.Table, err error) {
-	exe, err := elf.NewFile(bytes.NewReader(buf))
+	f, err := elf.NewFile(bytes.NewReader(buf))
 
 	if err != nil {
 		return
 	}
 
-	addr := exe.Section(".text").Addr
+	addr := f.Section(".text").Addr
 
-	lineTableData, err := exe.Section(".gopclntab").Data()
+	lineTableData, err := f.Section(".gopclntab").Data()
 
 	if err != nil {
 		return
@@ -65,7 +65,7 @@ func goSymTable(buf []byte) (symTable *gosym.Table, err error) {
 		return
 	}
 
-	symTableData, err := exe.Section(".gosymtab").Data()
+	symTableData, err := f.Section(".gosymtab").Data()
 
 	if err != nil {
 		return
