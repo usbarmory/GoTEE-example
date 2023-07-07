@@ -22,20 +22,34 @@ import (
 	"fmt"
 )
 
-func LookupSym(buf []byte, name string) (*elf.Symbol, error) {
-	f, err := elf.NewFile(bytes.NewReader(buf))
+var (
+	target        []byte
+	symCache      []elf.Symbol
+	symTableCache *gosym.Table
+)
+
+func SetDebugTarget(buf []byte) {
+	target = buf
+}
+
+func LookupSym(name string) (*elf.Symbol, error) {
+	f, err := elf.NewFile(bytes.NewReader(target))
 
 	if err != nil {
 		return nil, err
 	}
 
-	syms, err := f.Symbols()
+	if symCache == nil {
+		syms, err := f.Symbols()
 
-	if err != nil {
-		return nil, err
+		if err != nil {
+			return nil, err
+		}
+
+		symCache = syms
 	}
 
-	for _, sym := range syms {
+	for _, sym := range symCache {
 		if sym.Name == name {
 			return &sym, nil
 		}
@@ -44,8 +58,12 @@ func LookupSym(buf []byte, name string) (*elf.Symbol, error) {
 	return nil, errors.New("symbol not found")
 }
 
-func goSymTable(buf []byte) (symTable *gosym.Table, err error) {
-	f, err := elf.NewFile(bytes.NewReader(buf))
+func goSymTable() (symTable *gosym.Table, err error) {
+	if symTableCache != nil {
+		return symTableCache, nil
+	}
+
+	f, err := elf.NewFile(bytes.NewReader(target))
 
 	if err != nil {
 		return
@@ -71,11 +89,13 @@ func goSymTable(buf []byte) (symTable *gosym.Table, err error) {
 		return
 	}
 
-	return gosym.NewTable(symTableData, lineTable)
+	symTableCache, err = gosym.NewTable(symTableData, lineTable)
+
+	return symTableCache, err
 }
 
-func PCToLine(buf []byte, pc uint64) (s string, err error) {
-	symTable, err := goSymTable(buf)
+func PCToLine(pc uint64) (s string, err error) {
+	symTable, err := goSymTable()
 
 	if err != nil {
 		return

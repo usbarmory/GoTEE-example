@@ -16,7 +16,6 @@ import (
 
 	layout "github.com/usbarmory/GoTEE-example/mem"
 	"github.com/usbarmory/GoTEE-example/util"
-	"github.com/usbarmory/GoTEE-example/trusted_os_usbarmory/internal"
 )
 
 func init() {
@@ -62,7 +61,7 @@ func withinAppletMemory(ptr uint32) bool {
 func stackallptrCmd(term *term.Terminal, _ []string) (res string, err error) {
 	var sym *elf.Symbol
 
-	if sym, err = util.LookupSym(gotee.TA, "runtime.allgptr"); err != nil {
+	if sym, err = util.LookupSym("runtime.allgptr"); err != nil {
 		return "", fmt.Errorf("could not find runtime.allgptr symbol, %v", err)
 	}
 
@@ -72,19 +71,19 @@ func stackallptrCmd(term *term.Terminal, _ []string) (res string, err error) {
 		return "", fmt.Errorf("invalid allgptr (%x)", *allgptr)
 	}
 
-	if sym, err = util.LookupSym(gotee.TA, "runtime.allglen"); err != nil {
+	if sym, err = util.LookupSym("runtime.allglen"); err != nil {
 		return "", fmt.Errorf("could not find runtime.allglen symbol, %v", err)
 	}
 
 	allglen := (*uint32)(unsafe.Pointer(uintptr(sym.Value)))
 
-	if sym, err = util.LookupSym(gotee.TA, "runtime.text"); err != nil {
+	if sym, err = util.LookupSym("runtime.text"); err != nil {
 		return "", fmt.Errorf("could not find runtime.text symbol, %v", err)
 	}
 
 	text := sym.Value
 
-	if sym, err = util.LookupSym(gotee.TA, "runtime.etext"); err != nil {
+	if sym, err = util.LookupSym("runtime.etext"); err != nil {
 		return "", fmt.Errorf("could not find runtime.etext symbol, %v", err)
 	}
 
@@ -103,7 +102,7 @@ func stackallptrCmd(term *term.Terminal, _ []string) (res string, err error) {
 		fmt.Fprintf(term, "\ng[%d]: %x\n", i, g)
 
 		if g.m == nil {
-			if l, err := util.PCToLine(gotee.TA, uint64(g.sched.pc)); err == nil {
+			if l, err := util.PCToLine(uint64(g.sched.pc)); err == nil {
 				fmt.Fprintf(term, "\tg[%d].sched.pc (%x): %s\n", i, g.sched.pc, l)
 			} else {
 				fmt.Fprintf(term, "\tg[%d].sched: %x\n", i, g.sched)
@@ -115,7 +114,7 @@ func stackallptrCmd(term *term.Terminal, _ []string) (res string, err error) {
 				try := uint64(binary.LittleEndian.Uint32(stack[i:i+4]))
 
 				if try >= text && try <= etext {
-					if l, err := util.PCToLine(gotee.TA, try); err == nil {
+					if l, err := util.PCToLine(try); err == nil {
 						fmt.Fprintf(term, "\tpotential LR (%x): %s\n", try, l)
 					}
 				}

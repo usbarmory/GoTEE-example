@@ -64,6 +64,9 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 	ta.Handler = goHandler
 	ta.Debug = true
 
+	// set applet as ELF debugging target
+	util.SetDebugTarget(TA)
+
 	return
 }
 
@@ -191,8 +194,8 @@ func run(ctx *monitor.ExecCtx, wg *sync.WaitGroup) {
 	log.Printf("SM stopped mode:%s sp:%#.8x lr:%#.8x pc:%#.8x ns:%v err:%v", mode, ctx.R13, ctx.R14, ctx.R15, ns, err)
 
 	if err != nil {
-		pcLine, _ := util.PCToLine(TA, uint64(ctx.R15))
-		lrLine, _ := util.PCToLine(TA, uint64(ctx.R14))
+		pcLine, _ := util.PCToLine(uint64(ctx.R15))
+		lrLine, _ := util.PCToLine(uint64(ctx.R14))
 
 		log.Printf("\t%s", pcLine)
 		log.Printf("\t%s", lrLine)
