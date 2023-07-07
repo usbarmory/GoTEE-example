@@ -22,7 +22,7 @@ func init() {
 	Add(Cmd{
 		Name: "allgptr",
 		Help: "memory forensics of applet goroutines",
-		Fn:   stackallptrCmd,
+		Fn:   allgptrCmd,
 	})
 }
 
@@ -58,13 +58,13 @@ func withinAppletMemory(ptr uint32) bool {
 	return (ptr >= layout.AppletStart && ptr <= (layout.AppletStart + layout.AppletSize))
 }
 
-// stackallptr forensically profiles goroutines from Go runtime memory, this
+// allgptrCmd forensically profiles goroutines from Go runtime memory, this
 // allows the inspection of state from a separate Go runtime (i.e. isolated
 // from the one running this command) even after a warm reboot.
 //
 // The technique involves following the runtime.allgptr symbol to parse profile
 // information from memory.
-func stackallptrCmd(term *term.Terminal, _ []string) (res string, err error) {
+func allgptrCmd(term *term.Terminal, _ []string) (res string, err error) {
 	var sym *elf.Symbol
 
 	if sym, err = util.LookupSym("runtime.allgptr"); err != nil {
