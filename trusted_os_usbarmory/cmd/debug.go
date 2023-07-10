@@ -41,37 +41,40 @@ type gobuf struct {
 	bp   uint32
 }
 
-type g struct {
-	stacklo     uint
-	stackhi     uint
+type stack struct {
+	lo uintptr
+	hi uintptr
+}
 
-	stackguard0 uintptr
-	stackguard1 uintptr
-	_panic    uintptr
-	_defer    uintptr
-	m         *m
-	sched     gobuf
-	syscallsp uintptr
-	syscallpc uintptr
-	stktopsp  uintptr
-	param        uint
-	atomicstatus uint
-	stackLock    uint32
-	goid         uint64
-	schedlink    uintptr
-	waitsince    int64
-	waitreason   uint8
-	preempt       bool
-	preemptStop   bool
-	preemptShrink bool
-	asyncSafePoint bool
-	paniconfault bool
-	gcscandone   bool
-	throwsplit   bool
+type g struct {
+	stack            stack
+	stackguard0      uintptr
+	stackguard1      uintptr
+	_panic           uintptr
+	_defer           uintptr
+	m                *m
+	sched            gobuf
+	syscallsp        uintptr
+	syscallpc        uintptr
+	stktopsp         uintptr
+	param            uint
+	atomicstatus     uint
+	stackLock        uint32
+	goid             uint64
+	schedlink        uintptr
+	waitsince        int64
+	waitreason       uint8
+	preempt          bool
+	preemptStop      bool
+	preemptShrink    bool
+	asyncSafePoint   bool
+	paniconfault     bool
+	gcscandone       bool
+	throwsplit       bool
 	activeStackChans bool
 
-	noCopy struct {}
-	value uint8
+	noCopy struct{}
+	value  uint8
 
 	raceignore     int8
 	sysblocktraced bool
@@ -89,10 +92,12 @@ type g struct {
 	sigcode1       uintptr
 	sigpc          uintptr
 	gopc           uintptr
+	ancestors      uintptr
+	startpc        uintptr
 }
 
 func withinAppletMemory(ptr uint32) bool {
-	return (ptr >= layout.AppletStart && ptr <= (layout.AppletStart + layout.AppletSize))
+	return (ptr >= layout.AppletStart && ptr <= (layout.AppletStart+layout.AppletSize))
 }
 
 // allgptrCmd forensically profiles goroutines from Go runtime memory, this
@@ -133,7 +138,7 @@ func allgptrCmd(term *term.Terminal, _ []string) (res string, err error) {
 	etext := sym.Value
 
 	for i := uint32(0); i < *allglen; i++ {
-		gptr := (*uint32)(unsafe.Pointer(uintptr(*allgptr+i*4)))
+		gptr := (*uint32)(unsafe.Pointer(uintptr(*allgptr + i*4)))
 
 		if !withinAppletMemory(*gptr) {
 			fmt.Fprintf(term, "invalid gptr (%x)", *gptr)
@@ -142,17 +147,17 @@ func allgptrCmd(term *term.Terminal, _ []string) (res string, err error) {
 
 		g := (*g)(unsafe.Pointer(uintptr(*gptr)))
 
-		fmt.Fprintf(term, "\ng[%d]: %x\n", i, g)
+		fmt.Fprintf(term, "\ng[%d]: stack.lo:%x stack.hi:%x m:%x sched.sp:%x sched.pc:%x\n", i, g.stack.lo, g.stack.hi, g.m, g.sched.sp, g.sched.pc)
 
 		if l, err := util.PCToLine(uint64(g.gopc)); err == nil {
-			fmt.Fprintf(term, "\tg[%d].gopc (%x): %s\n", i, g.gopc, l)
+			fmt.Fprintf(term, "\tgopc (%x): %s\n", g.gopc, l)
 		}
 
 		if g.m != nil {
-			stack := mem(uint(g.stacklo), int(g.stackhi - g.stacklo), nil)
+			stack := mem(uint(g.stack.lo), int(g.stack.hi-g.stack.lo), nil)
 
 			for i := 0; i < len(stack); i += 4 {
-				try := uint64(binary.LittleEndian.Uint32(stack[i:i+4]))
+				try := uint64(binary.LittleEndian.Uint32(stack[i : i+4]))
 
 				if try >= text && try <= etext {
 					if l, err := util.PCToLine(try); err == nil {
