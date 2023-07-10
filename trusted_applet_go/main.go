@@ -22,6 +22,9 @@ import (
 func init() {
 	log.SetFlags(log.Ltime)
 	log.SetOutput(os.Stdout)
+
+	// yield to monitor on runtime panic
+	runtime.Exit = applet.Exit
 }
 
 func testRNG(n int) {
