@@ -150,10 +150,14 @@ func allgptrCmd(term *term.Terminal, _ []string) (res string, err error) {
 		fmt.Fprintf(term, "\ng[%d]: stack.lo:%x stack.hi:%x m:%x sched.sp:%x sched.pc:%x\n", i, g.stack.lo, g.stack.hi, g.m, g.sched.sp, g.sched.pc)
 
 		if l, err := util.PCToLine(uint64(g.gopc)); err == nil {
-			fmt.Fprintf(term, "\tgopc (%x): %s\n", g.gopc, l)
+			fmt.Fprintf(term, "\tgopc (%x): %s", g.gopc, l)
 		}
 
-		if g.m != nil {
+		if g.m == nil {
+			fmt.Fprintf(term, "\n")
+		} else {
+			fmt.Fprintf(term, " - goroutine was active, sweeping stack pointers\n")
+
 			stack := mem(uint(g.stack.lo), int(g.stack.hi-g.stack.lo), nil)
 
 			for i := 0; i < len(stack); i += 4 {
@@ -161,7 +165,7 @@ func allgptrCmd(term *term.Terminal, _ []string) (res string, err error) {
 
 				if try >= text && try <= etext {
 					if l, err := util.PCToLine(try); err == nil {
-						fmt.Fprintf(term, "\tpotential LR (%x): %s\n", try, l)
+						fmt.Fprintf(term, "\t%x\t%s\n", try, l)
 					}
 				}
 			}
