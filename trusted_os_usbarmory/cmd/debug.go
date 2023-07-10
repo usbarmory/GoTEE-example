@@ -34,7 +34,7 @@ type m struct {
 type gobuf struct {
 	sp   uint32
 	pc   uint32
-	g    uint32
+	g    *g
 	ctxt uint32
 	ret  uint32
 	lr   uint32
@@ -42,16 +42,53 @@ type gobuf struct {
 }
 
 type g struct {
-	stacklo     uint32
-	stackhi     uint32
-	stackguard0 uint32
-	stackguard1 uint32
-	_panic      uint32
-	_defer      uint32
-	m           *m
-	sched       gobuf
-	syscallsp   uint32
-	syscallpc   uint32
+	stacklo     uint
+	stackhi     uint
+
+	stackguard0 uintptr
+	stackguard1 uintptr
+	_panic    uintptr
+	_defer    uintptr
+	m         *m
+	sched     gobuf
+	syscallsp uintptr
+	syscallpc uintptr
+	stktopsp  uintptr
+	param        uint
+	atomicstatus uint
+	stackLock    uint32
+	goid         uint64
+	schedlink    uintptr
+	waitsince    int64
+	waitreason   uint8
+	preempt       bool
+	preemptStop   bool
+	preemptShrink bool
+	asyncSafePoint bool
+	paniconfault bool
+	gcscandone   bool
+	throwsplit   bool
+	activeStackChans bool
+
+	noCopy struct {}
+	value uint8
+
+	raceignore     int8
+	sysblocktraced bool
+	tracking       bool
+	trackingSeq    uint8
+	trackingStamp  int64
+	runnableTime   int64
+	sysexitticks   int64
+	traceseq       uint64
+	tracelastp     uintptr
+	lockedm        uintptr
+	sig            uint32
+	writebuf       []byte
+	sigcode0       uintptr
+	sigcode1       uintptr
+	sigpc          uintptr
+	gopc           uintptr
 }
 
 func withinAppletMemory(ptr uint32) bool {
@@ -107,13 +144,11 @@ func allgptrCmd(term *term.Terminal, _ []string) (res string, err error) {
 
 		fmt.Fprintf(term, "\ng[%d]: %x\n", i, g)
 
-		if g.m == nil {
-			if l, err := util.PCToLine(uint64(g.sched.pc)); err == nil {
-				fmt.Fprintf(term, "\tg[%d].sched.pc (%x): %s\n", i, g.sched.pc, l)
-			} else {
-				fmt.Fprintf(term, "\tg[%d].sched: %x\n", i, g.sched)
-			}
-		} else {
+		if l, err := util.PCToLine(uint64(g.gopc)); err == nil {
+			fmt.Fprintf(term, "\tg[%d].gopc (%x): %s\n", i, g.gopc, l)
+		}
+
+		if g.m != nil {
 			stack := mem(uint(g.stacklo), int(g.stackhi - g.stacklo), nil)
 
 			for i := 0; i < len(stack); i += 4 {
