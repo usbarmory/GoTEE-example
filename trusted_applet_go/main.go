@@ -23,8 +23,8 @@ func init() {
 	log.SetFlags(log.Ltime)
 	log.SetOutput(os.Stdout)
 
-	// yield to monitor on runtime panic
-	runtime.Exit = applet.Exit
+	// yield to monitor (w/ err != nil) on runtime panic
+	runtime.Exit = applet.Crash
 }
 
 func testRNG(n int) {
