@@ -7,11 +7,14 @@
 package main
 
 import (
+	"crypto/aes"
+	"crypto/sha256"
 	"log"
 	"os"
 	"runtime"
 	_ "unsafe"
 
+	"github.com/usbarmory/tamago/dma"
 	"github.com/usbarmory/tamago/soc/nxp/imx6ul"
 
 	"github.com/usbarmory/GoTEE-example/mem"
@@ -37,24 +40,43 @@ func init() {
 	log.SetFlags(log.Ltime)
 	log.SetOutput(os.Stdout)
 
-	imx6ul.SetARMFreq(900)
+	if !imx6ul.Native {
+		return
+	}
+
+	switch imx6ul.Model() {
+	case "i.MX6UL":
+		imx6ul.SetARMFreq(imx6ul.Freq528)
+		imx6ul.CAAM.DeriveKeyMemory = dma.Default()
+	case "i.MX6ULL", "i.MX6ULZ":
+		imx6ul.SetARMFreq(imx6ul.FreqMax)
+		imx6ul.DCP.Init()
+	}
 }
 
 func main() {
 	log.Printf("%s/%s (%s) • system/supervisor (Non-secure)", runtime.GOOS, runtime.GOARCH, runtime.Version())
 
 	if imx6ul.Native {
-		log.Printf("supervisor is about to perform DCP key derivation")
+		var err error
+		var k []byte
 
-		imx6ul.DCP.Init()
+		log.Printf("supervisor is about to perform hardware key derivation")
 
-		// this fails after restrictions are in place (see trusted_os/tz.go)
-		k, err := imx6ul.DCP.DeriveKey(make([]byte, 8), make([]byte, 16), -1)
+		switch {
+		case imx6ul.CAAM != nil:
+			// derived key differs in non-secure
+			k = make([]byte, sha256.Size)
+			err = imx6ul.CAAM.DeriveKey(make([]byte, sha256.Size), k)
+		case imx6ul.DCP != nil:
+			// this fails after restrictions are in place (see trusted_os/tz.go)
+			k, err = imx6ul.DCP.DeriveKey(make([]byte, aes.BlockSize), make([]byte, aes.BlockSize), -1)
+		}
 
 		if err != nil {
-			log.Printf("supervisor failed to use DCP (%v)", err)
+			log.Printf("supervisor failed to derive key (%v)", err)
 		} else {
-			log.Printf("supervisor successfully used DCP (%x)", k)
+			log.Printf("supervisor successfully derived key (%x)", k)
 		}
 
 		// Uncomment to test memory protection, this will hang NS

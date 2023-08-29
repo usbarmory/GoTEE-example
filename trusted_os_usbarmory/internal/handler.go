@@ -70,7 +70,7 @@ func linuxHandler(ctx *monitor.ExecCtx) (err error) {
 		}
 
 		if end != nil {
-			end <- true
+			close(end)
 		}
 
 		return

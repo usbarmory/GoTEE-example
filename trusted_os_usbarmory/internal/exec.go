@@ -7,6 +7,8 @@
 package gotee
 
 import (
+	"crypto/aes"
+	"crypto/sha256"
 	"log"
 	"sync"
 	"time"
@@ -72,14 +74,25 @@ func GoTEE() (err error) {
 	run(os, nil)
 
 	// test restricted peripheral in Secure World
-	log.Printf("SM in Secure World is about to perform DCP key derivation")
+	log.Printf("SM in Secure World is about to perform key derivation")
 
-	k, err := imx6ul.DCP.DeriveKey(make([]byte, 8), make([]byte, 16), -1)
+	var k []byte
+
+	switch {
+	case imx6ul.CAAM != nil:
+		// set CAAM as Secure
+		imx6ul.CAAM.SetOwner(true)
+
+		k = make([]byte, sha256.Size)
+		err = imx6ul.CAAM.DeriveKey(make([]byte, sha256.Size), k)
+	case imx6ul.DCP != nil:
+		k, err = imx6ul.DCP.DeriveKey(make([]byte, aes.BlockSize), make([]byte, aes.BlockSize), -1)
+	}
 
 	if err != nil {
-		log.Printf("SM in Secure World failed to use DCP (%v)", err)
+		log.Printf("SM in Secure World failed to derive key (%v)", err)
 	} else {
-		log.Printf("SM in Secure World successfully used DCP (%x)", k)
+		log.Printf("SM in Secure World successfully derived key (%x)", k)
 	}
 
 	return

@@ -33,6 +33,11 @@ func configureTrustZone(lock bool, wdog bool) (err error) {
 		}
 	}
 
+	if imx6ul.CAAM != nil {
+		// set CAAM as NonSecure
+		imx6ul.CAAM.SetOwner(false)
+	}
+
 	// set default TZASC region (entire memory space) to NonSecure access
 	if err = imx6ul.TZASC.EnableRegion(0, 0, 0, (1<<tzc380.SP_NW_RD)|(1<<tzc380.SP_NW_WR)); err != nil {
 		return
@@ -96,14 +101,16 @@ func configureTrustZone(lock bool, wdog bool) (err error) {
 		return
 	}
 
-	// restrict access to DCP
-	if err = imx6ul.CSU.SetSecurityLevel(34, 0, csu.SEC_LEVEL_4, false); err != nil {
-		return
-	}
+	if imx6ul.DCP != nil {
+		// restrict access to DCP
+		if err = imx6ul.CSU.SetSecurityLevel(34, 0, csu.SEC_LEVEL_4, false); err != nil {
+			return
+		}
 
-	// set DCP as Secure
-	if err = imx6ul.CSU.SetAccess(14, true, false); err != nil {
-		return
+		// set DCP as Secure
+		if err = imx6ul.CSU.SetAccess(14, true, false); err != nil {
+			return
+		}
 	}
 
 	return

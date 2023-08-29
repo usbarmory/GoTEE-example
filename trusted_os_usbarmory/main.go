@@ -68,10 +68,15 @@ func init() {
 	dma.Init(mem.SecureDMAStart, mem.SecureDMASize)
 
 	if imx6ul.Native {
-		imx6ul.SetARMFreq(900)
-
-		imx6ul.DCP.Init()
-		imx6ul.DCP.DeriveKeyMemory = dma.Default()
+		switch imx6ul.Model() {
+		case "i.MX6UL":
+			imx6ul.SetARMFreq(imx6ul.Freq528)
+			imx6ul.CAAM.DeriveKeyMemory = dma.Default()
+		case "i.MX6ULL", "i.MX6ULZ":
+			imx6ul.SetARMFreq(imx6ul.FreqMax)
+			imx6ul.DCP.Init()
+			imx6ul.DCP.DeriveKeyMemory = dma.Default()
+		}
 
 		debugConsole, _ := usbarmory.DetectDebugAccessory(250 * time.Millisecond)
 		<-debugConsole
