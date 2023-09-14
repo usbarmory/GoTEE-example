@@ -97,7 +97,7 @@ type g struct {
 }
 
 func withinAppletMemory(ptr uint32) bool {
-	return (ptr >= layout.AppletStart && ptr <= (layout.AppletStart+layout.AppletSize))
+	return (ptr >= layout.AppletVirtualStart && ptr <= (layout.AppletVirtualStart+layout.AppletSize))
 }
 
 // allgptrCmd forensically profiles goroutines from Go runtime memory, this

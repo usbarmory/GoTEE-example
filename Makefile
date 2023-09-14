@@ -37,6 +37,7 @@ QEMU ?= qemu-system-riscv64 -machine sifive_u -m 512M \
         -bios $(CURDIR)/trusted_os_$(TARGET)/bios/bios.bin
 
 ARCH = "riscv64"
+APPLET_START = 0x9c010000
 RUST_LINKER = "riscv64-linux-gnu-ld"
 RUST_TARGET = "riscv64gc-unknown-none-elf"
 
@@ -49,6 +50,7 @@ QEMU ?= qemu-system-arm -machine mcimx6ul-evk -cpu cortex-a7 -m 512M \
         -semihosting
 
 ARCH = "arm"
+APPLET_START = 0x10010000
 RUST_LINKER = "arm-none-eabi-ld"
 RUST_TARGET = "armv7a-none-eabi"
 
@@ -79,12 +81,12 @@ trusted_os_signed: imx_signed
 
 trusted_applet_go: APP=trusted_applet
 trusted_applet_go: DIR=$(CURDIR)/trusted_applet_go
-trusted_applet_go: TEXT_START=0x9c010000
+trusted_applet_go: TEXT_START=$(APPLET_START)
 trusted_applet_go: elf
 	mkdir -p $(CURDIR)/trusted_os_$(TARGET)/assets
 	cp $(CURDIR)/bin/trusted_applet.elf $(CURDIR)/trusted_os_$(TARGET)/assets
 
-trusted_applet_rust: TEXT_START=0x9c010000
+trusted_applet_rust: TEXT_START=$(APPLET_START)
 trusted_applet_rust:
 	cd $(CURDIR)/trusted_applet_rust && rustc ${RUSTFLAGS} -o $(CURDIR)/bin/trusted_applet.elf main_${ARCH}.rs
 	mkdir -p $(CURDIR)/trusted_os_$(TARGET)/assets

@@ -11,7 +11,6 @@ import (
 	"crypto/sha256"
 	"log"
 	"sync"
-	"time"
 
 	usbarmory "github.com/usbarmory/tamago/board/usbarmory/mk2"
 	"github.com/usbarmory/tamago/soc/nxp/imx6ul"
@@ -46,15 +45,6 @@ func GoTEE() (err error) {
 	wg.Add(2)
 	go run(ta, &wg)
 	go run(os, &wg)
-
-	if !imx6ul.Native {
-		go func() {
-			for i := 0; i < 60; i++ {
-				time.Sleep(1 * time.Second)
-				log.Printf("SM says %d missisipi", i+1)
-			}
-		}()
-	}
 
 	log.Printf("SM waiting for applet and kernel")
 	wg.Wait()

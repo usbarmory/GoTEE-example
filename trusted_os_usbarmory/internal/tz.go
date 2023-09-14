@@ -49,8 +49,13 @@ func configureTrustZone(lock bool, wdog bool) (err error) {
 			return
 		}
 
-		// restrict Secure World applet region
-		if err = imx6ul.TZASC.EnableRegion(2, mem.AppletStart, mem.AppletSize, (1<<tzc380.SP_SW_RD)|(1<<tzc380.SP_SW_WR)); err != nil {
+		// restrict Secure World applet physical region
+		if err = imx6ul.TZASC.EnableRegion(2, mem.AppletPhysicalStart, mem.AppletSize, (1<<tzc380.SP_SW_RD)|(1<<tzc380.SP_SW_WR)); err != nil {
+			return
+		}
+
+		// restrict Secuew World applet virtual region
+		if err = imx6ul.TZASC.EnableRegion(3, mem.AppletVirtualStart, mem.AppletSize, (1<<tzc380.SP_SW_RD)|(1<<tzc380.SP_SW_WR)); err != nil {
 			return
 		}
 	} else {

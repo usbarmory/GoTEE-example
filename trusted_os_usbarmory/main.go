@@ -68,11 +68,18 @@ func init() {
 	dma.Init(mem.SecureDMAStart, mem.SecureDMASize)
 
 	if imx6ul.Native {
-		switch imx6ul.Model() {
-		case "i.MX6UL":
+		switch imx6ul.Family {
+		case imx6ul.IMX6UL:
 			imx6ul.SetARMFreq(imx6ul.Freq528)
 			imx6ul.CAAM.DeriveKeyMemory = dma.Default()
-		case "i.MX6ULL", "i.MX6ULZ":
+
+			imx6ul.BEE.Init()
+			defer imx6ul.BEE.Lock()
+
+			if err := imx6ul.BEE.Enable(mem.AppletPhysicalStart, 0); err != nil {
+				log.Fatalf("SM could not activate BEE, %v", err)
+			}
+		case imx6ul.IMX6ULL:
 			imx6ul.SetARMFreq(imx6ul.FreqMax)
 			imx6ul.DCP.Init()
 			imx6ul.DCP.DeriveKeyMemory = dma.Default()

@@ -13,7 +13,7 @@ import (
 )
 
 //go:linkname ramStart runtime.ramStart
-var ramStart uint32 = mem.AppletStart
+var ramStart uint32 = mem.AppletVirtualStart
 
 //go:linkname ramSize runtime.ramSize
 var ramSize uint32 = mem.AppletSize

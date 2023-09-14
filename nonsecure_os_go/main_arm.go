@@ -44,11 +44,11 @@ func init() {
 		return
 	}
 
-	switch imx6ul.Model() {
-	case "i.MX6UL":
+	switch imx6ul.Family {
+	case imx6ul.IMX6UL:
 		imx6ul.SetARMFreq(imx6ul.Freq528)
 		imx6ul.CAAM.DeriveKeyMemory = dma.Default()
-	case "i.MX6ULL", "i.MX6ULZ":
+	case imx6ul.IMX6ULL:
 		imx6ul.SetARMFreq(imx6ul.FreqMax)
 		imx6ul.DCP.Init()
 	}

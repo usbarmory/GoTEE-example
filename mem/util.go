@@ -12,11 +12,6 @@ import (
 	"unsafe"
 )
 
-const (
-	textStartARM  = 0xe59a1008
-	textStartRV64 = 0x010db303
-)
-
 // TestAccess attempts to read one 32-bit word from Secure World memory.
 func TestAccess(tag string) {
 	addr := SecureStart + uint32(0x10000)
@@ -27,7 +22,7 @@ func TestAccess(tag string) {
 
 	res := "success - *insecure configuration*"
 
-	if val != textStartARM && val != textStartRV64 {
+	if val != textStartWord {
 		res = "fail (expected, but you should never see this)"
 	}
 
