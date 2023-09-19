@@ -61,7 +61,7 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 		ELF:    TA,
 	}
 
-	if imx6ul.Native && imx6ul.BEE != nil {
+	if imx6ul.Native && imx6ul.BEE != nil && mem.BEE {
 		log.Printf("SM accessing applet encrypted memory through BEE alias")
 		initAppletMemory(true)
 	} else {
