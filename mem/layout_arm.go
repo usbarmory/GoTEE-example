@@ -30,7 +30,6 @@ const (
 	NonSecureSize  = 0x10000000 // 256MB
 )
 
-
 // BEE enables AES CTR encryption for the Applet RAM on i.MX6UL P/Ns
 const BEE = true
 
