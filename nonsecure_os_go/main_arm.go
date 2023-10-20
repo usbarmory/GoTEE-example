@@ -55,7 +55,7 @@ func init() {
 }
 
 func main() {
-	log.Printf("%s/%s (%s) • system/supervisor (Non-secure)", runtime.GOOS, runtime.GOARCH, runtime.Version())
+	log.Printf("%s/%s (%s) • system/supervisor (Non-secure:%v)", runtime.GOOS, runtime.GOARCH, runtime.Version(), imx6ul.ARM.NonSecure())
 
 	if imx6ul.Native {
 		var err error
@@ -78,11 +78,11 @@ func main() {
 		} else {
 			log.Printf("supervisor successfully derived key (%x)", k)
 		}
-
-		// Uncomment to test memory protection, this will hang NS
-		// context and therefore everything.
-		// mem.TestAccess("Non-secure OS")
 	}
+
+	// Uncomment to test memory protection, this will hang NS
+	// context and therefore everything.
+	// mem.TestAccess("Non-secure OS")
 
 	// yield back to secure monitor
 	log.Printf("supervisor is about to yield back")
