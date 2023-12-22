@@ -1,14 +1,14 @@
 module github.com/usbarmory/GoTEE-example
 
-go 1.20
+go 1.21.5
 
 require (
-	github.com/usbarmory/GoTEE v0.0.0-20230914094934-f4f769daa5a9
-	github.com/usbarmory/armory-boot v0.0.0-20230808204644-0ff24f2da486
-	github.com/usbarmory/imx-usbnet v0.0.0-20230626092818-ef791923688e
-	github.com/usbarmory/tamago v0.0.0-20230918141454-6bee1977d8c8
-	golang.org/x/crypto v0.12.0
-	golang.org/x/term v0.11.0
+	github.com/usbarmory/GoTEE v0.0.0-20231222131900-45b417a6c811
+	github.com/usbarmory/armory-boot v0.0.0-20231214220933-25113be568a3
+	github.com/usbarmory/imx-usbnet v0.0.0-20230906121641-6105d330ad44
+	github.com/usbarmory/tamago v0.0.0-20231222130627-14d2d6b5bf0d
+	golang.org/x/crypto v0.17.0
+	golang.org/x/term v0.15.0
 )
 
 require (
@@ -18,11 +18,9 @@ require (
 	github.com/google/btree v1.0.1 // indirect
 	github.com/pierrec/lz4/v4 v4.1.14 // indirect
 	github.com/u-root/u-root v0.11.0 // indirect
-	github.com/usbarmory/crucible v0.0.0-20230824072712-7fe0bb96da65 // indirect
-	go.mozilla.org/pkcs7 v0.0.0-20210826202110-33d05740a352 // indirect
 	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.11.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
 	golang.org/x/time v0.0.0-20220210224613-90d013bbcef8 // indirect
 	gvisor.dev/gvisor v0.0.0-20230614190805-57027c7d31f8 // indirect
 )

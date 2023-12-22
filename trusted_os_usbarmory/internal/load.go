@@ -37,21 +37,22 @@ var (
 	OS []byte
 )
 
-func initAppletMemory(bee bool) {
+func initAppletMemory() {
 	var alias uint32
 
 	start := uint32(mem.AppletVirtualStart)
 	end := start + mem.AppletSize
 
-	if bee {
+	if imx6ul.Native && imx6ul.BEE != nil && mem.BEE {
 		// applet memory is aliased by OTF encryption/decryption
+		log.Printf("SM accessing applet encrypted memory through BEE alias")
 		alias = 0
 	} else {
 		// applet memory is mapped through virtual addresses
 		alias = uint32(mem.AppletPhysicalStart)
 	}
 
-	imx6ul.ARM.ConfigureMMU(start, end, alias, monitor.UserFlags)
+	imx6ul.ARM.ConfigureMMU(start, end, alias, arm.MemoryRegion)
 }
 
 // loadApplet loads a TamaGo unikernel as trusted applet.
@@ -61,14 +62,7 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 		ELF:    TA,
 	}
 
-	if imx6ul.Native && imx6ul.BEE != nil && mem.BEE {
-		log.Printf("SM accessing applet encrypted memory through BEE alias")
-		initAppletMemory(true)
-	} else {
-		initAppletMemory(false)
-		// restore aliasing as monitor.Load() assumes flat 1:1 mapping
-		defer initAppletMemory(false)
-	}
+	initAppletMemory()
 
 	if err = image.Load(); err != nil {
 		return
