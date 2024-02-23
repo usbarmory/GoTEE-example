@@ -14,14 +14,14 @@ import (
 const (
 	// Secure Monitor
 	SecureStart = 0x98000000
-	SecureSize  = 0x03f00000 // 63MB
+	SecureSize  = 0x05f00000 // 95MB
 
 	// Secure Monitor DMA (relocated to avoid conflicts with Main OS)
-	SecureDMAStart = 0x9bf00000
+	SecureDMAStart = 0x9df00000
 	SecureDMASize  = 0x00100000 // 1MB
 
 	// Secure Monitor Applet
-	AppletPhysicalStart = 0x9c000000       // encrypted w/ BEE on i.MX6UL
+	AppletPhysicalStart = 0x9e000000       // encrypted w/ BEE on i.MX6UL
 	AppletVirtualStart  = bee.AliasRegion0 // memory alias
 	AppletSize          = 0x02000000       // 32MB
 
