@@ -37,7 +37,7 @@ QEMU ?= qemu-system-riscv64 -machine sifive_u -m 512M \
         -bios $(CURDIR)/trusted_os_$(TARGET)/bios/bios.bin
 
 ARCH = "riscv64"
-APPLET_START = 0x9e010000
+APPLET_START = 0x9c010000
 RUST_LINKER = "riscv64-linux-gnu-ld"
 RUST_TARGET = "riscv64gc-unknown-none-elf"
 
