@@ -61,12 +61,13 @@ func linuxHandler(ctx *monitor.ExecCtx) (err error) {
 		return errors.New("unexpected processor mode")
 	}
 
-	if ctx.ExceptionVector == arm.FIQ {
+	switch ctx.ExceptionVector {
+	case arm.FIQ:
 		irq, end := imx6ul.GIC.GetInterrupt(true)
 
 		if irq == imx6ul.TZ_WDOG.IRQ {
-			log.Printf("SM servicing TrustZone Watchdog")
 			imx6ul.TZ_WDOG.Service(watchdogTimeout)
+			log.Printf("SM serviced TrustZone Watchdog")
 		}
 
 		if end != nil {
@@ -74,11 +75,11 @@ func linuxHandler(ctx *monitor.ExecCtx) (err error) {
 		}
 
 		return
+	case arm.SUPERVISOR:
+		return monitor.NonSecureHandler(ctx)
+	default:
+		return fmt.Errorf("unhandled exception %x", ctx.ExceptionVector)
 	}
 
-	if ctx.ExceptionVector != arm.SUPERVISOR {
-		return fmt.Errorf("exception %x", ctx.ExceptionVector)
-	}
-
-	return monitor.NonSecureHandler(ctx)
+	return
 }
