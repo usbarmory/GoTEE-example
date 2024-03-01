@@ -108,9 +108,9 @@ func main() {
 		serialConsole()
 	}
 
-	iface, err := usbnet.Init(IP, MAC, hostMAC, 1, nil)
+	iface := usbnet.Interface{}
 
-	if err != nil {
+	if err := iface.Init(IP, MAC, hostMAC); err != nil {
 		log.Fatalf("SM could not initialize USB networking, %v", err)
 	}
 
