@@ -9,7 +9,6 @@ package gotee
 import (
 	"log"
 	"sync"
-	"time"
 
 	_ "github.com/usbarmory/tamago/board/qemu/sifive_u"
 
@@ -36,13 +35,6 @@ func GoTEE() (err error) {
 	wg.Add(2)
 	go run(ta, &wg)
 	go run(os, &wg)
-
-	go func() {
-		for i := 0; i < 60; i++ {
-			time.Sleep(1 * time.Second)
-			log.Printf("SM says %d missisipi", i+1)
-		}
-	}()
 
 	log.Printf("SM waiting for applet and kernel")
 	wg.Wait()
