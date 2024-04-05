@@ -69,7 +69,7 @@ func main() {
 		ledStatus.On = !ledStatus.On
 
 		time.Sleep(1 * time.Second)
-		log.Printf("applet says %d missisipi", i+1)
+		log.Printf("applet says %d mississippi", i+1)
 	}
 
 	// test memory protection
