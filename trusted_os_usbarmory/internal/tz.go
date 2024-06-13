@@ -44,6 +44,9 @@ func configureTrustZone(lock bool, wdog bool) (err error) {
 	}
 
 	if lock {
+		// disable ARM debugging
+		imx6ul.Debug(false)
+
 		// restrict Secure World memory
 		if err = imx6ul.TZASC.EnableRegion(1, mem.SecureStart, mem.SecureSize+mem.SecureDMASize+mem.AppletSize, (1<<tzc380.SP_SW_RD)|(1<<tzc380.SP_SW_WR)); err != nil {
 			return
