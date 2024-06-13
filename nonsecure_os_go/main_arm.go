@@ -50,6 +50,7 @@ func init() {
 		imx6ul.CAAM.DeriveKeyMemory = dma.Default()
 	case imx6ul.IMX6ULL:
 		imx6ul.SetARMFreq(imx6ul.FreqMax)
+		// this will raise an exception under TrustZone lockdown
 		imx6ul.DCP.Init()
 	}
 }
