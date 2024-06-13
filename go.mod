@@ -1,14 +1,14 @@
 module github.com/usbarmory/GoTEE-example
 
-go 1.22.1
+go 1.22.4
 
 require (
-	github.com/usbarmory/GoTEE v0.0.0-20240314122327-40179239ad36
+	github.com/usbarmory/GoTEE v0.0.0-20240606154617-69fca0e00ced
 	github.com/usbarmory/armory-boot v0.0.0-20240307133412-208c66a380b9
 	github.com/usbarmory/imx-usbnet v0.0.0-20240304152630-ca189bf3b3c1
-	github.com/usbarmory/tamago v0.0.0-20240311081420-d3559d54f50d
-	golang.org/x/crypto v0.21.0
-	golang.org/x/term v0.18.0
+	github.com/usbarmory/tamago v0.0.0-20240606154508-da58827195bf
+	golang.org/x/crypto v0.24.0
+	golang.org/x/term v0.21.0
 )
 
 require (
@@ -22,7 +22,7 @@ require (
 	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225 // indirect
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/sync v0.6.0 // indirect
-	golang.org/x/sys v0.18.0 // indirect
+	golang.org/x/sys v0.21.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	gvisor.dev/gvisor v0.0.0-20240303010120-901d232cd101 // indirect
 )
