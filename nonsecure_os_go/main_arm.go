@@ -50,8 +50,6 @@ func init() {
 		imx6ul.CAAM.DeriveKeyMemory = dma.Default()
 	case imx6ul.IMX6ULL:
 		imx6ul.SetARMFreq(imx6ul.FreqMax)
-		// this will raise an exception under TrustZone lockdown
-		imx6ul.DCP.Init()
 	}
 }
 
@@ -71,6 +69,7 @@ func main() {
 			err = imx6ul.CAAM.DeriveKey(make([]byte, sha256.Size), k)
 		case imx6ul.DCP != nil:
 			// this fails after restrictions are in place (see trusted_os/tz.go)
+			imx6ul.DCP.Init()
 			k, err = imx6ul.DCP.DeriveKey(make([]byte, aes.BlockSize), make([]byte, aes.BlockSize), -1)
 		}
 
@@ -82,7 +81,7 @@ func main() {
 	}
 
 	// uncomment to test memory protection
-	mem.TestAccess("Non-secure OS")
+	//mem.TestAccess("Non-secure OS")
 
 	// yield back to secure monitor
 	log.Printf("supervisor is about to yield back")
