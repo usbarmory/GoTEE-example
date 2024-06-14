@@ -43,10 +43,15 @@ func configureTrustZone(lock bool, wdog bool) (err error) {
 		return
 	}
 
-	if lock {
-		// disable ARM debugging
-		imx6ul.Debug(false)
+	// enable OCRAM TrustZone support
+	if err = imx6ul.SetOCRAMProtection(imx6ul.OCRAM_START); err != nil {
+		return
+	}
 
+	// set ARM debugging
+	imx6ul.Debug(!lock)
+
+	if lock {
 		// restrict Secure World memory
 		if err = imx6ul.TZASC.EnableRegion(1, mem.SecureStart, mem.SecureSize+mem.SecureDMASize+mem.AppletSize, (1<<tzc380.SP_SW_RD)|(1<<tzc380.SP_SW_WR)); err != nil {
 			return

@@ -81,9 +81,8 @@ func main() {
 		}
 	}
 
-	// Uncomment to test memory protection, this will hang NS
-	// context and therefore everything.
-	// mem.TestAccess("Non-secure OS")
+	// uncomment to test memory protection
+	mem.TestAccess("Non-secure OS")
 
 	// yield back to secure monitor
 	log.Printf("supervisor is about to yield back")
