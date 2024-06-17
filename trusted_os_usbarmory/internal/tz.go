@@ -43,6 +43,11 @@ func configureTrustZone(lock bool, wdog bool) (err error) {
 		return
 	}
 
+	// enable OCRAM TrustZone support
+	if err = imx6ul.SetOCRAMProtection(imx6ul.OCRAM_START); err != nil {
+		return
+	}
+
 	// set ARM debugging
 	imx6ul.Debug(!lock)
 
