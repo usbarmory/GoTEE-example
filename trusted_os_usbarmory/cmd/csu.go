@@ -55,7 +55,7 @@ func cslCmd(term *term.Terminal, arg []string) (res string, err error) {
 	if len(arg) == 0 {
 		var buf bytes.Buffer
 
-		for i := csu.CSL_MIN; i < csu.CSL_MAX; i++ {
+		for i := csu.CSL_MIN; i <= csu.CSL_MAX; i++ {
 			csl, _, _ := imx6ul.CSU.GetSecurityLevel(i, 0)
 			buf.WriteString(fmt.Sprintf("CSL%.2d 0:%#.2x", i, csl))
 
@@ -99,7 +99,7 @@ func saCmd(term *term.Terminal, arg []string) (res string, err error) {
 	if len(arg) == 0 {
 		var buf bytes.Buffer
 
-		for i := csu.SA_MIN; i < csu.SA_MAX; i++ {
+		for i := csu.SA_MIN; i <= csu.SA_MAX; i++ {
 			if sa, _, _ := imx6ul.CSU.GetAccess(i); sa {
 				buf.WriteString(fmt.Sprintf("SA%.2d: secure\n", i))
 			} else {

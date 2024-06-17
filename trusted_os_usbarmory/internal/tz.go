@@ -23,7 +23,7 @@ func configureTrustZone(lock bool, wdog bool) (err error) {
 	}
 
 	// grant NonSecure access to all peripherals
-	for i := csu.CSL_MIN; i < csu.CSL_MAX; i++ {
+	for i := csu.CSL_MIN; i <= csu.CSL_MAX; i++ {
 		if err = imx6ul.CSU.SetSecurityLevel(i, 0, csu.SEC_LEVEL_0, false); err != nil {
 			return
 		}
@@ -61,7 +61,7 @@ func configureTrustZone(lock bool, wdog bool) (err error) {
 	}
 
 	// set all controllers to NonSecure
-	for i := csu.SA_MIN; i < csu.SA_MAX; i++ {
+	for i := csu.SA_MIN; i <= csu.SA_MAX; i++ {
 		if err = imx6ul.CSU.SetAccess(i, false, false); err != nil {
 			return
 		}
