@@ -25,7 +25,10 @@ var Console *util.Console
 func goHandler(ctx *monitor.ExecCtx) (err error) {
 	if ctx.ExceptionVector == arm.DATA_ABORT && ctx.NonSecure() {
 		log.Printf("SM trapped Non-secure data abort pc:%#.8x", ctx.R15-8)
+
+		ctx.Print()
 		ctx.Stop()
+
 		return
 	}
 
