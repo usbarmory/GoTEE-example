@@ -9,6 +9,7 @@ package gotee
 import (
 	"crypto/aes"
 	"crypto/sha256"
+	"errors"
 	"log"
 	"sync"
 
@@ -25,6 +26,8 @@ const (
 	watchdogWarningInterval = 2000
 )
 
+var nsBoot bool
+
 func GoTEE() (err error) {
 	var wg sync.WaitGroup
 	var ta *monitor.ExecCtx
@@ -37,6 +40,8 @@ func GoTEE() (err error) {
 	if os, err = loadNormalWorld(false); err != nil {
 		return
 	}
+
+	nsBoot = true
 
 	// test concurrent execution of:
 	//   Secure    World PL1 (system/monitor mode) - secure OS (this program)
@@ -90,6 +95,10 @@ func GoTEE() (err error) {
 
 func Linux(device string) (err error) {
 	var os *monitor.ExecCtx
+
+	if nsBoot {
+		return errors.New("previous Non-secure kernel run detected, reboot first to launch Linux")
+	}
 
 	if os, err = loadLinux(device); err != nil {
 		return
