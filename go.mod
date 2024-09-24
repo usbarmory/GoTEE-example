@@ -4,9 +4,9 @@ go 1.23.1
 
 require (
 	github.com/usbarmory/GoTEE v0.0.0-20240913144333-7e62563c0628
-	github.com/usbarmory/armory-boot v0.0.0-20240307133412-208c66a380b9
+	github.com/usbarmory/armory-boot v0.0.0-20240924115649-09d0327c3c99
 	github.com/usbarmory/imx-usbnet v0.0.0-20240909221106-d242d2c2d20b
-	github.com/usbarmory/tamago v0.0.0-20240909213541-c4704957c2e1
+	github.com/usbarmory/tamago v0.0.0-20240924114619-273d67cd811d
 	golang.org/x/crypto v0.27.0
 	golang.org/x/term v0.24.0
 )

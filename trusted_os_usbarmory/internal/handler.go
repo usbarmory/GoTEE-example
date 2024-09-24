@@ -67,15 +67,10 @@ func linuxHandler(ctx *monitor.ExecCtx) (err error) {
 
 	switch ctx.ExceptionVector {
 	case arm.FIQ:
-		irq, end := imx6ul.GIC.GetInterrupt(true)
-
-		if irq == imx6ul.TZ_WDOG.IRQ {
+		switch imx6ul.GIC.GetInterrupt(true) {
+		case imx6ul.TZ_WDOG.IRQ:
 			imx6ul.TZ_WDOG.Service(watchdogTimeout)
 			log.Printf("SM serviced TrustZone Watchdog")
-		}
-
-		if end != nil {
-			close(end)
 		}
 
 		return
