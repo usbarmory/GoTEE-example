@@ -14,6 +14,7 @@ import (
 	"runtime"
 	_ "unsafe"
 
+	"github.com/usbarmory/tamago/arm"
 	"github.com/usbarmory/tamago/dma"
 	"github.com/usbarmory/tamago/soc/nxp/imx6ul"
 
@@ -41,6 +42,8 @@ func init() {
 	log.SetOutput(os.Stdout)
 
 	if !imx6ul.Native {
+		// workaround https://gitlab.com/qemu-project/qemu/-/issues/2588
+		imx6ul.ARM.SetAttribute(mem.SecureStart, mem.SecureStart + mem.SecureSize, arm.TTE_EXECUTE_NEVER, 0)
 		return
 	}
 
