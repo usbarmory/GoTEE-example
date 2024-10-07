@@ -16,6 +16,8 @@ github.com/usbarmory/GoTEE v0.0.0-20240913144333-7e62563c0628 h1:PGlLJYe1YMmzmSY
 github.com/usbarmory/GoTEE v0.0.0-20240913144333-7e62563c0628/go.mod h1:solbXmDpRv6u6CmfHiFi3rwsYoTlZXToith669WnvgM=
 github.com/usbarmory/armory-boot v0.0.0-20240924115649-09d0327c3c99 h1:gDYQA/MDwqfTW5kRIqMcZ/rLlMwSyHJ9fIoWDIBCTLw=
 github.com/usbarmory/armory-boot v0.0.0-20240924115649-09d0327c3c99/go.mod h1:rhSWQ269NlXN2Nn3qZawWjqXBgbxtnx118RbJ2H6IlQ=
+github.com/usbarmory/armory-boot v0.0.0-20241007114806-656160cd9b23 h1:D/C0ZEwF7lJyA51mncW5EEfnkEiyUXh4AkByI0turhE=
+github.com/usbarmory/armory-boot v0.0.0-20241007114806-656160cd9b23/go.mod h1:D0AKxZFQ+FoAzWbU3b2Dt+S1lt7QCq3w0vmO+OEVjvA=
 github.com/usbarmory/imx-usbnet v0.0.0-20240909221106-d242d2c2d20b h1:tlhQoJbYmqD3xeoxA3vPcH1NGKfU2cprAaM0dFDe4WI=
 github.com/usbarmory/imx-usbnet v0.0.0-20240909221106-d242d2c2d20b/go.mod h1:zvzUu4SfzoCEDVnxzga81SoK3ezsW8gjxck2v1Ry1zw=
 github.com/usbarmory/tamago v0.0.0-20240909213541-c4704957c2e1 h1:7CX/AZFrsPyfmqLhRW0UDvupcqz/mnyeFrPEshav/sg=
