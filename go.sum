@@ -14,6 +14,8 @@ github.com/u-root/uio v0.0.0-20240209044354-b3d14b93376a h1:BH1SOPEvehD2kVrndDnG
 github.com/u-root/uio v0.0.0-20240209044354-b3d14b93376a/go.mod h1:P3a5rG4X7tI17Nn3aOIAYr5HbIMukwXG0urG0WuL8OA=
 github.com/usbarmory/GoTEE v0.0.0-20240913144333-7e62563c0628 h1:PGlLJYe1YMmzmSYXhEkOSXSrQjV/mXk6CNk5LTgnndM=
 github.com/usbarmory/GoTEE v0.0.0-20240913144333-7e62563c0628/go.mod h1:solbXmDpRv6u6CmfHiFi3rwsYoTlZXToith669WnvgM=
+github.com/usbarmory/GoTEE v0.0.0-20241024114042-f360bdbbb825 h1:gzFXJXvc0us0wZbwvVyqhwwgNfe136aDiQe/yeTcF48=
+github.com/usbarmory/GoTEE v0.0.0-20241024114042-f360bdbbb825/go.mod h1:solbXmDpRv6u6CmfHiFi3rwsYoTlZXToith669WnvgM=
 github.com/usbarmory/armory-boot v0.0.0-20240924115649-09d0327c3c99 h1:gDYQA/MDwqfTW5kRIqMcZ/rLlMwSyHJ9fIoWDIBCTLw=
 github.com/usbarmory/armory-boot v0.0.0-20240924115649-09d0327c3c99/go.mod h1:rhSWQ269NlXN2Nn3qZawWjqXBgbxtnx118RbJ2H6IlQ=
 github.com/usbarmory/armory-boot v0.0.0-20241007114806-656160cd9b23 h1:D/C0ZEwF7lJyA51mncW5EEfnkEiyUXh4AkByI0turhE=

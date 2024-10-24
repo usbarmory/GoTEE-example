@@ -37,25 +37,25 @@ func dbgCmd(term *term.Terminal, arg []string) (res string, err error) {
 	buf.WriteString("| type                    | implemented | enabled |\n")
 	buf.WriteString("|-------------------------|-------------|---------|\n")
 
-	buf.WriteString(fmt.Sprintf("| Secure non-invasive     |           %d |       %d |\n",
+	fmt.Fprintf(&buf, "| Secure non-invasive     |           %d |       %d |\n",
 		bits.Get(&dbgAuthStatus, 7, 1),
 		bits.Get(&dbgAuthStatus, 6, 1),
-	))
+	)
 
-	buf.WriteString(fmt.Sprintf("| Secure invasive         |           %d |       %d |\n",
+	fmt.Fprintf(&buf, "| Secure invasive         |           %d |       %d |\n",
 		bits.Get(&dbgAuthStatus, 5, 1),
 		bits.Get(&dbgAuthStatus, 4, 1),
-	))
+	)
 
-	buf.WriteString(fmt.Sprintf("| Non-secure non-invasive |           %d |       %d |\n",
+	fmt.Fprintf(&buf, "| Non-secure non-invasive |           %d |       %d |\n",
 		bits.Get(&dbgAuthStatus, 3, 1),
 		bits.Get(&dbgAuthStatus, 2, 1),
-	))
+	)
 
-	buf.WriteString(fmt.Sprintf("| Non-secure invasive     |           %d |       %d |\n",
+	fmt.Fprintf(&buf, "| Non-secure invasive     |           %d |       %d |\n",
 		bits.Get(&dbgAuthStatus, 1, 1),
 		bits.Get(&dbgAuthStatus, 0, 1),
-	))
+	)
 
 	return buf.String(), nil
 }

@@ -57,10 +57,10 @@ func cslCmd(term *term.Terminal, arg []string) (res string, err error) {
 
 		for i := csu.CSL_MIN; i <= csu.CSL_MAX; i++ {
 			csl, _, _ := imx6ul.CSU.GetSecurityLevel(i, 0)
-			buf.WriteString(fmt.Sprintf("CSL%.2d 0:%#.2x", i, csl))
+			fmt.Fprintf(&buf, "CSL%.2d 0:%#.2x", i, csl)
 
 			csl, _, _ = imx6ul.CSU.GetSecurityLevel(i, 1)
-			buf.WriteString(fmt.Sprintf(" 1:%#.2x\n", csl))
+			fmt.Fprintf(&buf, " 1:%#.2x\n", csl)
 		}
 
 		return buf.String(), nil
@@ -101,9 +101,9 @@ func saCmd(term *term.Terminal, arg []string) (res string, err error) {
 
 		for i := csu.SA_MIN; i <= csu.SA_MAX; i++ {
 			if sa, _, _ := imx6ul.CSU.GetAccess(i); sa {
-				buf.WriteString(fmt.Sprintf("SA%.2d: secure\n", i))
+				fmt.Fprintf(&buf, "SA%.2d: secure\n", i)
 			} else {
-				buf.WriteString(fmt.Sprintf("SA%.2d: nonsecure\n", i))
+				fmt.Fprintf(&buf, "SA%.2d: nonsecure\n", i)
 			}
 		}
 

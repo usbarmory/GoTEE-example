@@ -13,17 +13,23 @@ import (
 
 const (
 	// Secure Monitor
-	SecureStart = 0x98000000
+	SecureStart = 0x90000000
 	SecureSize  = 0x05f00000 // 95MB
 
 	// Secure Monitor DMA (relocated to avoid conflicts with Main OS)
-	SecureDMAStart = 0x9df00000
+	SecureDMAStart = 0x95f00000
 	SecureDMASize  = 0x00100000 // 1MB
 
-	// Secure Monitor Applet
-	AppletPhysicalStart = 0x9e000000       // encrypted w/ BEE on i.MX6UL
-	AppletVirtualStart  = bee.AliasRegion0 // memory alias
-	AppletSize          = 0x02000000       // 32MB
+	// Secure Monitor Applet (virtual)
+	AppletVirtualStart = bee.AliasRegion0 // memory alias
+	AppletSize         = 0x02000000       // 32MB
+
+	// Secure Monitor Applet (physical)
+	//
+	// i.MX6ULL/i.MX6ULZ: primary and shadow areas used in soft lockstep.
+	//          i.MX6UL : primary area AES encrypted w/ BEE, no lockstep.
+	AppletPhysicalStart = 0x96000000
+	AppletShadowStart   = 0x98000000
 
 	// Main OS
 	NonSecureStart = 0x80000000
@@ -35,8 +41,10 @@ const BEE = true
 
 const textStartWord = 0xe59a1008
 
-var AppletRegion *dma.Region
-var NonSecureRegion *dma.Region
+var (
+	AppletRegion    *dma.Region
+	NonSecureRegion *dma.Region
+)
 
 func Init() {
 	AppletRegion, _ = dma.NewRegion(AppletVirtualStart, AppletSize, false)

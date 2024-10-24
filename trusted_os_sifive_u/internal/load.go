@@ -52,7 +52,6 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 
 	// override default handler to improve logging
 	ta.Handler = goHandler
-	ta.Debug = true
 
 	// set applet as ELF debugging target
 	util.SetDebugTarget(TA)
@@ -85,7 +84,6 @@ func loadSupervisor() (os *monitor.ExecCtx, err error) {
 
 	// override default handler to support SBI and improve logging
 	os.Handler = sbiHandler
-	os.Debug = true
 
 	return
 }
@@ -99,13 +97,12 @@ func run(ctx *monitor.ExecCtx, wg *sync.WaitGroup) {
 		wg.Done()
 	}
 
-	log.Printf("SM stopped sp:%#.8x ra:%#.8x pc:%#.8x err:%v", ctx.X2, ctx.X1, ctx.PC, err)
+	log.Printf("SM stopped sp:%#.8x ra:%#.8x pc:%#.8x err:%v %s", ctx.X2, ctx.X1, ctx.PC, err, ctx)
 
 	if err != nil {
 		pcLine, _ := util.PCToLine(ctx.PC)
 		lrLine, _ := util.PCToLine(ctx.X1)
 
-		log.Printf("\t%s", pcLine)
-		log.Printf("\t%s", lrLine)
+		log.Printf("stack trace:\n  %s\n  %s", pcLine, lrLine)
 	}
 }

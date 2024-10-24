@@ -33,10 +33,6 @@ func goHandler(ctx *monitor.ExecCtx) (err error) {
 			util.BufferedStdoutLog(byte(ctx.A1()), ctx.Secure())
 		}
 	case !ctx.Secure() && ctx.A0() == syscall.SYS_EXIT:
-		if ctx.Debug {
-			ctx.Print()
-		}
-
 		ctx.Stop()
 	default:
 		return defaultHandler(ctx)

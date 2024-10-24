@@ -37,7 +37,7 @@ QEMU ?= qemu-system-riscv64 -machine sifive_u -m 512M \
         -bios $(CURDIR)/trusted_os_$(TARGET)/bios/bios.bin
 
 ARCH = "riscv64"
-APPLET_START = 0x9c010000
+APPLET_START = 0x95010000
 RUST_LINKER = "riscv64-linux-gnu-ld"
 RUST_TARGET = "riscv64gc-unknown-none-elf"
 
@@ -49,6 +49,7 @@ QEMU ?= qemu-system-arm -machine mcimx6ul-evk -cpu cortex-a7 -m 512M \
         -nographic -monitor none -serial null -serial stdio -net none \
         -semihosting
 
+BUILD_TAGS := ${BUILD_TAGS},syscall_nanotime # required for lockstep example
 ARCH = "arm"
 APPLET_START = 0x10010000
 RUST_LINKER = "arm-none-eabi-ld"
@@ -67,7 +68,7 @@ elf: $(APP).elf
 
 trusted_os: APP=trusted_os_$(TARGET)
 trusted_os: DIR=$(CURDIR)/trusted_os_$(TARGET)
-trusted_os: TEXT_START=0x98010000
+trusted_os: TEXT_START=0x90010000
 ifeq ($(TARGET),usbarmory)
 trusted_os: imx
 else
@@ -76,7 +77,7 @@ endif
 
 trusted_os_signed: APP=trusted_os_$(TARGET)
 trusted_os_signed: DIR=$(CURDIR)/trusted_os_$(TARGET)
-trusted_os_signed: TEXT_START=0x98010000
+trusted_os_signed: TEXT_START=0x90010000
 trusted_os_signed: imx_signed
 
 trusted_applet_go: APP=trusted_applet

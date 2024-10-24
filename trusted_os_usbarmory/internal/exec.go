@@ -11,6 +11,7 @@ import (
 	"crypto/sha256"
 	"errors"
 	"log"
+	"math/rand"
 	"sync"
 
 	usbarmory "github.com/usbarmory/tamago/board/usbarmory/mk2"
@@ -33,7 +34,7 @@ func GoTEE() (err error) {
 	var ta *monitor.ExecCtx
 	var os *monitor.ExecCtx
 
-	if ta, err = loadApplet(); err != nil {
+	if ta, err = loadApplet(false); err != nil {
 		return
 	}
 
@@ -109,6 +110,47 @@ func Linux(device string) (err error) {
 
 	log.Printf("SM launching Linux")
 	run(os, nil)
+
+	return
+}
+
+func fault(ctx *monitor.ExecCtx, faultPercentage float64) {
+	if n := rand.Float64() * 100.0; n >= faultPercentage {
+		return
+	}
+
+	log.Printf("!! injecting register fault !!")
+	ctx.R0 += 1
+}
+
+func Lockstep(faultPercentage float64) (err error) {
+	var once sync.Once
+	var ta *monitor.ExecCtx
+
+	if ta, err = loadApplet(true); err != nil {
+		return
+	}
+
+	defer run(ta, nil)
+
+	if faultPercentage <= 0 {
+		return
+	}
+
+	primaryHandler := ta.Handler
+
+	ta.Handler = func(ctx *monitor.ExecCtx) (err error) {
+		once.Do(func() {
+			shadowHandler := ta.Shadow.Handler
+
+			ta.Shadow.Handler = func(ctx *monitor.ExecCtx) (err error) {
+				fault(ctx, faultPercentage)
+				return shadowHandler(ctx)
+			}
+		})
+
+		return primaryHandler(ctx)
+	}
 
 	return
 }

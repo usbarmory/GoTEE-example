@@ -9,6 +9,7 @@ package cmd
 import (
 	"errors"
 	"regexp"
+	"strconv"
 
 	"golang.org/x/term"
 
@@ -32,6 +33,15 @@ func init() {
 		Help:    "boot NonSecure USB armory Debian base image",
 		Fn:      linuxCmd,
 	})
+
+	Add(Cmd{
+		Name:    "lockstep",
+		Args:    1,
+		Pattern: regexp.MustCompile(`^lockstep (.*)$`),
+		Syntax:  "<fault %>",
+		Help:    "tandem applet example w/ fault injection",
+		Fn:      lockstepCmd,
+	})
 }
 
 func goteeCmd(term *term.Terminal, arg []string) (res string, err error) {
@@ -44,4 +54,14 @@ func linuxCmd(term *term.Terminal, arg []string) (res string, err error) {
 	}
 
 	return "", gotee.Linux(arg[0])
+}
+
+func lockstepCmd(term *term.Terminal, arg []string) (res string, err error) {
+	faultPercentage, err := strconv.ParseFloat(arg[0], 64)
+
+	if err != nil {
+		return
+	}
+
+	return "", gotee.Lockstep(faultPercentage)
 }

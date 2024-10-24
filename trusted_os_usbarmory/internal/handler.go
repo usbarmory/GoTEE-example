@@ -26,7 +26,7 @@ func goHandler(ctx *monitor.ExecCtx) (err error) {
 	if ctx.ExceptionVector == arm.DATA_ABORT && ctx.NonSecure() {
 		log.Printf("SM trapped Non-secure data abort pc:%#.8x", ctx.R15-8)
 
-		ctx.Print()
+		log.Print(ctx)
 		ctx.Stop()
 
 		return
@@ -50,7 +50,7 @@ func goHandler(ctx *monitor.ExecCtx) (err error) {
 		ctx.Stop()
 	default:
 		if ctx.NonSecure() {
-			ctx.Print()
+			log.Print(ctx)
 			return errors.New("unexpected monitor call")
 		} else {
 			return monitor.SecureHandler(ctx)

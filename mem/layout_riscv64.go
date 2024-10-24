@@ -12,15 +12,15 @@ import (
 
 const (
 	// Secure Monitor
-	SecureStart = 0x98000000
+	SecureStart = 0x90000000
 	SecureSize  = 0x03f00000 // 63MB
 
 	// Secure Monitor DMA (relocated to avoid conflicts with Main OS)
-	SecureDMAStart = 0x9bf00000
+	SecureDMAStart = 0x94f00000
 	SecureDMASize  = 0x00100000 // 1MB
 
 	// Secure Monitor Applet
-	AppletStart = 0x9c000000
+	AppletStart = 0x95000000
 	AppletSize  = 0x02000000 // 32MB
 
 	// Main OS
@@ -30,8 +30,10 @@ const (
 
 const textStartWord = 0x010db303
 
-var AppletRegion *dma.Region
-var NonSecureRegion *dma.Region
+var (
+	AppletRegion    *dma.Region
+	NonSecureRegion *dma.Region
+)
 
 func Init() {
 	AppletRegion, _ = dma.NewRegion(AppletStart, AppletSize, false)

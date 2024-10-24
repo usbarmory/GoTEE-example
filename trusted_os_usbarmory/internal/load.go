@@ -14,6 +14,7 @@ import (
 
 	"github.com/usbarmory/tamago/arm"
 	"github.com/usbarmory/tamago/bits"
+	"github.com/usbarmory/tamago/dma"
 	usbarmory "github.com/usbarmory/tamago/board/usbarmory/mk2"
 	"github.com/usbarmory/tamago/soc/nxp/imx6ul"
 	"github.com/usbarmory/tamago/soc/nxp/usdhc"
@@ -37,32 +38,39 @@ var (
 	OS []byte
 )
 
-func initAppletMemory() {
-	var alias uint32
+func configureMMU(region *dma.Region, alias uint32) {
+	start := uint32(region.Start())
+	end := uint32(region.End())
 
-	start := uint32(mem.AppletVirtualStart)
-	end := start + mem.AppletSize
-
-	if imx6ul.Native && imx6ul.BEE != nil && mem.BEE {
-		// applet memory is aliased by OTF encryption/decryption
-		log.Printf("SM accessing applet encrypted memory through BEE alias")
-		alias = 0
-	} else {
-		// applet memory is mapped through virtual addresses
-		alias = uint32(mem.AppletPhysicalStart)
-	}
-
-	imx6ul.ARM.ConfigureMMU(start, end, alias, arm.MemoryRegion)
+	imx6ul.ARM.ConfigureMMU(start, end, alias, arm.MemoryRegion | arm.TTE_AP_011 << 10)
 }
 
 // loadApplet loads a TamaGo unikernel as trusted applet.
-func loadApplet() (ta *monitor.ExecCtx, err error) {
+func loadApplet(lockstep bool) (ta *monitor.ExecCtx, err error) {
 	image := &exec.ELFImage{
 		Region: mem.AppletRegion,
 		ELF:    TA,
 	}
 
-	initAppletMemory()
+	switch {
+		// on i.MX6UL applet memory is encrypted/decrypted OTF
+	case imx6ul.Native && imx6ul.BEE != nil && mem.BEE:
+		if lockstep == true {
+			return nil, errors.New("unsupported under this platform")
+		}
+
+		log.Printf("SM loading applet in BEE encrypted memory")
+		configureMMU(image.Region, 0)
+	case lockstep:
+		log.Printf("SM loading applet in lockstep shadow memory")
+		configureMMU(image.Region, mem.AppletShadowStart)
+
+		if err = image.Load(); err != nil {
+			return
+		}
+	}
+
+	configureMMU(image.Region, mem.AppletPhysicalStart)
 
 	if err = image.Load(); err != nil {
 		return
@@ -82,7 +90,18 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 
 	// override default handler to improve logging
 	ta.Handler = goHandler
-	ta.Debug = true
+
+	if lockstep {
+		ta.Lockstep = func(shadow bool) {
+			alias := uint32(mem.AppletPhysicalStart)
+
+			if shadow {
+				alias = mem.AppletShadowStart
+			}
+
+			configureMMU(image.Region, alias)
+		}
+	}
 
 	// set applet as ELF debugging target
 	util.SetDebugTarget(TA)
@@ -113,7 +132,6 @@ func loadNormalWorld(lock bool) (os *monitor.ExecCtx, err error) {
 
 	// override default handler to handle exceptions and improve logging
 	os.Handler = goHandler
-	os.Debug = true
 
 	return
 }
@@ -194,7 +212,6 @@ func loadLinux(device string) (os *monitor.ExecCtx, err error) {
 
 	// override default handler to service TrustZone Watchdog
 	os.Handler = linuxHandler
-	os.Debug = true
 
 	return
 }
@@ -211,13 +228,16 @@ func run(ctx *monitor.ExecCtx, wg *sync.WaitGroup) {
 		wg.Done()
 	}
 
-	log.Printf("SM stopped mode:%s sp:%#.8x lr:%#.8x pc:%#.8x ns:%v err:%v", mode, ctx.R13, ctx.R14, ctx.R15, ns, err)
+	log.Printf("SM stopped mode:%s sp:%#.8x lr:%#.8x pc:%#.8x ns:%v err:%v %s", mode, ctx.R13, ctx.R14, ctx.R15, ns, err, ctx)
 
 	if err != nil {
+		if ctx.Shadow != nil {
+			log.Printf("shadow context: %s", ctx.Shadow)
+		}
+
 		pcLine, _ := util.PCToLine(uint64(ctx.R15))
 		lrLine, _ := util.PCToLine(uint64(ctx.R14))
 
-		log.Printf("\t%s", pcLine)
-		log.Printf("\t%s", lrLine)
+		log.Printf("stack trace:\n  %s\n  %s", pcLine, lrLine)
 	}
 }
