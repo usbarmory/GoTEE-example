@@ -103,6 +103,8 @@ func run(ctx *monitor.ExecCtx, wg *sync.WaitGroup) {
 		pcLine, _ := util.PCToLine(ctx.PC)
 		lrLine, _ := util.PCToLine(ctx.X1)
 
-		log.Printf("stack trace:\n  %s\n  %s", pcLine, lrLine)
+		if pcLine != "" || lrLine != "" {
+			log.Printf("stack trace:\n  %s\n  %s", pcLine, lrLine)
+		}
 	}
 }
