@@ -59,6 +59,8 @@ func LookupSym(name string) (*elf.Symbol, error) {
 }
 
 func goSymTable() (symTable *gosym.Table, err error) {
+	var s *elf.Section
+
 	if symTableCache != nil {
 		return symTableCache, nil
 	}
@@ -69,9 +71,17 @@ func goSymTable() (symTable *gosym.Table, err error) {
 		return
 	}
 
-	addr := f.Section(".text").Addr
+	if s = f.Section(".text"); s == nil {
+		return nil, errors.New("missing section")
+	}
 
-	lineTableData, err := f.Section(".gopclntab").Data()
+	addr := s.Addr
+
+	if s = f.Section(".gopclntab"); s == nil {
+		return nil, errors.New("missing section")
+	}
+
+	lineTableData, err := s.Data()
 
 	if err != nil {
 		return
@@ -83,7 +93,11 @@ func goSymTable() (symTable *gosym.Table, err error) {
 		return
 	}
 
-	symTableData, err := f.Section(".gosymtab").Data()
+	if s = f.Section(".gosymtab"); s == nil {
+		return nil, errors.New("missing section")
+	}
+
+	symTableData, err := s.Data()
 
 	if err != nil {
 		return
