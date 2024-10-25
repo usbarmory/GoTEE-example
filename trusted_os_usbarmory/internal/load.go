@@ -14,8 +14,8 @@ import (
 
 	"github.com/usbarmory/tamago/arm"
 	"github.com/usbarmory/tamago/bits"
-	"github.com/usbarmory/tamago/dma"
 	usbarmory "github.com/usbarmory/tamago/board/usbarmory/mk2"
+	"github.com/usbarmory/tamago/dma"
 	"github.com/usbarmory/tamago/soc/nxp/imx6ul"
 	"github.com/usbarmory/tamago/soc/nxp/usdhc"
 
@@ -42,7 +42,7 @@ func configureMMU(region *dma.Region, alias uint32) {
 	start := uint32(region.Start())
 	end := uint32(region.End())
 
-	imx6ul.ARM.ConfigureMMU(start, end, alias, arm.MemoryRegion | arm.TTE_AP_011 << 10)
+	imx6ul.ARM.ConfigureMMU(start, end, alias, arm.MemoryRegion|arm.TTE_AP_011<<10)
 }
 
 // loadApplet loads a TamaGo unikernel as trusted applet.
@@ -53,7 +53,7 @@ func loadApplet(lockstep bool) (ta *monitor.ExecCtx, err error) {
 	}
 
 	switch {
-		// on i.MX6UL applet memory is encrypted/decrypted OTF
+	// on i.MX6UL applet memory is encrypted/decrypted OTF
 	case imx6ul.Native && imx6ul.BEE != nil && mem.BEE:
 		if lockstep == true {
 			return nil, errors.New("unsupported under this platform")
@@ -82,6 +82,9 @@ func loadApplet(lockstep bool) (ta *monitor.ExecCtx, err error) {
 
 	log.Printf("SM loaded applet addr:%#x entry:%#x size:%d", ta.Memory.Start(), ta.R15, len(TA))
 
+	// set applet as ELF debugging target
+	util.SetDebugTarget(image.ELF)
+
 	// register example RPC receiver
 	ta.Server.Register(&RPC{})
 
@@ -93,18 +96,13 @@ func loadApplet(lockstep bool) (ta *monitor.ExecCtx, err error) {
 
 	if lockstep {
 		ta.Lockstep = func(shadow bool) {
-			alias := uint32(mem.AppletPhysicalStart)
-
 			if shadow {
-				alias = mem.AppletShadowStart
+				configureMMU(image.Region, mem.AppletShadowStart)
+			} else {
+				configureMMU(image.Region, mem.AppletPhysicalStart)
 			}
-
-			configureMMU(image.Region, alias)
 		}
 	}
-
-	// set applet as ELF debugging target
-	util.SetDebugTarget(TA)
 
 	return
 }

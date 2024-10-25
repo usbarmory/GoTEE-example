@@ -41,6 +41,9 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 
 	log.Printf("SM loaded applet addr:%#x entry:%#x size:%d", ta.Memory.Start(), ta.PC, len(TA))
 
+	// set applet as ELF debugging target
+	util.SetDebugTarget(image.ELF)
+
 	// set memory protection function
 	ta.PMP = configurePMP
 
@@ -52,9 +55,6 @@ func loadApplet() (ta *monitor.ExecCtx, err error) {
 
 	// override default handler to improve logging
 	ta.Handler = goHandler
-
-	// set applet as ELF debugging target
-	util.SetDebugTarget(TA)
 
 	return
 }

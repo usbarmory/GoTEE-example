@@ -115,7 +115,7 @@ func Linux(device string) (err error) {
 }
 
 func fault(ctx *monitor.ExecCtx, faultPercentage float64) {
-	if n := rand.Float64() * 100.0; n >= faultPercentage {
+	if n := rand.Float64() * 100; n >= faultPercentage {
 		return
 	}
 
@@ -139,11 +139,11 @@ func Lockstep(faultPercentage float64) (err error) {
 
 	primaryHandler := ta.Handler
 
-	ta.Handler = func(ctx *monitor.ExecCtx) (err error) {
+	ta.Handler = func(ctx *monitor.ExecCtx) error {
 		once.Do(func() {
 			shadowHandler := ta.Shadow.Handler
 
-			ta.Shadow.Handler = func(ctx *monitor.ExecCtx) (err error) {
+			ta.Shadow.Handler = func(ctx *monitor.ExecCtx) error {
 				fault(ctx, faultPercentage)
 				return shadowHandler(ctx)
 			}
