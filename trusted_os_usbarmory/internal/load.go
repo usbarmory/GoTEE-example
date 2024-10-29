@@ -93,11 +93,13 @@ func loadApplet(lockstep bool) (ta *monitor.ExecCtx, err error) {
 
 	if lockstep {
 		ta.Lockstep = func(shadow bool) {
+			alias := uint32(mem.AppletPhysicalStart)
+
 			if shadow {
-				configureMMU(image.Region, mem.AppletShadowStart)
-			} else {
-				configureMMU(image.Region, mem.AppletPhysicalStart)
+				alias = mem.AppletShadowStart
 			}
+
+			configureMMU(image.Region, alias)
 		}
 	}
 
