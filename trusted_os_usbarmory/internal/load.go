@@ -52,15 +52,9 @@ func loadApplet(lockstep bool) (ta *monitor.ExecCtx, err error) {
 		ELF:    TA,
 	}
 
-	switch {
-	// on i.MX6UL applet memory is encrypted/decrypted OTF
-	case imx6ul.Native && imx6ul.BEE != nil && mem.BEE:
-		if lockstep == true {
-			return nil, errors.New("unsupported under this platform")
-		}
+	alias := uint32(mem.AppletPhysicalStart)
 
-		log.Printf("SM loading applet in BEE encrypted memory")
-		configureMMU(image.Region, 0)
+	switch {
 	case lockstep:
 		log.Printf("SM loading applet in lockstep shadow memory")
 		configureMMU(image.Region, mem.AppletShadowStart)
@@ -68,9 +62,12 @@ func loadApplet(lockstep bool) (ta *monitor.ExecCtx, err error) {
 		if err = image.Load(); err != nil {
 			return
 		}
+	case imx6ul.Native && imx6ul.BEE != nil && mem.BEE:
+		log.Printf("SM loading applet in BEE encrypted memory")
+		alias = 0
 	}
 
-	configureMMU(image.Region, mem.AppletPhysicalStart)
+	configureMMU(image.Region, alias)
 
 	if err = image.Load(); err != nil {
 		return
