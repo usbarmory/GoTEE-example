@@ -141,11 +141,9 @@ func Lockstep(faultPercentage float64) (err error) {
 
 	ta.Handler = func(ctx *monitor.ExecCtx) error {
 		once.Do(func() {
-			shadowHandler := ta.Shadow.Handler
-
 			ta.Shadow.Handler = func(ctx *monitor.ExecCtx) error {
 				fault(ctx, faultPercentage)
-				return shadowHandler(ctx)
+				return nil
 			}
 		})
 
