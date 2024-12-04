@@ -22,9 +22,9 @@ TEXT_START := 0x80010000 # ramStart (defined in mem.go under relevant tamago/soc
 ifeq ($(TARGET),sifive_u)
 
 ifeq ($(MAKECMDGOALS),trusted_applet_go)
-ENTRY_POINT := _rt0_riscv64_tamago_start
+ENTRY_POINT := _rt0_tamago_start
 else ifeq ($(MAKECMDGOALS),nonsecure_os_go)
-ENTRY_POINT := _rt0_riscv64_tamago_start
+ENTRY_POINT := _rt0_tamago_start
 else
 ENTRY_POINT := _rt0_riscv64_tamago
 endif
