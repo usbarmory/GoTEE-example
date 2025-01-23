@@ -26,3 +26,6 @@ require (
 	golang.org/x/time v0.5.0 // indirect
 	gvisor.dev/gvisor v0.0.0-20240909175600-91fb8ad18db5 // indirect
 )
+
+replace github.com/usbarmory/GoTEE => /mnt/git/public/GoTEE
+replace github.com/usbarmory/tamago => /mnt/git/public/tamago
