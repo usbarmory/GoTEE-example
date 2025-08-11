@@ -25,7 +25,7 @@ var ramStart uint32 = mem.NonSecureStart
 //go:linkname ramSize runtime.ramSize
 var ramSize uint32 = mem.NonSecureSize
 
-//go:linkname hwinit runtime.hwinit
+//go:linkname hwinit runtime.hwinit1
 func hwinit() {
 	imx6ul.Init()
 }

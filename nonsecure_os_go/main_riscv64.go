@@ -22,7 +22,7 @@ var ramStart uint64 = mem.NonSecureStart
 //go:linkname ramSize runtime.ramSize
 var ramSize uint64 = mem.NonSecureSize
 
-//go:linkname hwinit runtime.hwinit
+//go:linkname hwinit runtime.hwinit1
 func hwinit() {
 	fu540.RV64.InitSupervisor()
 }
