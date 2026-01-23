@@ -140,8 +140,7 @@ $(APP).dcd: dcd
 qemu.dtb: GOMODCACHE=$(shell ${TAMAGO} env GOMODCACHE)
 qemu.dtb: TAMAGO_PKG=$(shell grep "github.com/usbarmory/tamago v" go.mod | awk '{print $$1"@"$$2}')
 qemu.dtb:
-	echo $(GOMODCACHE)
-	echo $(TAMAGO_PKG)
+	$(TAMAGO) mod download $(TAMAGO_PKG)
 	dtc -I dts -O dtb $(GOMODCACHE)/$(TAMAGO_PKG)/board/qemu/sifive_u/qemu-riscv64-sifive_u.dts -o $(CURDIR)/qemu.dtb 2> /dev/null
 
 #### utilities ####
@@ -153,6 +152,7 @@ check_tamago:
 	fi
 
 dcd:
+	$(TAMAGO) mod download $(TAMAGO_PKG)
 	cp -f $(GOMODCACHE)/$(TAMAGO_PKG)/board/usbarmory/mk2/imximage.cfg $(CURDIR)/bin/$(APP).dcd; \
 
 clean:
