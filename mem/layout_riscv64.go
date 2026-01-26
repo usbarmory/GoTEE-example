@@ -12,15 +12,15 @@ import (
 const (
 	// Secure Monitor
 	SecureStart = 0x90000000
-	SecureSize  = 0x03f00000 // 63MB
+	SecureSize  = 0x07f00000 // 127MB
 
 	// Secure Monitor DMA (relocated to avoid conflicts with Main OS)
-	SecureDMAStart = 0x94f00000
+	SecureDMAStart = 0x97f00000
 	SecureDMASize  = 0x00100000 // 1MB
 
 	// Secure Monitor Applet
-	AppletStart = 0x95000000
-	AppletSize  = 0x02000000 // 32MB
+	AppletStart = 0x98000000
+	AppletSize  = 0x04000000 // 64MB
 
 	// Main OS
 	NonSecureStart = 0x80000000

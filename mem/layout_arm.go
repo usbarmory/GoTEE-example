@@ -13,22 +13,22 @@ import (
 const (
 	// Secure Monitor
 	SecureStart = 0x90000000
-	SecureSize  = 0x05f00000 // 95MB
+	SecureSize  = 0x07f00000 // 127MB
 
 	// Secure Monitor DMA (relocated to avoid conflicts with Main OS)
-	SecureDMAStart = 0x95f00000
+	SecureDMAStart = 0x97f00000
 	SecureDMASize  = 0x00100000 // 1MB
 
 	// Secure Monitor Applet (virtual)
 	AppletVirtualStart = bee.AliasRegion0 // memory alias
-	AppletSize         = 0x02000000       // 32MB
+	AppletSize         = 0x04000000       // 64MB
 
 	// Secure Monitor Applet (physical)
 	//
 	// i.MX6ULL/i.MX6ULZ: primary and shadow areas used in soft lockstep.
 	//          i.MX6UL : primary area AES encrypted w/ BEE, no lockstep.
-	AppletPhysicalStart = 0x96000000
-	AppletShadowStart   = 0x98000000
+	AppletPhysicalStart = 0x98000000
+	AppletShadowStart   = 0x9a000000
 
 	// Main OS
 	NonSecureStart = 0x80000000

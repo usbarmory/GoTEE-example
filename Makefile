@@ -36,7 +36,8 @@ QEMU ?= qemu-system-riscv64 -machine sifive_u -m 512M \
         -bios $(CURDIR)/trusted_os_$(TARGET)/bios/bios.bin
 
 ARCH = "riscv64"
-APPLET_START = 0x95010000
+APPLET_START = 0x98010000
+RUST_COMPILER = "riscv64-linux-gnu-gcc"
 RUST_LINKER = "riscv64-linux-gnu-ld"
 RUST_TARGET = "riscv64gc-unknown-none-elf"
 
@@ -172,7 +173,7 @@ $(APP).elf: check_tamago qemu.dtb
 	cd $(DIR) && $(GOENV) $(TAMAGO) build -tags ${BUILD_TAGS} $(GOFLAGS) -o $(CURDIR)/bin/$(APP).elf && \
 	RT0=$$(riscv64-linux-gnu-readelf -a $(CURDIR)/bin/$(APP).elf|grep -i 'Entry point' | cut -dx -f2) && \
 	echo ".equ RT0_RISCV64_TAMAGO, 0x$$RT0" > $(CURDIR)/trusted_os_$(TARGET)/bios/cfg.inc && \
-	cd $(CURDIR)/trusted_os_$(TARGET)/bios && ./build.sh
+	cd $(CURDIR)/trusted_os_$(TARGET)/bios && ./build.sh $(RUST_COMPILER)
 
 else
 
