@@ -133,13 +133,13 @@ $(APP).imx: $(APP).bin $(APP).dcd
 
 $(APP).dcd: check_tamago
 $(APP).dcd: GOMODCACHE=$(shell ${TAMAGO} env GOMODCACHE)
-$(APP).dcd: TAMAGO_PKG=$(shell grep "github.com/usbarmory/tamago v" go.mod | awk '{print $$1"@"$$2}')
+$(APP).dcd: TAMAGO_PKG=$(shell go list -m -f '{{.Path}}@{{.Version}}' github.com/usbarmory/tamago)
 $(APP).dcd: dcd
 
 #### RISC-V targets ####
 
 qemu.dtb: GOMODCACHE=$(shell ${TAMAGO} env GOMODCACHE)
-qemu.dtb: TAMAGO_PKG=$(shell grep "github.com/usbarmory/tamago v" go.mod | awk '{print $$1"@"$$2}')
+qemu.dtb: TAMAGO_PKG=$(shell go list -m -f '{{.Path}}@{{.Version}}' github.com/usbarmory/tamago)
 qemu.dtb:
 	$(TAMAGO) mod download $(TAMAGO_PKG)
 	dtc -I dts -O dtb $(GOMODCACHE)/$(TAMAGO_PKG)/board/qemu/sifive_u/qemu-riscv64-sifive_u.dts -o $(CURDIR)/qemu.dtb 2> /dev/null
