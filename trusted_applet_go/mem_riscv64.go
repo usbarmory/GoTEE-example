@@ -11,11 +11,11 @@ import (
 	"github.com/usbarmory/GoTEE-example/mem"
 )
 
-//go:linkname ramStart runtime.ramStart
+//go:linkname ramStart runtime/goos.RamStart
 var ramStart uint64 = mem.AppletStart
 
-//go:linkname ramSize runtime.ramSize
+//go:linkname ramSize runtime/goos.RamSize
 var ramSize uint64 = mem.AppletSize
 
-//go:linkname ramStackOffset runtime.ramStackOffset
+//go:linkname ramStackOffset runtime/goos.RamStackOffset
 var ramStackOffset uint64 = 0x100

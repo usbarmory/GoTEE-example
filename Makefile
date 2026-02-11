@@ -28,7 +28,7 @@ else
 ENTRY_POINT := _rt0_riscv64_tamago
 endif
 
-GOENV := GO_EXTLINK_ENABLED=0 CGO_ENABLED=0 GOOS=tamago GOARCH=riscv64
+GOENV := GO_EXTLINK_ENABLED=0 CGO_ENABLED=0 GOOS=tamago GOOSPKG=github.com/usbarmory/tamago GOARCH=riscv64
 QEMU ?= qemu-system-riscv64 -machine sifive_u -m 512M \
         -nographic -monitor none -serial stdio -net none \
         -semihosting \
@@ -43,7 +43,7 @@ RUST_TARGET = "riscv64gc-unknown-none-elf"
 
 else
 
-GOENV := GO_EXTLINK_ENABLED=0 CGO_ENABLED=0 GOOS=tamago GOARM=7 GOARCH=arm
+GOENV := GO_EXTLINK_ENABLED=0 CGO_ENABLED=0 GOOS=tamago GOOSPKG=github.com/usbarmory/tamago GOARM=7 GOARCH=arm
 ENTRY_POINT := _rt0_arm_tamago
 QEMU ?= qemu-system-arm -machine mcimx6ul-evk -cpu cortex-a7 -m 512M \
         -nographic -monitor none -serial null -serial stdio -net none \

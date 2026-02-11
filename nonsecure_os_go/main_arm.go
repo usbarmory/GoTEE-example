@@ -19,18 +19,18 @@ import (
 	"github.com/usbarmory/GoTEE-example/mem"
 )
 
-//go:linkname ramStart runtime.ramStart
+//go:linkname ramStart runtime/goos.RamStart
 var ramStart uint32 = mem.NonSecureStart
 
-//go:linkname ramSize runtime.ramSize
+//go:linkname ramSize runtime/goos.RamSize
 var ramSize uint32 = mem.NonSecureSize
 
-//go:linkname hwinit runtime.hwinit1
+//go:linkname hwinit runtime/goos.Hwinit1
 func hwinit() {
 	imx6ul.Init()
 }
 
-//go:linkname printk runtime.printk
+//go:linkname printk runtime/goos.Printk
 func printk(c byte) {
 	printSecure(c)
 }

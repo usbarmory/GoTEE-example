@@ -16,18 +16,18 @@ import (
 	"github.com/usbarmory/GoTEE-example/mem"
 )
 
-//go:linkname ramStart runtime.ramStart
+//go:linkname ramStart runtime/goos.RamStart
 var ramStart uint64 = mem.NonSecureStart
 
-//go:linkname ramSize runtime.ramSize
+//go:linkname ramSize runtime/goos.RamSize
 var ramSize uint64 = mem.NonSecureSize
 
-//go:linkname hwinit runtime.hwinit1
+//go:linkname hwinit runtime/goos.Hwinit1
 func hwinit() {
 	fu540.RV64.InitSupervisor()
 }
 
-//go:linkname printk runtime.printk
+//go:linkname printk runtime/goos.Printk
 func printk(c byte) {
 	printSecure(c)
 }

@@ -37,23 +37,23 @@ func dbgCmd(term *term.Terminal, arg []string) (res string, err error) {
 	buf.WriteString("|-------------------------|-------------|---------|\n")
 
 	fmt.Fprintf(&buf, "| Secure non-invasive     |           %d |       %d |\n",
-		bits.Get(&dbgAuthStatus, 7, 1),
-		bits.Get(&dbgAuthStatus, 6, 1),
+		bits.GetN(&dbgAuthStatus, 7, 1),
+		bits.GetN(&dbgAuthStatus, 6, 1),
 	)
 
 	fmt.Fprintf(&buf, "| Secure invasive         |           %d |       %d |\n",
-		bits.Get(&dbgAuthStatus, 5, 1),
-		bits.Get(&dbgAuthStatus, 4, 1),
+		bits.GetN(&dbgAuthStatus, 5, 1),
+		bits.GetN(&dbgAuthStatus, 4, 1),
 	)
 
 	fmt.Fprintf(&buf, "| Non-secure non-invasive |           %d |       %d |\n",
-		bits.Get(&dbgAuthStatus, 3, 1),
-		bits.Get(&dbgAuthStatus, 2, 1),
+		bits.GetN(&dbgAuthStatus, 3, 1),
+		bits.GetN(&dbgAuthStatus, 2, 1),
 	)
 
 	fmt.Fprintf(&buf, "| Non-secure invasive     |           %d |       %d |\n",
-		bits.Get(&dbgAuthStatus, 1, 1),
-		bits.Get(&dbgAuthStatus, 0, 1),
+		bits.GetN(&dbgAuthStatus, 1, 1),
+		bits.GetN(&dbgAuthStatus, 0, 1),
 	)
 
 	return buf.String(), nil

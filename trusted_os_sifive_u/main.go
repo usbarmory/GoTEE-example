@@ -32,10 +32,10 @@ var taELF []byte
 //go:embed assets/nonsecure_os_go.elf
 var osELF []byte
 
-//go:linkname ramStart runtime.ramStart
+//go:linkname ramStart runtime/goos.RamStart
 var ramStart uint64 = mem.SecureStart
 
-//go:linkname ramSize runtime.ramSize
+//go:linkname ramSize runtime/goos.RamSize
 var ramSize uint64 = mem.SecureSize
 
 func init() {

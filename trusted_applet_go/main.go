@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"runtime"
+	"runtime/goos"
 	"time"
 
 	"github.com/usbarmory/GoTEE/applet"
@@ -23,7 +24,7 @@ func init() {
 	log.SetOutput(os.Stdout)
 
 	// yield to monitor (w/ err != nil) on runtime panic
-	runtime.Exit = applet.Crash
+	goos.Exit = applet.Crash
 }
 
 func testRNG(n int) {
