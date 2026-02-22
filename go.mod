@@ -2,6 +2,8 @@ module github.com/usbarmory/GoTEE-example
 
 go 1.26.0
 
+tool github.com/usbarmory/tamago/cmd/tamago
+
 require (
 	github.com/usbarmory/GoTEE v0.0.0-20260211133844-f5b214406969
 	github.com/usbarmory/armory-boot v0.0.0-20260202115234-edf170b30f66

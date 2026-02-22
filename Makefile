@@ -17,6 +17,7 @@ SHELL = /bin/bash
 APP := ""
 TARGET ?= "usbarmory"
 TEXT_START := 0x80010000 # ramStart (defined in mem.go under relevant tamago/soc package) + 0x10000
+TAMAGO ?= $(shell go tool -n github.com/usbarmory/tamago/cmd/tamago)
 
 ifeq ($(TARGET),sifive_u)
 
