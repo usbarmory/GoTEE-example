@@ -26,8 +26,8 @@ github.com/usbarmory/armory-boot v0.0.0-20260202115234-edf170b30f66 h1:EKfiE4TIq
 github.com/usbarmory/armory-boot v0.0.0-20260202115234-edf170b30f66/go.mod h1:2cCdG4eUnVtrKyfbCc2A+0SHJl62Cgf4jEXTw/OvlW4=
 github.com/usbarmory/imx-usbnet v0.0.0-20250916125502-9c92e5468e13 h1:HHbkIJyvb6B/wGXlKb0+0yZDLKMCcq/NtkAwVHr7YWE=
 github.com/usbarmory/imx-usbnet v0.0.0-20250916125502-9c92e5468e13/go.mod h1:zvzUu4SfzoCEDVnxzga81SoK3ezsW8gjxck2v1Ry1zw=
-github.com/usbarmory/tamago v1.26.1-0.20260211133715-c12e6138a3d9 h1:g/CJ3QVwxqN4EyQaQhUjD8ExHt62DObnRux2QTvsHTs=
-github.com/usbarmory/tamago v1.26.1-0.20260211133715-c12e6138a3d9/go.mod h1:NDKiU/WXqDwNDCYs1BXEMgNlm1UFwdp8xENclDVQSNY=
+github.com/usbarmory/tamago v1.26.1 h1:ZJkxM/+qNZTO631bJz5x/flhYb/ww1ura4H2BrZbX5I=
+github.com/usbarmory/tamago v1.26.1/go.mod h1:7x0kUe5eE9S1z7Pi/C9RjF8E4JHWzqnE4cKzGl0hyug=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.48.0 h1:/VRzVqiRSggnhY7gNRxPauEQ5Drw9haKdM0jqfcCFts=
 golang.org/x/crypto v0.48.0/go.mod h1:r0kV5h3qnFPlQnBSrULhlsRfryS2pmewsg+XfMgkVos=
