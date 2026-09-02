@@ -158,11 +158,15 @@ func grantPeripheralAccess() (err error) {
 }
 
 func enableTrustZoneWatchdog() {
-	// initialize interrupt controller, route all interrupts to NonSecure
-	imx6ul.GIC.Init(false, true)
+	// initialize interrupt controller
+	imx6ul.GIC.Init()
+	// route all interrupts as Non-Secure
+	imx6ul.GIC.SetInterruptsGroup(true)
+	// route Secure interrupts as FIQ
+	imx6ul.GIC.FIQEn(true)
 
-	// enable TrustZone Watchdog Secure interrupt
-	imx6ul.GIC.EnableInterrupt(imx6ul.TZ_WDOG.IRQ, true)
+	// enable TrustZone Watchdog Secure FIQ
+	imx6ul.GIC.EnableInterrupt(imx6ul.TZ_WDOG.IRQ)
 	imx6ul.TZ_WDOG.EnableInterrupt(watchdogWarningInterval)
 
 	// enable TrustZone Watchdog

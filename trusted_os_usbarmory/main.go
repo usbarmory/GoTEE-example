@@ -9,6 +9,7 @@ import (
 	_ "embed"
 	"fmt"
 	"log"
+	"net"
 	"os"
 	"runtime"
 	"time"
@@ -18,7 +19,8 @@ import (
 	"github.com/usbarmory/tamago/dma"
 	"github.com/usbarmory/tamago/soc/nxp/imx6ul"
 
-	"github.com/usbarmory/imx-usbnet"
+	"github.com/usbarmory/go-net"
+	"github.com/usbarmory/go-net/imx-usb"
 
 	"github.com/usbarmory/GoTEE-example/internal/semihosting"
 	"github.com/usbarmory/GoTEE-example/mem"
@@ -107,15 +109,26 @@ func main() {
 		serialConsole()
 	}
 
-	iface := usbnet.Interface{}
+	iface := gnet.Interface{}
 
 	if err := iface.Init(IP, MAC, hostMAC); err != nil {
 		log.Fatalf("SM could not initialize USB networking, %v", err)
 	}
 
-	iface.EnableICMP()
+	iface.Stack.EnableICMP()
 
-	listener, err := iface.ListenerTCP4(sshPort)
+	ecm := &usbnet.ECM{
+		Stack: iface.Stack,
+	}
+
+	ecm.HostMAC, _ = net.ParseMAC(hostMAC)
+	ecm.DeviceMAC, _ = net.ParseMAC(MAC)
+
+	if err := ecm.Init(); err != nil {
+		return
+	}
+
+	listener, err := net.Listen("tcp4", fmt.Sprintf(":%d", sshPort))
 
 	if err != nil {
 		log.Fatalf("SM could not initialize SSH listener, %v", err)
@@ -135,5 +148,5 @@ func main() {
 	usbarmory.USB1.Reset()
 
 	// never returns
-	usbarmory.USB1.Start(iface.NIC.Device)
+	usbarmory.USB1.Start(ecm.Device)
 }
