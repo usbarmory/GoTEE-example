@@ -8,7 +8,7 @@ require (
 	github.com/usbarmory/GoTEE v0.0.0-20260610100805-7155b9252462
 	github.com/usbarmory/armory-boot v0.0.0-20260606204932-9c2bd55b018c
 	github.com/usbarmory/go-net v0.0.0-20260714134120-c2c964e7084c
-	github.com/usbarmory/tamago v1.27.1
+	github.com/usbarmory/tamago v1.27.2-0.20260923104811-857b3fbd9abe
 	golang.org/x/crypto v0.55.0
 	golang.org/x/term v0.45.0
 )
