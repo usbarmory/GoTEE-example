@@ -1,14 +1,14 @@
 module github.com/usbarmory/GoTEE-example
 
-go 1.27.2
+go 1.27.4
 
 tool github.com/usbarmory/tamago/cmd/tamago
 
 require (
-	github.com/usbarmory/GoTEE v0.0.0-20261009100156-813dc65a8924
+	github.com/usbarmory/GoTEE v0.0.0-20261118083350-8b1946f6c9eb
 	github.com/usbarmory/armory-boot v0.0.0-20261009095837-4187a21059a3
 	github.com/usbarmory/go-net v0.0.0-20261009100129-ac6c24a818a0
-	github.com/usbarmory/tamago v1.27.2
+	github.com/usbarmory/tamago v1.27.4
 	golang.org/x/crypto v0.56.0
 	golang.org/x/term v0.45.0
 )
