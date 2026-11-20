@@ -28,7 +28,7 @@ func GoTEE() (err error) {
 	//}
 
 	// test concurrent execution of:
-	//   Secure    World EL1 (system/monitor mode) - secure OS (this program) - FIXME:linkcpuinit
+	//   Secure    World EL1 (system/monitor mode) - secure OS (this program)
 	//   Secure    World EL0 (user mode)           - trusted applet
 	//   NonSecure World EL1                       - main OS (TODO)
 	wg.Add(1)
