@@ -8,7 +8,7 @@
 // func printSecure(c byte)
 TEXT ·printSecure(SB),$0-1
 	MOVD	$const_SYS_WRITE, R0
-	MOVB	c+0(FP), R1
+	MOVBU	c+0(FP), R1
 
 	SMC	$0
 

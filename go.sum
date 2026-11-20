@@ -22,7 +22,6 @@ github.com/u-root/uio v0.0.0-20240224005618-d2acac8f3701 h1:pyC9PaHYZFgEKFdlp3G8
 github.com/u-root/uio v0.0.0-20240224005618-d2acac8f3701/go.mod h1:P3a5rG4X7tI17Nn3aOIAYr5HbIMukwXG0urG0WuL8OA=
 github.com/ulikunitz/xz v0.5.15 h1:9DNdB5s+SgV3bQ2ApL10xRc35ck0DuIX/isZvIk+ubY=
 github.com/ulikunitz/xz v0.5.15/go.mod h1:nbz6k7qbPmH4IRqmfOplQw/tblSgqTqBwxkY0oWt/14=
-github.com/usbarmory/GoTEE v0.0.0-20261118083350-8b1946f6c9eb/go.mod h1:q/JyOZ4/yaMK7FDvIiMTiRCorHNZXPjr0sXuqmHgtt4=
 github.com/usbarmory/GoTEE v0.0.0-20261120153503-fafd7a0048ca h1:0uUFV4bMvK7UXEBmPcrly3KznkJ4FJjYabLmBSyNK9s=
 github.com/usbarmory/GoTEE v0.0.0-20261120153503-fafd7a0048ca/go.mod h1:ZCfFP4bp/sTszDLSoFdm0Ul2TE2w5SwVXM3aiFtAQ5Y=
 github.com/usbarmory/armory-boot v0.0.0-20261009095837-4187a21059a3 h1:NUBPHITbcCoz8HKhhDlyt27xGI0JqJgyAj2QZMUcltA=
