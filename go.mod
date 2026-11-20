@@ -5,10 +5,10 @@ go 1.27.4
 tool github.com/usbarmory/tamago/cmd/tamago
 
 require (
-	github.com/usbarmory/GoTEE v0.0.0-20261120153503-fafd7a0048ca
+	github.com/usbarmory/GoTEE v0.0.0-20261120211824-77d9114f2ece
 	github.com/usbarmory/armory-boot v0.0.0-20261009095837-4187a21059a3
 	github.com/usbarmory/go-net v0.0.0-20261009100129-ac6c24a818a0
-	github.com/usbarmory/tamago v1.27.5-0.20261120152548-cf044c2ed86a
+	github.com/usbarmory/tamago v1.27.5-0.20261120211707-09671e405630
 	golang.org/x/crypto v0.56.0
 	golang.org/x/term v0.45.0
 )

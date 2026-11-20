@@ -17,23 +17,15 @@ import (
 func GoTEE() (err error) {
 	var wg sync.WaitGroup
 	var ta *monitor.ExecCtx
-	//var os *monitor.ExecCtx
 
 	if ta, err = loadApplet(); err != nil {
 		return
 	}
 
-	//if os, err = loadNormalWorld(false); err != nil {
-	//	return
-	//}
-
-	// test concurrent execution of:
-	//   Secure    World EL1 (system/monitor mode) - secure OS (this program)
-	//   Secure    World EL0 (user mode)           - trusted applet
-	//   NonSecure World EL1                       - main OS (TODO)
+	// test concurrent execution of EL1 OS (this program) and EL0 applet
+	// (user mode).
 	wg.Add(1)
 	go run(ta, &wg)
-	//go run(os, &wg)
 
 	log.Printf("SM waiting for applet")
 	wg.Wait()

@@ -15,6 +15,7 @@ import (
 
 	"github.com/usbarmory/tamago/board/nxp/imx8mpevk"
 	"github.com/usbarmory/tamago/dma"
+	"github.com/usbarmory/tamago/soc/nxp/imx8mp"
 
 	"github.com/usbarmory/GoTEE-example/internal/semihosting"
 	"github.com/usbarmory/GoTEE-example/mem"
@@ -45,7 +46,9 @@ func init() {
 	mem.Init()
 	dma.Init(mem.SecureDMAStart, mem.SecureDMASize)
 
-	cmd.Banner = fmt.Sprintf("%s/%s (%s) • TEE Security Monitor (Secure EL1)", runtime.GOOS, runtime.GOARCH, runtime.Version())
+	cmd.Banner = fmt.Sprintf("%s/%s (%s) • TEE Security Monitor (Secure:%v EL%d)",
+		runtime.GOOS, runtime.GOARCH, runtime.Version(),
+		imx8mp.ARM64.Secure(), imx8mp.ARM64.CurrentEL())
 
 	gotee.TA = taELF
 	//gotee.OS = osELF (TODO)

@@ -53,6 +53,7 @@ QEMU ?= qemu-system-aarch64 -machine imx8mp-evk -m 512M -smp 1 \
         -nographic -monitor none -serial stdio -serial null -net none \
         -semihosting
 
+BUILD_TAGS := ${BUILD_TAGS},el1secure
 ARCH = "arm64"
 TEXT_START=0x50010000
 APPLET_START = 0x55010000
