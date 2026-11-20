@@ -16,7 +16,6 @@ SHELL = /bin/bash
 
 APP := ""
 TARGET ?= "usbarmory"
-TEXT_START := 0x80010000 # ramStart (defined in mem.go under relevant tamago/soc package) + 0x10000
 TAMAGO ?= $(shell go tool -n github.com/usbarmory/tamago/cmd/tamago)
 
 ifeq ($(TARGET),sifive_u)
@@ -37,12 +36,33 @@ QEMU ?= qemu-system-riscv64 -machine sifive_u -m 512M \
         -bios $(CURDIR)/trusted_os_$(TARGET)/bios/bios.bin
 
 ARCH = "riscv64"
+TEXT_START=0x90010000
 APPLET_START = 0x95010000
+OS_START = 0x80010000
 RUST_COMPILER = "riscv64-linux-gnu-gcc"
 RUST_LINKER = "riscv64-linux-gnu-ld"
 RUST_TARGET = "riscv64gc-unknown-none-elf"
 
-else
+endif
+
+ifeq ($(TARGET),imx8mpevk)
+
+GOENV := GO_EXTLINK_ENABLED=0 CGO_ENABLED=0 GOOS=tamago GOOSPKG=github.com/usbarmory/tamago GOARCH=arm64
+ENTRY_POINT := _rt0_arm64_tamago
+QEMU ?= qemu-system-aarch64 -machine imx8mp-evk -m 512M -smp 1 \
+        -nographic -monitor none -serial stdio -serial null -net none \
+        -semihosting
+
+ARCH = "arm64"
+TEXT_START=0x50010000
+APPLET_START = 0x55010000
+OS_START = 0x40010000
+RUST_LINKER = "aarch64-linux-gnu-ld"
+RUST_TARGET = "aarch64-unknown-none"
+
+endif
+
+ifeq ($(TARGET),usbarmory)
 
 GOENV := GO_EXTLINK_ENABLED=0 CGO_ENABLED=0 GOOS=tamago GOOSPKG=github.com/usbarmory/tamago GOARM=7 GOARCH=arm
 ENTRY_POINT := _rt0_arm_tamago
@@ -50,9 +70,12 @@ QEMU ?= qemu-system-arm -machine mcimx6ul-evk -cpu cortex-a7 -m 512M \
         -nographic -monitor none -serial null -serial stdio -net none \
         -semihosting
 
-BUILD_TAGS := ${BUILD_TAGS},syscall_nanotime # required for lockstep example
+# required for lockstep example
+BUILD_TAGS := ${BUILD_TAGS},syscall_nanotime
 ARCH = "arm"
+TEXT_START=0x90010000
 APPLET_START = 0x10010000
+OS_START = 0x80010000
 RUST_LINKER = "arm-none-eabi-ld"
 RUST_TARGET = "armv7a-none-eabi"
 
@@ -69,7 +92,6 @@ elf: $(APP).elf
 
 trusted_os: APP=trusted_os_$(TARGET)
 trusted_os: DIR=$(CURDIR)/trusted_os_$(TARGET)
-trusted_os: TEXT_START=0x90010000
 ifeq ($(TARGET),usbarmory)
 trusted_os: imx
 else
@@ -78,13 +100,13 @@ endif
 
 trusted_os_signed: APP=trusted_os_$(TARGET)
 trusted_os_signed: DIR=$(CURDIR)/trusted_os_$(TARGET)
-trusted_os_signed: TEXT_START=0x90010000
 trusted_os_signed: imx_signed
 
 trusted_applet_go: APP=trusted_applet
 trusted_applet_go: DIR=$(CURDIR)/trusted_applet_go
 trusted_applet_go: TEXT_START=$(APPLET_START)
-trusted_applet_go: elf
+trusted_applet_go: check_tamago
+	cd $(DIR) && $(GOENV) $(TAMAGO) build $(GOFLAGS) -tags linkcpuinit,linkhwinit0 -o $(CURDIR)/bin/$(APP).elf
 	mkdir -p $(CURDIR)/trusted_os_$(TARGET)/assets
 	cp $(CURDIR)/bin/trusted_applet.elf $(CURDIR)/trusted_os_$(TARGET)/assets
 
@@ -96,10 +118,18 @@ trusted_applet_rust:
 
 nonsecure_os_go: APP=nonsecure_os_go
 nonsecure_os_go: DIR=$(CURDIR)/nonsecure_os_go
-nonsecure_os_go: TEXT_START=0x80010000
+nonsecure_os_go: TEXT_START=$(OS_START)
 nonsecure_os_go: elf
 	mkdir -p $(CURDIR)/trusted_os_$(TARGET)/assets
 	cp $(CURDIR)/bin/nonsecure_os_go.elf $(CURDIR)/trusted_os_$(TARGET)/assets
+
+#### RISC-V targets ####
+
+qemu.dtb: GOMODCACHE=$(shell ${TAMAGO} env GOMODCACHE)
+qemu.dtb: TAMAGO_PKG=$(shell ${TAMAGO} list -m -f '{{.Path}}@{{.Version}}' github.com/usbarmory/tamago)
+qemu.dtb:
+	$(TAMAGO) mod download $(TAMAGO_PKG)
+	dtc -I dts -O dtb $(GOMODCACHE)/$(TAMAGO_PKG)/board/qemu/sifive_u/qemu-riscv64-sifive_u.dts -o $(CURDIR)/qemu.dtb 2> /dev/null
 
 #### ARM targets ####
 
@@ -135,14 +165,6 @@ $(APP).dcd: check_tamago
 $(APP).dcd: GOMODCACHE=$(shell ${TAMAGO} env GOMODCACHE)
 $(APP).dcd: TAMAGO_PKG=$(shell ${TAMAGO} list -m -f '{{.Path}}@{{.Version}}' github.com/usbarmory/tamago)
 $(APP).dcd: dcd
-
-#### RISC-V targets ####
-
-qemu.dtb: GOMODCACHE=$(shell ${TAMAGO} env GOMODCACHE)
-qemu.dtb: TAMAGO_PKG=$(shell ${TAMAGO} list -m -f '{{.Path}}@{{.Version}}' github.com/usbarmory/tamago)
-qemu.dtb:
-	$(TAMAGO) mod download $(TAMAGO_PKG)
-	dtc -I dts -O dtb $(GOMODCACHE)/$(TAMAGO_PKG)/board/qemu/sifive_u/qemu-riscv64-sifive_u.dts -o $(CURDIR)/qemu.dtb 2> /dev/null
 
 #### utilities ####
 

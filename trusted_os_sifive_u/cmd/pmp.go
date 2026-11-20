@@ -4,7 +4,6 @@
 // that can be found in the LICENSE file.
 
 //go:build sifive_u
-// +build sifive_u
 
 package cmd
 

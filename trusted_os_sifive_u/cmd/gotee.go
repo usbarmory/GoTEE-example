@@ -14,7 +14,7 @@ import (
 func init() {
 	Add(Cmd{
 		Name: "gotee",
-		Help: "TrustZone example w/ TamaGo unikernels",
+		Help: "S-Mode example w/ TamaGo unikernels",
 		Fn:   goteeCmd,
 	})
 }
